@@ -1,0 +1,30 @@
+# Copy this file to <set-id>.yaml and fill it in.
+# One set = one original and every copy derived from it.
+
+id: 2026-11-02-pixel8-street-01
+
+original:
+  file: original.jpg
+  sha256: ""
+  device:
+    make: Google
+    model: Pixel 8
+    os: Android 16
+    camera_app: Google Camera 9.x
+  captured_at: 2026-11-02T14:35:00+01:00
+  location_disclosed: true   # false if GPS was disabled at capture
+  notes: ""
+
+derivatives:
+  - file: whatsapp-gallery.jpg
+    sha256: ""
+    expected_integrity: reprocessed   # original | reprocessed | undetermined
+    expected_pipeline: whatsapp-gallery
+    steps:                            # in order, one per platform crossed
+      - platform: whatsapp
+        app_version: "2.26.x"
+        sender_os: Android 16
+        send_mode: gallery-standard   # gallery-standard | gallery-hd | document | ...
+        retrieval: receiver-app-save  # how the output file was obtained
+        date: 2026-11-02
+    notes: ""
