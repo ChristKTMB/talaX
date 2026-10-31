@@ -41,6 +41,8 @@ def traits(**overrides: Any) -> Traits:
         "datetime_original": None,
         "vendor_groups": (),
         "software": (),
+        "pixel_size": None,
+        "recorded_size": None,
         "segments": ("SOI", "APP0:JFIF", "SOS"),
         "progressive": True,
         "tags": Metadata({"JFIF:ResolutionUnit": 0}),

@@ -1,0 +1,14 @@
+# ExifTool groups (-G1 names) that only a device manufacturer writes.
+# Their presence is one of the marks of a camera original.
+#
+# Listed only after being observed in a camera original of the corpus: an
+# unknown group is NOT treated as manufacturer data, so an unmeasured device
+# gives "undetermined", never a false "original". (Windows Photos adds the
+# generic XMP-rdf block, which an earlier "everything not standard" rule
+# wrongly counted.)
+
+vendor_groups:
+  - Samsung          # Samsung trailer (A34, S22)
+  - Google           # Google container data (S22 motion photo)
+  - XMP-GCamera      # S22
+  - XMP-GContainer   # S22

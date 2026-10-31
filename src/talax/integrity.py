@@ -7,26 +7,16 @@ explanation says the platform could not be identified.
 
 from __future__ import annotations
 
-import functools
 from collections.abc import Sequence
-from importlib.resources import files
-
-import yaml
 
 from talax.fingerprints import Fingerprint, builtin_fingerprints
 from talax.model import IntegrityAssessment, IntegrityVerdict
-from talax.traits import Traits
+from talax.traits import Traits, editors_in
 
 _FORGERY_CAVEAT = (
     " This says where the file comes from, not whether its content is true: "
     "metadata can be forged by anyone who knows how."
 )
-
-
-@functools.cache
-def known_editors() -> tuple[str, ...]:
-    raw = yaml.safe_load((files("talax") / "data" / "editors.yaml").read_text())
-    return tuple(raw["editors"])
 
 
 def assess_integrity(
@@ -77,9 +67,7 @@ def _from_fingerprints(
 
 def _from_generic_rules(t: Traits, evidence: dict[str, object]) -> IntegrityAssessment:
     evidence = {**evidence, "basis": "generic"}
-    editors = [
-        s for s in t.software if any(e.lower() in s.lower() for e in known_editors())
-    ]
+    editors = editors_in(t.software)
 
     if not t.exif_present:
         if t.real_format == "image/jpeg":
@@ -104,6 +92,16 @@ def _from_generic_rules(t: Traits, evidence: dict[str, object]) -> IntegrityAsse
             "Camera metadata is present, but the file was saved by an image "
             f"editor ({', '.join(editors)}). It is no longer the file the "
             "camera produced, and it is not a platform copy either.",
+            evidence=evidence,
+        )
+
+    if t.recorded_size and t.pixel_size and t.recorded_size != t.pixel_size:
+        (rw, rh), (pw, ph) = t.recorded_size, t.pixel_size
+        return IntegrityAssessment(
+            IntegrityVerdict.UNDETERMINED,
+            f"The image is {pw}x{ph} pixels, but the camera recorded {rw}x{rh}. "
+            "The image was cropped, resized or rotated after it was taken, by "
+            "an app that kept the original metadata.",
             evidence=evidence,
         )
 

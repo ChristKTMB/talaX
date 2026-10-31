@@ -2,6 +2,8 @@
 
 import hashlib
 import re
+import shutil
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -60,3 +62,34 @@ def test_integrity_matches_the_truth(path: Path, sheet: dict[str, Any]) -> None:
     integrity = analyze(path).integrity
     assert integrity.verdict == truth["expected_integrity"], integrity.explanation
     assert integrity.pipeline == truth.get("expected_pipeline")
+
+
+@pytest.mark.parametrize(("path", "sheet"), FILES, ids=ids(FILES))
+def test_no_signal_is_suspicious_on_unmanipulated_files(
+    path: Path, sheet: dict[str, Any]
+) -> None:
+    # No corpus file so far had its metadata manipulated: any SUSPICIOUS
+    # verdict here is a false positive.
+    suspicious = [r for r in analyze(path).results if r.state is State.SUSPICIOUS]
+    assert not suspicious, suspicious[0].explanation
+
+
+@pytest.mark.skipif(shutil.which("exiftool") is None, reason="ExifTool needed")
+def test_backdated_original_is_caught(tmp_path: Path) -> None:
+    source = CORPUS / "files" / "2026-10-31-a34" / "original2.jpg"
+    if not source.exists():
+        pytest.skip("corpus file missing")
+    forged = tmp_path / "forged.jpg"
+    subprocess.run(
+        [
+            "exiftool",
+            "-q",
+            "-DateTimeOriginal=2025:06:01 21:00:00",
+            "-o",
+            forged,
+            source,
+        ],
+        check=True,
+    )
+    (result,) = (r for r in analyze(forged).results if r.signal_id == "capture_time")
+    assert result.state is State.SUSPICIOUS

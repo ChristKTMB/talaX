@@ -12,6 +12,8 @@ ORIGINAL_TRAITS: dict[str, Any] = {
     "model": "Galaxy A34 5G",
     "datetime_original": "2026:10:31 09:58:41",
     "vendor_groups": ("Samsung",),
+    "pixel_size": (4000, 3000),
+    "recorded_size": (4000, 3000),
     "segments": ("SOI", "APP1:Exif", "DQT", "SOF0", "SOS"),
     "progressive": False,
     "tags": Metadata({}),
@@ -86,3 +88,21 @@ def test_two_platforms_matching_is_reported_without_choosing() -> None:
     assert result.verdict is IntegrityVerdict.REPROCESSED
     assert result.pipeline is None
     assert "Demo" in result.explanation and "Other" in result.explanation
+
+
+def test_size_differing_from_the_recorded_one_withholds_original() -> None:
+    result = assess_integrity(camera(pixel_size=(3000, 4000)), fingerprints=[])
+    assert result.verdict is IntegrityVerdict.UNDETERMINED
+    assert "3000x4000" in result.explanation and "4000x3000" in result.explanation
+
+
+def test_no_recorded_size_is_not_held_against_the_file() -> None:
+    result = assess_integrity(camera(recorded_size=None), fingerprints=[])
+    assert result.verdict is IntegrityVerdict.ORIGINAL
+
+
+def test_unknown_metadata_block_is_not_manufacturer_data() -> None:
+    from talax.traits import vendor_group_names
+
+    assert "XMP-rdf" not in vendor_group_names()
+    assert "Samsung" in vendor_group_names()
