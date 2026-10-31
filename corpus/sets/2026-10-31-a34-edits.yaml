@@ -1,0 +1,92 @@
+# Truth sheet for corpus/files/2026-10-31-a34-edits/
+# Edited copies of originals from the 2026-10-31-a34 set. The trailing number
+# is the shot number of the source original in that set.
+# Written BEFORE the first benchmark run on these files (exam rule).
+
+id: 2026-10-31-a34-edits
+source_set: 2026-10-31-a34
+device:
+  make: samsung
+  model: Galaxy A34 5G
+  firmware: A346BXXSHFZJ4
+  android: null
+  camera_app: stock Samsung camera
+captured_on: 2026-10-31
+gps_in_originals: true
+
+notes: >-
+  Expected verdict for every edited file: undetermined. An edited file is no
+  longer the file the camera produced, and it is not a platform copy either.
+
+routes:
+  original:
+    excluded: >-
+      Byte-identical copies of the originals of 2026-10-31-a34, left in this
+      folder before editing. Already counted in that set.
+  edited-gimp-crop:
+    expected_integrity: undetermined
+    expected_pipeline: null
+    steps:
+      - platform: gimp
+        app_version: null
+        send_mode: crop, export as JPEG
+        retrieval: Windows PC
+        date: 2026-10-31
+  edited-paint-erase:
+    expected_integrity: undetermined
+    expected_pipeline: null
+    steps:
+      - platform: paint
+        app_version: null
+        send_mode: object erased, save as JPEG
+        retrieval: Windows PC
+        date: 2026-10-31
+  edited-photos-crop:
+    expected_integrity: undetermined
+    expected_pipeline: null
+    steps:
+      - platform: windows-photos
+        app_version: null
+        send_mode: crop, save a copy
+        retrieval: Windows PC
+        date: 2026-10-31
+  edited-photos-rotate:
+    expected_integrity: undetermined
+    expected_pipeline: null
+    steps:
+      - platform: windows-photos
+        app_version: null
+        send_mode: rotate, save a copy
+        retrieval: Windows PC
+        date: 2026-10-31
+  edited-phone:
+    expected_integrity: undetermined
+    expected_pipeline: null
+    steps:
+      - platform: samsung-gallery
+        app_version: null
+        send_mode: Edit, black-and-white filter, saved
+        retrieval: bluetooth from the A34
+        date: 2026-10-31
+    observed: >-
+      Originally named modif_a34_6.jpg and modif_a34_7.jpg. A filter only, yet
+      the Gallery baked the rotation into the pixels (3000x4000, orientation
+      normal) while the EXIF still records 4000x3000. GPS fields blanked in
+      place, MCC data removed, EXIF byte order changed (II to MM).
+
+sha256:
+  edited-gimp-crop1.jpg: 25aeca48a00d86f790a5ac7c8ba246054c3571e1c52fb9b952465d5fc4878c91
+  edited-gimp-crop7.jpg: 050831a230d5280e6527652643d43e6e3965ee8e7f1cb1726fd679f396c5b6ae
+  edited-paint-erase1.jpg: 4f9c1cb4e28589e560c65a25a083a4b9df5d3ebc99fef007fa3962cd0f67a6b1
+  edited-paint-erase6.jpg: 8c46afce0793ddd7257439800c55675f6476bc25f794a2db9d35092bea5d88b3
+  edited-phone6.jpg: 838a4aee0631a904d3e058001ec041c832296809090ead561113718766b596c9
+  edited-phone7.jpg: c4d940f4a8fbc250f985849f4f490e6f2679e22c75c7f8c28e9c6d54ec0e67aa
+  edited-photos-crop1.jpg: 3430027db9b525b22af818d582fd29bd456127a487209bf11f2d27901c21d406
+  edited-photos-crop6.jpg: 7d38d0bdabc8703915a181e6e15ef2d51c58484c61639f3a20aa8efd73178463
+  edited-photos-crop7.jpg: 356bf16e960fe8b9e3d2a936d4c738d5f6228969964eccb8420e045a31b8a754
+  edited-photos-rotate1.jpg: 0000507d623aa8bcc2dc094260343db24ce3ba452cbabb556c8ecda6d6c1a34f
+  edited-photos-rotate6.jpg: a47d874a299a703a19097c585c693827e0f131f982483ed3f66c7e3d475b2d98
+  edited-photos-rotate7.jpg: ae6309c8c59b90fe179bef5cfcb4b990e308f64b9e3c9e5ee4e2d8c74dffa268
+  original1.jpg: 5685833517a02cd1662724e0b0a84cd201b19a8edb0cb164e7cc69157b40f310
+  original6.jpg: 9142cf40fa7480df2ad58d82fc4b6d77b8682a4e18d9ba168c60701a3213c45a
+  original7.jpg: f63ed51b3c5de59164e147d09c86891cc20f27104bd0342010fbc33f29beb9ca
