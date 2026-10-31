@@ -1,0 +1,36 @@
+# Fingerprint of a photo sent through WhatsApp as a gallery image.
+# Format: see src/talax/fingerprints.py. Every field below is required.
+
+id: whatsapp-gallery
+platform: WhatsApp
+route: photo sent from the gallery (standard quality)
+verdict: reprocessed
+
+# All conditions must hold for a file to match.
+match:
+  formats: [image/jpeg]
+  exif: absent
+  vendor_data: absent
+  progressive: true
+  segments: [SOI, APP0:JFIF, DQT, SOF2, DHT, SOS]
+  tags:
+    JFIF:JFIFVersion: "1 1"
+    JFIF:ResolutionUnit: 0
+    JFIF:XResolution: 1
+    JFIF:YResolution: 1
+
+# Not part of the match: quantisation tables differ between the two devices
+# measured (first coefficient 10 from the A34, 6 from the S22), and so do the
+# output dimensions (1000 or 1080 px long side from the A34, 1280 from the S22).
+
+measured:
+  date: 2026-10-31
+  samples: 13
+  devices: [samsung Galaxy A34 5G, samsung Galaxy S22 (SM-S901B)]
+  app_versions: [unknown]
+  retrieval: WhatsApp Web download
+  corpus_sets: [2026-10-31-a34, 2026-10-31-s22]
+
+# Platforms measured that do NOT match this fingerprint. Empty means no other
+# platform has been measured yet, and the report must say so.
+distinguished_from: []

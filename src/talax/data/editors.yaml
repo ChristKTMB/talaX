@@ -1,0 +1,19 @@
+# Image editors recognised in software tags (IFD0:Software,
+# XMP-xmp:CreatorTool, XMP-xmpMM:HistorySoftwareAgent).
+# Matching is a case-insensitive substring search on each entry.
+# Add an editor only after seeing the exact string it writes.
+
+editors:
+  - Adobe Photoshop
+  - Adobe Lightroom
+  - Lightroom
+  - GIMP
+  - Snapseed
+  - PicsArt
+  - Canva
+  - Pixelmator
+  - Affinity Photo
+  - Paint.NET
+  - darktable
+  - Capture One
+  - Luminar

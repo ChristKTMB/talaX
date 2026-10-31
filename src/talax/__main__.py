@@ -26,7 +26,10 @@ def main(argv: list[str]) -> int:
     print(f"size        {f.size} bytes")
     print(f"declared    {f.declared_format}")
     print(f"real        {f.real_format}")
-    print(f"integrity   {analysis.integrity.verdict}: {analysis.integrity.explanation}")
+    i = analysis.integrity
+    print(f"integrity   {i.verdict} ({i.evidence.get('basis')}): {i.explanation}")
+    if i.pipeline:
+        print(f"pipeline    {i.pipeline}")
     if f.real_format == "image/jpeg":
         try:
             jpeg = read_jpeg_structure(path)

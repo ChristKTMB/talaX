@@ -52,3 +52,11 @@ def test_analysis_runs_and_format_is_consistent(
     (result,) = (r for r in analysis.results if r.signal_id == "real_format")
     assert result.state is State.CONSISTENT
     read_jpeg_structure(path)  # every corpus file so far is a readable JPEG
+
+
+@pytest.mark.parametrize(("path", "sheet"), FILES, ids=ids(FILES))
+def test_integrity_matches_the_truth(path: Path, sheet: dict[str, Any]) -> None:
+    truth = sheet["routes"][sheet["route"]]
+    integrity = analyze(path).integrity
+    assert integrity.verdict == truth["expected_integrity"], integrity.explanation
+    assert integrity.pipeline == truth.get("expected_pipeline")

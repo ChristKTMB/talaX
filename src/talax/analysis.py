@@ -8,20 +8,11 @@ from pathlib import Path
 
 from talax.extraction import read_metadata
 from talax.fileinfo import read_file_info
-from talax.model import (
-    Analysis,
-    Context,
-    Declaration,
-    IntegrityAssessment,
-    IntegrityVerdict,
-)
+from talax.integrity import assess_integrity
+from talax.jpeg import JpegError, JpegStructure, read_jpeg_structure
+from talax.model import Analysis, Context, Declaration
 from talax.signals import DEFAULT_SIGNALS, Signal, run_signals
-
-# Placeholder until the integrity test exists (step 2, part E).
-_INTEGRITY_PENDING = IntegrityAssessment(
-    verdict=IntegrityVerdict.UNDETERMINED,
-    explanation="The integrity test is not implemented yet.",
-)
+from talax.traits import read_traits
 
 
 def analyze(
@@ -30,10 +21,12 @@ def analyze(
     signals: Iterable[Signal] = DEFAULT_SIGNALS,
 ) -> Analysis:
     file = read_file_info(path)
+    metadata = read_metadata(path)
+    traits = read_traits(file, metadata, _jpeg_structure(path, file.real_format))
     ctx = Context(
         file=file,
-        metadata=read_metadata(path),
-        integrity=_INTEGRITY_PENDING,
+        metadata=metadata,
+        integrity=assess_integrity(traits),
         declaration=declaration,
     )
     return Analysis(
@@ -42,3 +35,14 @@ def analyze(
         results=run_signals(ctx, signals),
         created_at=datetime.now(UTC),
     )
+
+
+def _jpeg_structure(path: Path, real_format: str | None) -> JpegStructure | None:
+    if real_format != "image/jpeg":
+        return None
+    try:
+        return read_jpeg_structure(path)
+    except JpegError:
+        # A damaged structure leaves the generic rules with less to go on;
+        # it is not a reason to stop the analysis.
+        return None
