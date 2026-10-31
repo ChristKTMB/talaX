@@ -61,7 +61,7 @@ routes:
         date: 2026-10-31
   edited-phone:
     expected_integrity: undetermined
-    expected_pipeline: null
+    expected_pipeline: samsung-gallery-edit
     steps:
       - platform: samsung-gallery
         app_version: null
@@ -73,6 +73,22 @@ routes:
       the Gallery baked the rotation into the pixels (3000x4000, orientation
       normal) while the EXIF still records 4000x3000. GPS fields blanked in
       place, MCC data removed, EXIF byte order changed (II to MM).
+
+  edited-phone-cable:
+    expected_integrity: undetermined
+    expected_pipeline: samsung-gallery-edit
+    steps:
+      - platform: samsung-gallery
+        app_version: null
+        send_mode: >-
+          Edit. One file: objects removed and a sticker added. The other:
+          black-and-white filter, stickers and text added (which is which to
+          confirm).
+        retrieval: usb-cable
+        date: 2026-10-31
+    observed: >-
+      Originally named edited-phone-6b.jpg and edited-phone-7b.jpg. Second
+      exam: sheet written before the first benchmark run on these files.
 
 sha256:
   edited-gimp-crop1.jpg: 25aeca48a00d86f790a5ac7c8ba246054c3571e1c52fb9b952465d5fc4878c91
@@ -90,3 +106,5 @@ sha256:
   original1.jpg: 5685833517a02cd1662724e0b0a84cd201b19a8edb0cb164e7cc69157b40f310
   original6.jpg: 9142cf40fa7480df2ad58d82fc4b6d77b8682a4e18d9ba168c60701a3213c45a
   original7.jpg: f63ed51b3c5de59164e147d09c86891cc20f27104bd0342010fbc33f29beb9ca
+  edited-phone-cable6.jpg: 5c053b64bdb0e3a611f12b544163fde5d5d8f3034fea69be5a1d637038d2bb39
+  edited-phone-cable7.jpg: 3859f195c67fe26b074a4d2e19a89dab471a67de683f6b9afd1ff6a24631d764

@@ -1,0 +1,76 @@
+# Truth sheet for corpus/files/c2pa-public-1.4/
+# Official C2PA test files, downloaded 2026-10-31 from
+# https://github.com/c2pa-org/public-testfiles (legacy/1.4/image/jpeg).
+# License: CC BY-SA 4.0, (c) the C2PA public-testfiles contributors
+# (Adobe, Nikon, Truepic). Not redistributed: only described here.
+#
+# The truth comes from the repository's own description of each file.
+# Each file is its own route (file name without extension).
+
+id: c2pa-public-1.4
+source: https://github.com/c2pa-org/public-testfiles
+license: CC-BY-SA-4.0
+
+routes:
+  adobe-20220124-A:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: unverifiable
+    notes: no credentials
+  adobe-20220124-I:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: unverifiable
+    notes: no credentials
+  adobe-20220124-C:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: to_check
+    notes: intact, test signing certificate (untrusted)
+  adobe-20220124-CA:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: to_check
+    notes: intact, test signing certificate (untrusted)
+  adobe-20220124-CAI:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: to_check
+    notes: intact, test signing certificate (untrusted)
+  adobe-20220124-E-sig-CA:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: suspicious
+    notes: signature does not validate
+  adobe-20220124-E-uri-CA:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: suspicious
+    notes: assertion tampered (URI hash mismatch)
+  adobe-20220124-E-clm-CAICAI:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: suspicious
+    notes: referenced claim missing, assertion hash mismatch
+  adobe-20220124-E-dat-CA:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: to_check
+    notes: image changed after signing (data hash mismatch)
+  adobe-20220124-XCA:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: to_check
+    notes: image changed after signing (data hash mismatch)
+  nikon-20221019-building:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: to_check
+    notes: signing certificate expired
+  truepic-20230212-camera:
+    expected_integrity: null   # not evaluated: synthetic test images
+    expected_c2pa: to_check
+    notes: data hash mismatch reported by the library
+
+sha256:
+  adobe-20220124-A.jpg: f999fd78bfe8a83c96e468a078830ba94485bc1bc6fd086fb94a43bd29dd0f23
+  adobe-20220124-C.jpg: 75a8da33f6eaf1e16bf3b42cd78913b22b2e6a671fda217a508b1ba4230ce864
+  adobe-20220124-CA.jpg: cafc48c53e651f7ba4622d1f72783827074211e42b9634cc863ec3be3c7651b3
+  adobe-20220124-CAI.jpg: 37ac97882b8d9371d8a5a781ff9434804b8c19addda0048251a6f64ea0a0c40f
+  adobe-20220124-E-clm-CAICAI.jpg: b3ff3f00c66602280977d3e4d962a836d33ab83953d0009f7c1e6490d0065feb
+  adobe-20220124-E-dat-CA.jpg: dae9d121060cec4b6f27ee8acda85ad461cf75f2261d90b463319b787342d7f9
+  adobe-20220124-E-sig-CA.jpg: 0d4c2774f1b7e94b9613bb952b0a76b6a178d22ac6d206d257d2af1376cbbff2
+  adobe-20220124-E-uri-CA.jpg: 56014faf6b97532252c9bb90dcf484923a8aa7bba197e84a8555044a35e4f3a6
+  adobe-20220124-I.jpg: 9d33d48863ac4f94711e289bebc43e849d45be1819ee16c479bd9a8385f1ae08
+  adobe-20220124-XCA.jpg: 4524a15f71dbdd9e96cd6e78a1a17c1260fff04f68900a10fd1279664d260c9e
+  nikon-20221019-building.jpeg: 721e75362ccc4ff943f5140ebc89897aa501d056cfb0dc7a6aeb68382e412cc5
+  truepic-20230212-camera.jpg: 379aabc7d04ee8c8fb04e18925428463353ab6fb6696ee3d7aa11710c6b2e147
