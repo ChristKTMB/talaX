@@ -65,22 +65,69 @@ la forme la plus répandue de désinformation visuelle.
 - Pas de géolocalisation visuelle automatique.
 - Vidéo : métadonnées de conteneur uniquement.
 
-## L'essayer (version de développement)
+## Installer et essayer (version de développement)
 
-Nécessite Python 3.12+, [uv](https://docs.astral.sh/uv/) et
-[ExifTool](https://exiftool.org/) 13.0 ou plus récent.
+Testé sous Linux (Ubuntu dans WSL). Windows et macOS devraient fonctionner mais
+n'ont pas encore été testés : signalez tout problème.
+
+**1. Installer uv** (il installe aussi la bonne version de Python) :
 
 ```bash
-git clone https://github.com/ChristKTMB/talaX.git && cd talaX
-uv sync
-uv run talax analyze photo.jpg                  # rapport dans le terminal
-uv run talax analyze photo.jpg --sky day        # ce que montre la photo, pour la cohérence solaire
-uv run talax analyze photo.jpg --html rapport.html
-uv run talax analyze photo.jpg --json           # format machine
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+```powershell
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-Le rapport HTML est un fichier unique et autonome : l'ouvrir ne charge rien
-depuis le réseau.
+**2. Installer ExifTool 13.0 ou plus récent** — Tala X refuse de tourner avec
+une version plus ancienne, qui manquerait des tags constructeur et donnerait
+d'autres résultats.
+
+- **macOS** : `brew install exiftool`
+- **Windows** : téléchargez l'exécutable Windows sur
+  [exiftool.org](https://exiftool.org/), décompressez-le, renommez
+  `exiftool(-k).exe` en `exiftool.exe`, gardez le dossier `exiftool_files` à
+  côté, et ajoutez ce dossier à votre `PATH`.
+- **Linux** : les paquets des distributions sont souvent trop anciens (Ubuntu
+  24.04 fournit la 12.76). Installez la dernière version dans votre dossier
+  personnel :
+
+  ```bash
+  v=$(curl -fsS https://exiftool.org/ver.txt)
+  mkdir -p ~/.local/opt ~/.local/bin
+  curl -fsSL "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-$v.tar.gz/download" | tar -xz -C ~/.local/opt
+  ln -sf ~/.local/opt/Image-ExifTool-$v/exiftool ~/.local/bin/exiftool
+  ```
+
+Vérifiez avec `exiftool -ver`.
+
+**3. Récupérer Tala X et analyser une photo :**
+
+```bash
+git clone https://github.com/ChristKTMB/talaX.git
+cd talaX
+uv sync
+uv run talax analyze photo.jpg                       # rapport dans le terminal
+uv run talax analyze photo.jpg --sky day             # ce que montre la photo, pour la cohérence solaire
+uv run talax analyze photo.jpg --html rapport.html   # rapport HTML autonome
+uv run talax analyze photo.jpg --json                # format machine
+```
+
+Le rapport HTML est un fichier unique : l'ouvrir ne charge rien depuis le
+réseau. La ligne de commande n'envoie jamais rien nulle part.
+
+**4. Lancer les tests** (contributeurs) :
+
+```bash
+uv run pytest
+uv run ruff check && uv run ruff format --check && uv run mypy
+```
+
+Les tests qui ont besoin du corpus de référence sont sautés quand
+`corpus/files/` est absent : ces fichiers ne sont pas publiés (voir
+`corpus/README.md`).
 
 ## Comment l'utiliser
 

@@ -62,22 +62,66 @@ visual misinformation.
 - No automatic visual geolocation.
 - Video: container metadata only.
 
-## Try it (development version)
+## Install and try it (development version)
 
-Requires Python 3.12+, [uv](https://docs.astral.sh/uv/) and
-[ExifTool](https://exiftool.org/) 13.0 or newer.
+Tested on Linux (Ubuntu under WSL). Windows and macOS should work but have not
+been tested yet: please report any problem.
+
+**1. Install uv** (it also installs the right Python version for you):
 
 ```bash
-git clone https://github.com/ChristKTMB/talaX.git && cd talaX
-uv sync
-uv run talax analyze photo.jpg                  # report in the terminal
-uv run talax analyze photo.jpg --sky day        # what the photo shows, for the solar check
-uv run talax analyze photo.jpg --html report.html
-uv run talax analyze photo.jpg --json           # machine-readable
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+```powershell
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-The HTML report is a single self-contained file: opening it loads nothing from
-the network.
+**2. Install ExifTool 13.0 or newer** — Tala X refuses to run with an older
+version, because it would miss manufacturer tags and give different results.
+
+- **macOS**: `brew install exiftool`
+- **Windows**: download the Windows executable from
+  [exiftool.org](https://exiftool.org/), unzip it, rename
+  `exiftool(-k).exe` to `exiftool.exe`, keep the `exiftool_files` folder next
+  to it, and add that folder to your `PATH`.
+- **Linux**: distribution packages are often too old (Ubuntu 24.04 ships
+  12.76). Install the latest release in your home folder:
+
+  ```bash
+  v=$(curl -fsS https://exiftool.org/ver.txt)
+  mkdir -p ~/.local/opt ~/.local/bin
+  curl -fsSL "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-$v.tar.gz/download" | tar -xz -C ~/.local/opt
+  ln -sf ~/.local/opt/Image-ExifTool-$v/exiftool ~/.local/bin/exiftool
+  ```
+
+Check with `exiftool -ver`.
+
+**3. Get Tala X and analyse a photo:**
+
+```bash
+git clone https://github.com/ChristKTMB/talaX.git
+cd talaX
+uv sync
+uv run talax analyze photo.jpg                     # report in the terminal
+uv run talax analyze photo.jpg --sky day           # what the photo shows, for the solar check
+uv run talax analyze photo.jpg --html report.html  # self-contained HTML report
+uv run talax analyze photo.jpg --json              # machine-readable
+```
+
+The HTML report is a single file: opening it loads nothing from the network.
+Nothing is ever sent anywhere by the command line tool.
+
+**4. Run the tests** (contributors):
+
+```bash
+uv run pytest
+uv run ruff check && uv run ruff format --check && uv run mypy
+```
+
+Tests that need the reference corpus are skipped when `corpus/files/` is
+absent: those files are not published (see `corpus/README.md`).
 
 ## How you will use it
 
