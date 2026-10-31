@@ -11,6 +11,7 @@ from talax.fileinfo import read_file_info
 from talax.integrity import assess_integrity
 from talax.jpeg import JpegError, JpegStructure, read_jpeg_structure
 from talax.model import Analysis, Context, Declaration
+from talax.provenance import read_c2pa
 from talax.signals import DEFAULT_SIGNALS, Signal, run_signals
 from talax.traits import read_traits
 
@@ -28,6 +29,7 @@ def analyze(
         metadata=metadata,
         integrity=assess_integrity(traits),
         declaration=declaration,
+        c2pa=read_c2pa(path),
     )
     return Analysis(
         file=file,

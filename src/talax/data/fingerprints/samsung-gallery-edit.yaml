@@ -1,0 +1,36 @@
+# Fingerprint of a photo edited and saved in the Samsung Gallery app.
+# Format: see src/talax/fingerprints.py. Every field below is required.
+
+id: samsung-gallery-edit
+platform: Samsung Gallery
+route: photo edited and saved on the phone
+summary: >-
+  the camera metadata was kept, but the image was re-encoded by the Samsung
+  Gallery editor (JFIF header added, byte order changed, embedded preview and
+  network country code removed). The content may have been changed in any
+  way the editor allows: filters, stickers, text, object removal.
+verdict: undetermined
+
+match:
+  formats: [image/jpeg]
+  exif: present
+  vendor_data: present
+  progressive: false
+  segments: [SOI, APP1:Exif, APP0:JFIF, DQT, DQT, SOF0, DHT, DHT, DHT, DHT, DRI, SOS]
+  tags:
+    File:ExifByteOrder: MM
+
+# Not part of the match, but observed on all 4 samples: no IFD1 (embedded
+# preview removed), Samsung:MCCData removed, Samsung:TimeStamp kept, pixels
+# rotated upright (orientation normal). Originals from the same phone are
+# little-endian (II) and have no JFIF header.
+
+measured:
+  date: 2026-10-31
+  samples: 4
+  devices: [samsung Galaxy A34 5G]
+  app_versions: [unknown]
+  retrieval: bluetooth (2 files) and usb-cable (2 files)
+  corpus_sets: [2026-10-31-a34-edits]
+
+distinguished_from: []

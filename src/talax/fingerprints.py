@@ -24,6 +24,7 @@ _FIELDS = {
     "id",
     "platform",
     "route",
+    "summary",
     "verdict",
     "match",
     "measured",
@@ -43,6 +44,8 @@ class Fingerprint:
     id: str
     platform: str
     route: str
+    summary: str
+    """One plain-language sentence on what this app or platform does."""
     verdict: IntegrityVerdict
     match: Mapping[str, Any]
     measured_on: dt.date
@@ -95,7 +98,7 @@ def parse_fingerprint(raw: object, source: str = "<fingerprint>") -> Fingerprint
         raise fail("must be a mapping")
     _check_keys(raw, _FIELDS, _FIELDS, fail)
 
-    for name in ("id", "platform", "route"):
+    for name in ("id", "platform", "route", "summary"):
         if not isinstance(raw[name], str) or not raw[name].strip():
             raise fail(f"`{name}` must be a non-empty string")
     try:
@@ -103,7 +106,7 @@ def parse_fingerprint(raw: object, source: str = "<fingerprint>") -> Fingerprint
     except ValueError:
         raise fail(f"unknown verdict {raw['verdict']!r}") from None
     if verdict is IntegrityVerdict.ORIGINAL:
-        raise fail("a fingerprint describes a platform copy, never an original")
+        raise fail("a fingerprint describes a copy or an edit, never an original")
 
     match = raw["match"]
     if not isinstance(match, dict) or not match:
@@ -142,6 +145,7 @@ def parse_fingerprint(raw: object, source: str = "<fingerprint>") -> Fingerprint
         id=raw["id"],
         platform=raw["platform"],
         route=raw["route"],
+        summary=raw["summary"].strip(),
         verdict=verdict,
         match=match,
         measured_on=measured["date"],

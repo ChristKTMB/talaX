@@ -87,6 +87,24 @@ class IntegrityAssessment:
 
 
 @dataclass(frozen=True, slots=True)
+class C2paReport:
+    """What the C2PA library found in the file, before any interpretation."""
+
+    present: bool
+    state: str | None = None
+    """Library validation state: `Valid`, `Invalid` or `Trusted`."""
+    codes: tuple[str, ...] = ()
+    """Validation status codes, e.g. `claimSignature.mismatch`."""
+    signer: str | None = None
+    """Issuer name as written in the signing certificate (not verified)."""
+    signed_at: str | None = None
+    generator: str | None = None
+    ai_declared: bool = False
+    error: str | None = None
+    """Set when the file could not be read for C2PA at all."""
+
+
+@dataclass(frozen=True, slots=True)
 class Context:
     """The single object every signal receives."""
 
@@ -94,6 +112,8 @@ class Context:
     metadata: Metadata
     integrity: IntegrityAssessment
     declaration: Declaration | None = None
+    c2pa: C2paReport | None = None
+    """None when C2PA was not read (e.g. manual mode without a file)."""
 
 
 @dataclass(frozen=True, slots=True)

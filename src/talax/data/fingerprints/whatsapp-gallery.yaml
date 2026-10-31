@@ -4,6 +4,9 @@
 id: whatsapp-gallery
 platform: WhatsApp
 route: photo sent from the gallery (standard quality)
+summary: >-
+  the camera metadata is gone and the image was re-encoded the way WhatsApp
+  does it.
 verdict: reprocessed
 
 # All conditions must hold for a file to match.

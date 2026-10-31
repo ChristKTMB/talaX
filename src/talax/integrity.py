@@ -42,25 +42,26 @@ def _from_fingerprints(
     }
     platforms = sorted({f.platform for f in matches})
     if len(platforms) > 1:
+        verdicts = {f.verdict for f in matches}
         return IntegrityAssessment(
-            IntegrityVerdict.REPROCESSED,
-            "The file matches the measured fingerprints of several platforms ("
-            + ", ".join(platforms)
-            + "), which cannot be told apart on this file.",
+            verdicts.pop() if len(verdicts) == 1 else IntegrityVerdict.UNDETERMINED,
+            "The file matches the measured fingerprints of several apps or "
+            "platforms (" + ", ".join(platforms) + "), which cannot be told "
+            "apart on this file.",
             evidence=evidence,
         )
 
     f = matches[0]
     explanation = (
-        f"The file matches the fingerprint of {f.platform}, {f.route}: the "
-        "camera metadata is gone and the image was re-encoded the way this "
-        f"platform does it. Fingerprint measured on {f.samples} files from "
+        f"The file matches the fingerprint of {f.platform}, {f.route}: "
+        f"{f.summary} Fingerprint measured on {f.samples} files from "
         f"{len(f.devices)} device(s), {f.measured_on.isoformat()}."
     )
     if not f.distinguished_from:
         explanation += (
-            " No other platform has been measured yet, so another platform "
-            "producing the same output cannot be ruled out."
+            " No other app or platform with a fingerprint has been measured "
+            "against it yet, so one producing the same output cannot be ruled "
+            "out."
         )
     return IntegrityAssessment(f.verdict, explanation, pipeline=f.id, evidence=evidence)
 

@@ -28,7 +28,7 @@ def main() -> int:
             route = re.sub(r"\d+$", "", Path(name).stem)
             truth = sheet["routes"][route]
             path = CORPUS / "files" / sheet["id"] / name
-            if "excluded" in truth:
+            if "excluded" in truth or truth.get("expected_integrity") is None:
                 excluded += 1
                 continue
             if not path.exists():

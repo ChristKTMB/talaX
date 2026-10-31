@@ -12,6 +12,7 @@ VALID: dict[str, Any] = {
     "id": "demo",
     "platform": "Demo",
     "route": "demo route",
+    "summary": "it does demo things.",
     "verdict": "reprocessed",
     "match": {
         "formats": ["image/jpeg"],
@@ -103,6 +104,7 @@ def test_any_differing_trait_prevents_a_match(override: dict[str, Any]) -> None:
         ("verdict", "original"),
         ("verdict", "fake"),
         ("platform", " "),
+        ("summary", KeyError),
         ("match", {}),
         ("match.exif", "maybe"),
         ("match.progressive", "yes"),

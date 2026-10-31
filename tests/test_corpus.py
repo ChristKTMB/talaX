@@ -59,6 +59,8 @@ def test_analysis_runs_and_format_is_consistent(
 @pytest.mark.parametrize(("path", "sheet"), FILES, ids=ids(FILES))
 def test_integrity_matches_the_truth(path: Path, sheet: dict[str, Any]) -> None:
     truth = sheet["routes"][sheet["route"]]
+    if truth.get("expected_integrity") is None:
+        pytest.skip("integrity not evaluated for this route")
     integrity = analyze(path).integrity
     assert integrity.verdict == truth["expected_integrity"], integrity.explanation
     assert integrity.pipeline == truth.get("expected_pipeline")
@@ -68,6 +70,8 @@ def test_integrity_matches_the_truth(path: Path, sheet: dict[str, Any]) -> None:
 def test_no_signal_is_suspicious_on_unmanipulated_files(
     path: Path, sheet: dict[str, Any]
 ) -> None:
+    if sheet["id"].startswith("c2pa-"):
+        pytest.skip("C2PA test files are manipulated on purpose")
     # No corpus file so far had its metadata manipulated: any SUSPICIOUS
     # verdict here is a false positive.
     suspicious = [r for r in analyze(path).results if r.state is State.SUSPICIOUS]
@@ -93,3 +97,12 @@ def test_backdated_original_is_caught(tmp_path: Path) -> None:
     )
     (result,) = (r for r in analyze(forged).results if r.signal_id == "capture_time")
     assert result.state is State.SUSPICIOUS
+
+
+@pytest.mark.parametrize(("path", "sheet"), FILES, ids=ids(FILES))
+def test_c2pa_matches_the_truth(path: Path, sheet: dict[str, Any]) -> None:
+    truth = sheet["routes"][sheet["route"]]
+    if "expected_c2pa" not in truth:
+        pytest.skip("no C2PA expectation for this route")
+    (result,) = (r for r in analyze(path).results if r.signal_id == "c2pa")
+    assert result.state == truth["expected_c2pa"], result.explanation
