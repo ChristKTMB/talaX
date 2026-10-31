@@ -10,7 +10,7 @@ from typing import Any
 import pytest
 import yaml
 
-from talax import State
+from talax import Analysis, Observation, Sky, State
 from talax.analysis import analyze
 from talax.jpeg import read_jpeg_structure
 
@@ -106,3 +106,39 @@ def test_c2pa_matches_the_truth(path: Path, sheet: dict[str, Any]) -> None:
         pytest.skip("no C2PA expectation for this route")
     (result,) = (r for r in analyze(path).results if r.signal_id == "c2pa")
     assert result.state == truth["expected_c2pa"], result.explanation
+
+
+def outdoor_with_gps() -> list[tuple[Path, dict[str, Any]]]:
+    return [
+        (p, s)
+        for p, s in FILES
+        if s["id"] == "2026-10-31-a34"
+        and s["route"] == "original"
+        and s["shots"][int(p.stem.removeprefix("original"))].get("location")
+        == "outdoor"
+    ]
+
+
+OUTDOOR = outdoor_with_gps()
+
+
+@pytest.mark.parametrize(("path", "sheet"), OUTDOOR, ids=ids(OUTDOOR))
+def test_outdoor_daytime_photos_fit_the_sun(path: Path, sheet: dict[str, Any]) -> None:
+    day = analyze(path, observation=Observation(Sky.DAY))
+    night = analyze(path, observation=Observation(Sky.NIGHT))
+
+    def solar(analysis: Analysis) -> State:
+        return next(r.state for r in analysis.results if r.signal_id == "solar")
+
+    assert solar(day) is State.CONSISTENT
+    assert solar(night) is State.SUSPICIOUS
+
+
+@pytest.mark.parametrize(("path", "sheet"), FILES, ids=ids(FILES))
+def test_time_zone_never_contradicts_on_the_corpus(
+    path: Path, sheet: dict[str, Any]
+) -> None:
+    if sheet["id"].startswith("c2pa-"):
+        pytest.skip("third-party samples")
+    (result,) = (r for r in analyze(path).results if r.signal_id == "time_zone")
+    assert result.state is not State.TO_CHECK, result.explanation

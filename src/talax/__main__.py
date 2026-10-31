@@ -8,15 +8,17 @@ from pathlib import Path
 from talax.analysis import analyze
 from talax.extraction import ExifToolError
 from talax.jpeg import JpegError, read_jpeg_structure
+from talax.model import Observation, Sky
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) != 1:
-        print("usage: python -m talax FILE", file=sys.stderr)
+    if len(argv) not in (1, 2) or (len(argv) == 2 and argv[1] not in set(Sky)):
+        print("usage: python -m talax FILE [day|twilight|night]", file=sys.stderr)
         return 2
     path = Path(argv[0])
+    observation = Observation(Sky(argv[1])) if len(argv) == 2 else None
     try:
-        analysis = analyze(path)
+        analysis = analyze(path, observation=observation)
     except (OSError, ExifToolError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

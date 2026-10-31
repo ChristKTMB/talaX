@@ -6,10 +6,10 @@ they disagree, either a clock was wrong or a date was changed afterwards.
 
 from __future__ import annotations
 
-import re
-from datetime import UTC, datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
-from talax.model import Context, Metadata, Result, State
+from talax.clock import format_offset, local, parse, recorded_offset
+from talax.model import Context, Result, State
 
 # Same-device clocks written at the same instant; measured gap in the corpus
 # is under 2 s (Samsung TimeStamp vs DateTimeOriginal).
@@ -18,11 +18,6 @@ _SAME_INSTANT = timedelta(seconds=10)
 _RESAVE = timedelta(seconds=60)
 # A GPS fix can be older than the photo (cached position).
 _GPS_TOLERANCE = timedelta(minutes=5)
-
-_STAMP = re.compile(
-    r"^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d+)?"
-    r"(Z|[+-]\d{2}:\d{2})?$"
-)
 
 
 class CaptureTime:
@@ -34,9 +29,7 @@ class CaptureTime:
 
     def evaluate(self, ctx: Context) -> Result:
         tags = ctx.metadata
-        original = _local(
-            tags, "ExifIFD:DateTimeOriginal", "ExifIFD:SubSecTimeOriginal"
-        )
+        original = local(tags, "ExifIFD:DateTimeOriginal", "ExifIFD:SubSecTimeOriginal")
         if original is None:
             return Result(
                 self.id,
@@ -46,20 +39,20 @@ class CaptureTime:
                 {"date_time_original": tags.get("ExifIFD:DateTimeOriginal")},
             )
 
-        vendor = _parse(tags.get("Samsung:TimeStamp"))
-        offset, offset_source = _offset(tags, vendor)
+        vendor = parse(tags.get("Samsung:TimeStamp"))
+        offset, offset_source = recorded_offset(tags, vendor)
         evidence: dict[str, object] = {
             "date_time_original": original.isoformat(),
-            "offset": _fmt_offset(offset),
+            "offset": format_offset(offset),
             "offset_source": offset_source,
-            "create_date": _iso(_local(tags, "ExifIFD:CreateDate")),
-            "modify_date": _iso(_local(tags, "IFD0:ModifyDate")),
+            "create_date": _iso(local(tags, "ExifIFD:CreateDate")),
+            "modify_date": _iso(local(tags, "IFD0:ModifyDate")),
             "vendor_clock": _iso(vendor),
-            "gps_utc": _iso(_parse(tags.get("Composite:GPSDateTime"))),
+            "gps_utc": _iso(parse(tags.get("Composite:GPSDateTime"))),
         }
         when = original.strftime("%Y-%m-%d %H:%M:%S")
         if offset is not None:
-            when += f" (UTC{_fmt_offset(offset)}, from {offset_source})"
+            when += f" (UTC{format_offset(offset)}, from {offset_source})"
         else:
             when += " local time (time zone not recorded)"
 
@@ -82,7 +75,7 @@ class CaptureTime:
             ("ExifIFD:CreateDate", "creation"),
             ("IFD0:ModifyDate", "modification"),
         ):
-            other = _local(tags, tag)
+            other = local(tags, tag)
             if other is not None and abs(other - original) > _RESAVE:
                 notes.append(
                     f"the {label} time ({other.strftime('%Y-%m-%d %H:%M:%S')}) "
@@ -90,7 +83,7 @@ class CaptureTime:
                     "time, so the file was probably saved again later"
                 )
 
-        gps = _parse(tags.get("Composite:GPSDateTime"))
+        gps = parse(tags.get("Composite:GPSDateTime"))
         if gps is not None:
             if offset is not None:
                 gap = abs(original.replace(tzinfo=offset) - gps)
@@ -127,68 +120,12 @@ class CaptureTime:
         return Result(self.id, State.CONSISTENT, f"Captured {when}.{agree}", evidence)
 
 
-def _parse(value: object) -> datetime | None:
-    if not isinstance(value, str):
-        return None
-    m = _STAMP.match(value.strip())
-    if not m:
-        return None
-    y, mo, d, h, mi, s, frac, tz = m.groups()
-    try:
-        dt = datetime(int(y), int(mo), int(d), int(h), int(mi), int(s))
-    except ValueError:
-        return None
-    if frac:
-        dt += timedelta(seconds=float(frac))
-    if tz == "Z":
-        return dt.replace(tzinfo=UTC)
-    if tz:
-        return dt.replace(tzinfo=_tz(tz))
-    return dt
-
-
-def _local(tags: Metadata, key: str, subsec_key: str | None = None) -> datetime | None:
-    dt = _parse(tags.get(key))
-    if dt is None:
-        return None
-    dt = dt.replace(tzinfo=None)
-    subsec = tags.get(subsec_key) if subsec_key else None
-    if isinstance(subsec, int | str) and str(subsec).isdigit():
-        dt += timedelta(seconds=float(f"0.{subsec}"))
-    return dt
-
-
-def _offset(
-    tags: Metadata, vendor: datetime | None
-) -> tuple[timezone | None, str | None]:
-    raw = tags.get("ExifIFD:OffsetTimeOriginal")
-    if isinstance(raw, str) and re.fullmatch(r"[+-]\d{2}:\d{2}", raw.strip()):
-        return _tz(raw.strip()), "the EXIF offset"
-    if vendor is not None and isinstance(vendor.tzinfo, timezone):
-        return vendor.tzinfo, "the manufacturer's clock"
-    return None, None
-
-
-def _tz(text: str) -> timezone:
-    sign = -1 if text[0] == "-" else 1
-    hours, minutes = int(text[1:3]), int(text[4:6])
-    return timezone(sign * timedelta(hours=hours, minutes=minutes))
-
-
 def _plausible_offset(delta: timedelta) -> bool:
     minutes = delta.total_seconds() / 60
     if not -12 * 60 - 5 <= minutes <= 14 * 60 + 5:
         return False
     nearest = round(minutes / 15) * 15
     return abs(minutes - nearest) * 60 <= _GPS_TOLERANCE.total_seconds()
-
-
-def _fmt_offset(tz: timezone | None) -> str | None:
-    if tz is None:
-        return None
-    total = int(tz.utcoffset(None).total_seconds() // 60)
-    sign = "-" if total < 0 else "+"
-    return f"{sign}{abs(total) // 60:02d}:{abs(total) % 60:02d}"
 
 
 def _iso(dt: datetime | None) -> str | None:

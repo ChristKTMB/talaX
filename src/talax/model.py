@@ -72,6 +72,21 @@ class Declaration:
             raise ValueError(f"longitude out of range: {self.longitude}")
 
 
+class Sky(StrEnum):
+    """What the user sees in the photo. Tala X never guesses it from pixels."""
+
+    DAY = "day"
+    TWILIGHT = "twilight"
+    NIGHT = "night"
+
+
+@dataclass(frozen=True, slots=True)
+class Observation:
+    """What the user reports seeing in the image ("the human observes")."""
+
+    sky: Sky
+
+
 @dataclass(frozen=True, slots=True)
 class IntegrityAssessment:
     verdict: IntegrityVerdict
@@ -114,6 +129,7 @@ class Context:
     declaration: Declaration | None = None
     c2pa: C2paReport | None = None
     """None when C2PA was not read (e.g. manual mode without a file)."""
+    observation: Observation | None = None
 
 
 @dataclass(frozen=True, slots=True)

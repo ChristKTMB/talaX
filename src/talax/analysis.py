@@ -10,7 +10,7 @@ from talax.extraction import read_metadata
 from talax.fileinfo import read_file_info
 from talax.integrity import assess_integrity
 from talax.jpeg import JpegError, JpegStructure, read_jpeg_structure
-from talax.model import Analysis, Context, Declaration
+from talax.model import Analysis, Context, Declaration, Observation
 from talax.provenance import read_c2pa
 from talax.signals import DEFAULT_SIGNALS, Signal, run_signals
 from talax.traits import read_traits
@@ -19,6 +19,7 @@ from talax.traits import read_traits
 def analyze(
     path: Path,
     declaration: Declaration | None = None,
+    observation: Observation | None = None,
     signals: Iterable[Signal] = DEFAULT_SIGNALS,
 ) -> Analysis:
     file = read_file_info(path)
@@ -30,6 +31,7 @@ def analyze(
         integrity=assess_integrity(traits),
         declaration=declaration,
         c2pa=read_c2pa(path),
+        observation=observation,
     )
     return Analysis(
         file=file,

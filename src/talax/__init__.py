@@ -8,7 +8,9 @@ from talax.model import (
     IntegrityAssessment,
     IntegrityVerdict,
     Metadata,
+    Observation,
     Result,
+    Sky,
     State,
 )
 from talax.signals import Signal, run_signals
@@ -21,8 +23,10 @@ __all__ = [
     "IntegrityAssessment",
     "IntegrityVerdict",
     "Metadata",
+    "Observation",
     "Result",
     "Signal",
+    "Sky",
     "State",
     "run_signals",
 ]

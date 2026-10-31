@@ -7,9 +7,12 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = [
+    "astral>=3.2",
     # 0.38.1 and 0.38.2 were not published for every platform.
     "c2pa-python==0.38.0",
     "pyyaml>=6.0",
+    "timezonefinder>=9.2",
+    "tzdata>=2025.1",
 ]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
