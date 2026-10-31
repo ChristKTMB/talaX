@@ -11,6 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10
+      - name: Install ExifTool (latest; the Ubuntu package is too old)
+        run: |
+          version=$(curl -fsS https://exiftool.org/ver.txt)
+          curl -fsSL "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-${version}.tar.gz/download" \
+            | tar -xz -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/Image-ExifTool-${version}" >> "$GITHUB_PATH"
       - run: uv sync --locked
       - run: uv run ruff check
       - run: uv run ruff format --check
