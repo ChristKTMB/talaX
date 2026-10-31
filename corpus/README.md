@@ -19,19 +19,26 @@ answers "unverifiable" cleanly. They are never used to measure reliability.
 
 ```
 corpus/
-├── README.md              this protocol
+├── README.md                 this protocol
 ├── sets/
-│   ├── _template.yaml     copy it to start a new set
-│   └── <set-id>.yaml      one set = one original and all its derivatives
-└── files/                 git-ignored
-    └── <set-id>/
-        ├── original.jpg
-        ├── whatsapp-gallery.jpg
+│   ├── _template.yaml        copy it to start a new set
+│   └── <set-id>.yaml         truth sheet for one folder of files
+└── files/                    git-ignored
+    └── <set-id>/             one capture session on one device
+        ├── original1.jpg
+        ├── whatsapp-gallery1.jpeg
+        ├── whatsapp-document1.jpeg
+        ├── original2.jpg
         └── ...
 ```
 
-A **set** is one original shot and every copy derived from it. Set ids look
-like `2026-11-02-pixel8-street-01`: date, device, short subject, number.
+A **set** is one capture session on one device: several shots, each with its
+derivatives. Set ids look like `2026-10-31-a34`: date and device.
+
+File names are `<route><shot>.<ext>`: `whatsapp-gallery3.jpeg` is shot 3 after
+the WhatsApp gallery route. The truth sheet describes each **route** once
+(expected verdict, steps, observations) and lists the SHA-256 of every file.
+A route can be marked `excluded` with a reason when its files are unusable.
 
 ## Capture protocol
 
@@ -39,11 +46,11 @@ like `2026-11-02-pixel8-street-01`: date, device, short subject, number.
    messaging app: USB cable, AirDrop, or a cloud sync that keeps originals
    (Google Photos "original quality", iCloud with "Download and Keep
    Originals").
-2. Save it as `files/<set-id>/original.<ext>`, untouched. Never open and
+2. Save it as `files/<set-id>/original<shot>.<ext>`, untouched. Never open and
    re-save it.
 3. Send the original through each platform **yourself**, one at a time, and
-   retrieve what comes out. Name each output after its route
-   (`whatsapp-gallery.jpg`, `instagram-post-web.jpg`...).
+   retrieve what comes out. Name each output after its route and shot
+   (`whatsapp-gallery1.jpeg`, `instagram-post-web1.jpg`...).
 4. Record every step in the set file: app version, send mode, how the copy was
    retrieved, date. Retrieval matters: downloading from a website and saving
    from an app are two different pipelines.

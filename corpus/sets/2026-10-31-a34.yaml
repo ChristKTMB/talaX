@@ -1,0 +1,102 @@
+# Truth sheet for corpus/files/2026-10-31-a34/
+# File names: <route><shot>.<ext>, e.g. whatsapp-gallery3.jpeg = shot 3 sent
+# through WhatsApp gallery. The route decides the expected verdict.
+
+id: 2026-10-31-a34
+device:
+  make: samsung
+  model: Galaxy A34 5G
+  firmware: A346BXXSHFZJ4
+  android: null          # not recorded
+  camera_app: stock Samsung camera, default settings, no editing
+captured_on: 2026-10-31
+gps_in_originals: true   # coordinates are never written in this file
+
+notes: >-
+  Two original signatures coexist on this device with the same app and
+  settings. Shots 1, 3, 7, 8: Software "MediaTek Camera Application", no
+  OffsetTime, Flash written as "Off, Did not fire"/"On, Fired". Shots 2, 4,
+  5, 6: Software = firmware version, OffsetTime +01:00, Flash written as
+  "No Flash"/"Fired". Not explained by flash use. Both are originals.
+  Shots 4 and 5 are 3408x2556 instead of 4000x3000. Indoor shots used flash.
+  WhatsApp copies retrieved on the sender side, from the A34's own WhatsApp
+  Web session.
+
+routes:
+  original:
+    expected_integrity: original
+    retrieval: usb-cable from DCIM/Camera
+  whatsapp-document:
+    expected_integrity: original
+    expected_pipeline: null
+    steps:
+      - platform: whatsapp
+        app_version: null
+        send_mode: document
+        retrieval: whatsapp-web-download
+        date: 2026-10-31
+    observed: >-
+      Same size as the original. Only the GPS fields differ: position,
+      altitude, GPS time and processing method zeroed in place (52 bytes).
+      Probably Android location redaction for apps without
+      ACCESS_MEDIA_LOCATION, not WhatsApp itself (unconfirmed).
+  whatsapp-gallery:
+    expected_integrity: reprocessed
+    expected_pipeline: whatsapp-gallery
+    steps:
+      - platform: whatsapp
+        app_version: null
+        send_mode: gallery-standard
+        retrieval: whatsapp-web-download
+        date: 2026-10-31
+    observed: >-
+      EXIF fully removed, JFIF 1.01, progressive JPEG, 4:2:0, orientation
+      applied to pixels. 750x1000 or 810x1080, about 30-90 KB.
+  whatsapp-gallery-hd:
+    excluded: >-
+      Byte-identical to whatsapp-gallery for every shot: HD was not applied,
+      or the standard copy was saved twice. Not usable until resent.
+
+shots:   # indoor/outdoor inferred from ISO and exposure time, to confirm
+  1: {location: indoor, flash: false}
+  2: {location: indoor, flash: false}
+  3: {location: indoor, flash: true}
+  4: {location: indoor, flash: false}
+  5: {location: indoor, flash: true}
+  6: {location: outdoor, flash: false}
+  7: {location: outdoor, flash: false}
+  8: {location: outdoor, flash: false}
+
+sha256:
+  original1.jpg: 5685833517a02cd1662724e0b0a84cd201b19a8edb0cb164e7cc69157b40f310
+  original2.jpg: 8ebd035e7c84d197c7a04946635b170fced4ef78788309f0413eeb11040a979b
+  original3.jpg: cff79c95ccdaa4dc9f5952f53b430e4c3ca4a6b80e5e4d19a725d6e6b3a15148
+  original4.jpg: a994a4b956589205b6b521d8104241f6cb1aafb1f78c252f45a812342d2b6c01
+  original5.jpg: 0b14146a7ea578525308eaa22b3c478eea79bb2e85fb2b8cf08c736f0abf356b
+  original6.jpg: 9142cf40fa7480df2ad58d82fc4b6d77b8682a4e18d9ba168c60701a3213c45a
+  original7.jpg: f63ed51b3c5de59164e147d09c86891cc20f27104bd0342010fbc33f29beb9ca
+  original8.jpg: 4cd9b53eb7c2c845830154688b12b08442c60ea9c9bb191c83c63afb47b5f1f1
+  whatsapp-document1.jpeg: e1abeeaa3bd8ac1514709c3ce06c89de189f04f4c325236d932061f8e5794c6a
+  whatsapp-document2.jpeg: 32b4d02edfc517a687566b521c0fbef12ca5d29dbabd3947d988a3f8fbd870dd
+  whatsapp-document3.jpeg: af6a04e6d195f90e7f4a895ae63b8d256513b872b15167f7ffb6146e226eac31
+  whatsapp-document4.jpeg: 65c3d263904cd3086fd9eb959dc469694121c770567a6ae595dba7eb9965185b
+  whatsapp-document5.jpeg: 83fe898a95b56870858ddca87c953e20a37a656fd9b90a9eac3aa1ed17ac860f
+  whatsapp-document6.jpeg: df055ef8029ea446bbd3cca1f081c335df98ae349089b294a30c2b06b0acecbc
+  whatsapp-document7.jpeg: ac41fc5d76ca63f5a7cc393f57055fa8f7b671aedbc5f048dd85b945371f6c40
+  whatsapp-document8.jpeg: b678b0d126d7f55ceac4de3eb9464bdfb3ab6b08875fa047293af85419786297
+  whatsapp-gallery1.jpeg: f6340e3e102f6fc186686dd5bd18639758a52cdfc300d4b2188594b5907afd1a
+  whatsapp-gallery2.jpeg: ebf9bf2ac4798cf8293afb82470ab20cda90d3090f34d2496bf2a9ccf8fe820f
+  whatsapp-gallery3.jpeg: dc5f7d0b53d0538d58f1662400ece24b8cfca626c8287628996429b6c0c63936
+  whatsapp-gallery4.jpeg: 5d89856337b30013d9b9494c4f1eac9283ecc00a0376148231efa21792fa3d3a
+  whatsapp-gallery5.jpeg: 95499ba89fcf85e7c88738908e87ab1d08da7ea466eb5ad66ba8178555b268b8
+  whatsapp-gallery6.jpeg: 39e1949713a93db4d8d25eba7aaac8bbb01e5f8dbe26ceae3a9ba7555d0a16bc
+  whatsapp-gallery7.jpeg: 162bb494bbdfe35a61d7557a556f6b85711f28be59a52a62feb6efcc482721d1
+  whatsapp-gallery8.jpeg: f41daa0831f9c4036d0dbda6a7da114dd2a0cea38210e80b1e92e3ac98bb64da
+  whatsapp-gallery-hd1.jpeg: f6340e3e102f6fc186686dd5bd18639758a52cdfc300d4b2188594b5907afd1a
+  whatsapp-gallery-hd2.jpeg: ebf9bf2ac4798cf8293afb82470ab20cda90d3090f34d2496bf2a9ccf8fe820f
+  whatsapp-gallery-hd3.jpeg: dc5f7d0b53d0538d58f1662400ece24b8cfca626c8287628996429b6c0c63936
+  whatsapp-gallery-hd4.jpeg: 5d89856337b30013d9b9494c4f1eac9283ecc00a0376148231efa21792fa3d3a
+  whatsapp-gallery-hd5.jpeg: 95499ba89fcf85e7c88738908e87ab1d08da7ea466eb5ad66ba8178555b268b8
+  whatsapp-gallery-hd6.jpeg: 39e1949713a93db4d8d25eba7aaac8bbb01e5f8dbe26ceae3a9ba7555d0a16bc
+  whatsapp-gallery-hd7.jpeg: 162bb494bbdfe35a61d7557a556f6b85711f28be59a52a62feb6efcc482721d1
+  whatsapp-gallery-hd8.jpeg: f41daa0831f9c4036d0dbda6a7da114dd2a0cea38210e80b1e92e3ac98bb64da

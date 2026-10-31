@@ -1,30 +1,40 @@
 # Copy this file to <set-id>.yaml and fill it in.
-# One set = one original and every copy derived from it.
+# One set = one capture session on one device, stored in files/<set-id>/.
+# File names: <route><shot>.<ext>, e.g. whatsapp-gallery3.jpeg.
 
-id: 2026-11-02-pixel8-street-01
+id: 2026-11-02-a34
 
-original:
-  file: original.jpg
-  sha256: ""
-  device:
-    make: Google
-    model: Pixel 8
-    os: Android 16
-    camera_app: Google Camera 9.x
-  captured_at: 2026-11-02T14:35:00+01:00
-  location_disclosed: true   # false if GPS was disabled at capture
-  notes: ""
+device:
+  make: samsung
+  model: Galaxy A34 5G
+  firmware: ""            # EXIF Software tag when it holds the firmware
+  android: null
+  camera_app: stock camera, default settings, no editing
+captured_on: 2026-11-02
+gps_in_originals: true    # never write coordinates in this file
 
-derivatives:
-  - file: whatsapp-gallery.jpg
-    sha256: ""
-    expected_integrity: reprocessed   # original | reprocessed | undetermined
+notes: ""
+
+routes:
+  original:
+    expected_integrity: original      # original | reprocessed | undetermined
+    retrieval: usb-cable from DCIM/Camera
+  whatsapp-gallery:
+    expected_integrity: reprocessed
     expected_pipeline: whatsapp-gallery
     steps:                            # in order, one per platform crossed
       - platform: whatsapp
-        app_version: "2.26.x"
-        sender_os: Android 16
-        send_mode: gallery-standard   # gallery-standard | gallery-hd | document | ...
-        retrieval: receiver-app-save  # how the output file was obtained
+        app_version: null
+        send_mode: gallery-standard   # gallery-standard | gallery-hd | document
+        retrieval: receiver-usb       # receiver-usb | whatsapp-web-download | ...
         date: 2026-11-02
-    notes: ""
+    observed: ""
+  # unusable route example:
+  # whatsapp-gallery-hd:
+  #   excluded: "reason"
+
+shots:
+  1: {location: outdoor, flash: false}
+
+sha256:
+  original1.jpg: ""

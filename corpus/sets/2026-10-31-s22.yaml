@@ -1,0 +1,77 @@
+# Truth sheet for corpus/files/2026-10-31-s22/
+# File names: <route><shot>.<ext>. The route decides the expected verdict.
+
+id: 2026-10-31-s22
+device:
+  make: samsung
+  model: Galaxy S22 (SM-S901B)
+  firmware: S901BXXSOGZH3
+  android: null          # not recorded
+  camera_app: stock Samsung camera, default settings, no editing
+captured_on: 2026-10-31
+gps_in_originals: false  # location tags were off in the camera settings
+
+notes: >-
+  Copies sent from the S22 through WhatsApp and retrieved from a WhatsApp
+  Web session.
+
+routes:
+  original:
+    expected_integrity: original
+    retrieval: usb-cable from DCIM/Camera
+  whatsapp-document:
+    expected_integrity: original
+    expected_pipeline: null
+    steps:
+      - platform: whatsapp
+        app_version: null
+        send_mode: document
+        retrieval: whatsapp-web-download
+        date: 2026-10-31
+    observed: >-
+      Byte-identical to the original (no GPS to redact on this device).
+  whatsapp-gallery:
+    expected_integrity: reprocessed
+    expected_pipeline: whatsapp-gallery
+    steps:
+      - platform: whatsapp
+        app_version: null
+        send_mode: gallery-standard
+        retrieval: whatsapp-web-download
+        date: 2026-10-31
+    observed: >-
+      EXIF fully removed, JFIF 1.01, progressive JPEG, 4:2:0, orientation
+      applied to pixels. 960x1280, about 130-220 KB.
+  whatsapp-gallery-hd:
+    excluded: >-
+      Byte-identical to whatsapp-gallery for every shot: HD was not applied,
+      or the standard copy was saved twice. Not usable until resent.
+
+shots:
+  1: {flash: false}
+  2: {flash: false}
+  3: {flash: false}
+  4: {flash: false}
+  5: {flash: true}
+
+sha256:
+  original1.jpg: d1f0cbe010e09dbd7e1812a99153bec0fd133ec46119010ea865c757350797d8
+  original2.jpg: dfae110a47c973597f8d616ecd80f65694001a7f94236fa28162a68617a9a443
+  original3.jpg: 37215ef6aad64517729ec72d8de47839a8b8290db1ef3a1df7c2554543a04cbd
+  original4.jpg: 72d8b8a6cb61a89b82fd6fd9f9a60bde4a3e384946db273e52e058cad8d68cde
+  original5.jpg: 5ed3a0105449357c5d845e8198823040251198ce767c45535ede6b490bafc0df
+  whatsapp-document1.jpeg: d1f0cbe010e09dbd7e1812a99153bec0fd133ec46119010ea865c757350797d8
+  whatsapp-document2.jpeg: dfae110a47c973597f8d616ecd80f65694001a7f94236fa28162a68617a9a443
+  whatsapp-document3.jpeg: 37215ef6aad64517729ec72d8de47839a8b8290db1ef3a1df7c2554543a04cbd
+  whatsapp-document4.jpeg: 72d8b8a6cb61a89b82fd6fd9f9a60bde4a3e384946db273e52e058cad8d68cde
+  whatsapp-document5.jpeg: 5ed3a0105449357c5d845e8198823040251198ce767c45535ede6b490bafc0df
+  whatsapp-gallery1.jpeg: 35ef897bb4c760baa9c5c0979cc21297e1001da15aeca7f323b9f5e576aac155
+  whatsapp-gallery2.jpeg: ad14abe8846a7cdb7b69cde8c00dad16e8fffe7c48bd10643da0702f78580133
+  whatsapp-gallery3.jpeg: 409bac56eb8566a848aa9459a15f6c69065fb356f155fa1e6b7834327d308e72
+  whatsapp-gallery4.jpeg: f9f9dc443acf5b78d19978c21d419ae856a92bbd85c18bf92a5e532382f645ca
+  whatsapp-gallery5.jpeg: d321dcef49f0b4a1af859b43c41aeea0687935e8ae6ecc0a487b93bfdab71ad3
+  whatsapp-gallery-hd1.jpeg: 35ef897bb4c760baa9c5c0979cc21297e1001da15aeca7f323b9f5e576aac155
+  whatsapp-gallery-hd2.jpeg: ad14abe8846a7cdb7b69cde8c00dad16e8fffe7c48bd10643da0702f78580133
+  whatsapp-gallery-hd3.jpeg: 409bac56eb8566a848aa9459a15f6c69065fb356f155fa1e6b7834327d308e72
+  whatsapp-gallery-hd4.jpeg: f9f9dc443acf5b78d19978c21d419ae856a92bbd85c18bf92a5e532382f645ca
+  whatsapp-gallery-hd5.jpeg: d321dcef49f0b4a1af859b43c41aeea0687935e8ae6ecc0a487b93bfdab71ad3
