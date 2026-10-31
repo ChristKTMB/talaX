@@ -35,3 +35,11 @@ web/dist/
 Thumbs.db
 .vscode/
 .idea/
+
+# External code shown for study, never versioned
+code_extern_*
+
+# Generated reports: they embed the photo and its position
+rapport*.html
+report*.html
+exif_data.*

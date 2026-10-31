@@ -44,6 +44,7 @@ build-backend = "hatchling.build"
 [tool.ruff]
 line-length = 88
 target-version = "py312"
+extend-exclude = ["code_extern_*"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
