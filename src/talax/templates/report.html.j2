@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'">
+<title>Tala X report — {{ data.file.name or data.file.sha256[:12] }}</title>
+<style>
+  :root {
+    --ink: #1d232a; --muted: #5b6672; --line: #dfe3e8; --bg: #f6f7f9;
+    --consistent: #1f7a4d; --to_check: #a35f00; --suspicious: #b3261e;
+    --unverifiable: #5b6672;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 20px 48px; }
+  header { display: flex; justify-content: space-between; align-items: baseline;
+           border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+  header h1 { margin: 0; font-size: 22px; letter-spacing: .5px; }
+  header span { color: var(--muted); font-style: italic; }
+  section { background: #fff; border: 1px solid var(--line); border-radius: 8px;
+            padding: 18px 20px; margin-top: 18px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .8px;
+       color: var(--muted); margin: 0 0 10px; }
+  dl { display: grid; grid-template-columns: 140px 1fr; gap: 4px 12px; margin: 0; }
+  dt { color: var(--muted); }
+  dd { margin: 0; overflow-wrap: anywhere; }
+  code { font: 13px ui-monospace, SFMono-Regular, Consolas, monospace; }
+  .verdict { border-left: 6px solid var(--muted); }
+  .verdict.original { border-left-color: var(--consistent); }
+  .verdict.reprocessed { border-left-color: var(--to_check); }
+  .verdict .label { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .disclaimer { background: #fffbea; border-color: #f0dfa0; font-size: 14px; }
+  .signal { border-top: 1px solid var(--line); padding: 12px 0; }
+  .signal:first-of-type { border-top: 0; padding-top: 0; }
+  .signal .head { display: flex; gap: 10px; align-items: center; }
+  .badge { font-size: 12px; font-weight: 600; color: #fff; border-radius: 4px;
+           padding: 2px 8px; white-space: nowrap; }
+  .badge.consistent { background: var(--consistent); }
+  .badge.to_check { background: var(--to_check); }
+  .badge.suspicious { background: var(--suspicious); }
+  .badge.unverifiable { background: var(--unverifiable); }
+  .signal p { margin: 6px 0 0; }
+  details { margin-top: 6px; color: var(--muted); font-size: 13px; }
+  details pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg);
+                padding: 8px; border-radius: 4px; }
+  .previews { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .previews figure { margin: 0; }
+  .previews img { width: 100%; border: 1px solid var(--line); border-radius: 4px; }
+  .previews figcaption { color: var(--muted); font-size: 13px; }
+  footer { color: var(--muted); font-size: 12px; margin-top: 24px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Tala X</h1>
+    <span>See beyond the pixel</span>
+  </header>
+
+  <section>
+    <h2>File</h2>
+    <dl>
+      {% if data.file.name %}<dt>Name</dt><dd>{{ data.file.name }}</dd>{% endif %}
+      <dt>SHA-256</dt><dd><code>{{ data.file.sha256 }}</code></dd>
+      <dt>Size</dt><dd>{{ "{:,}".format(data.file.size) }} bytes</dd>
+      <dt>Format</dt><dd>{{ data.file.real_format or "unknown" }}</dd>
+      <dt>Analysed</dt><dd>{{ data.created_at }}</dd>
+    </dl>
+  </section>
+
+  <section class="verdict {{ verdict }}">
+    <h2>Integrity</h2>
+    <div class="label">{{ verdict_label }}</div>
+    <p>{{ data.integrity.explanation }}</p>
+  </section>
+
+  <section class="disclaimer">{{ data.disclaimer }}</section>
+
+  <section>
+    <h2>Signals</h2>
+    {% for r in results %}
+    <div class="signal">
+      <div class="head">
+        <span class="badge {{ r.state }}">{{ state_labels[r.state] }}</span>
+        <strong>{{ r.signal_id }}</strong>
+      </div>
+      <p>{{ r.explanation }}</p>
+      {% if r.evidence %}
+      <details><summary>Raw values</summary>
+        <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}
+{% endfor %}</pre>
+      </details>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+
+  {% if position %}
+  <section>
+    <h2>Position</h2>
+    <p><code>{{ "%.6f"|format(position.lat) }}, {{ "%.6f"|format(position.lon) }}</code></p>
+    <p>No map is embedded: loading map tiles would reveal this position to a
+    map server. To see it on a map, copy the coordinates into the map service
+    of your choice, knowing it will receive them.</p>
+  </section>
+  {% endif %}
+
+  {% if previews %}
+  <section>
+    <h2>Visual exploration — not conclusive</h2>
+    <p>The image and the small preview stored inside the file, side by side.
+    Some editors change the image but leave the old preview, which can then
+    show what was there before. On genuine photos the two can also differ
+    slightly (framing, colours), so no verdict is drawn from this: look for
+    yourself.</p>
+    <div class="previews">
+      <figure><img src="{{ previews.image }}" alt="Image"><figcaption>Image</figcaption></figure>
+      <figure>
+        {% if previews.thumbnail %}
+        <img src="{{ previews.thumbnail }}" alt="Embedded preview"><figcaption>Embedded preview</figcaption>
+        {% else %}
+        <figcaption>No embedded preview in this file.</figcaption>
+        {% endif %}
+      </figure>
+    </div>
+  </section>
+  {% endif %}
+
+  <footer>
+    Generated {{ generated_at }} by Tala X {{ data.tools.talax }} with ExifTool
+    {{ data.tools.exiftool }}. Report schema {{ data.schema }}.
+  </footer>
+</main>
+</body>
+</html>

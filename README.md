@@ -62,6 +62,23 @@ visual misinformation.
 - No automatic visual geolocation.
 - Video: container metadata only.
 
+## Try it (development version)
+
+Requires Python 3.12+, [uv](https://docs.astral.sh/uv/) and
+[ExifTool](https://exiftool.org/) 13.0 or newer.
+
+```bash
+git clone https://github.com/ChristKTMB/talaX.git && cd talaX
+uv sync
+uv run talax analyze photo.jpg                  # report in the terminal
+uv run talax analyze photo.jpg --sky day        # what the photo shows, for the solar check
+uv run talax analyze photo.jpg --html report.html
+uv run talax analyze photo.jpg --json           # machine-readable
+```
+
+The HTML report is a single self-contained file: opening it loads nothing from
+the network.
+
 ## How you will use it
 
 - **Python library** — `pip install talax`, to integrate into your own platform

@@ -65,6 +65,23 @@ la forme la plus répandue de désinformation visuelle.
 - Pas de géolocalisation visuelle automatique.
 - Vidéo : métadonnées de conteneur uniquement.
 
+## L'essayer (version de développement)
+
+Nécessite Python 3.12+, [uv](https://docs.astral.sh/uv/) et
+[ExifTool](https://exiftool.org/) 13.0 ou plus récent.
+
+```bash
+git clone https://github.com/ChristKTMB/talaX.git && cd talaX
+uv sync
+uv run talax analyze photo.jpg                  # rapport dans le terminal
+uv run talax analyze photo.jpg --sky day        # ce que montre la photo, pour la cohérence solaire
+uv run talax analyze photo.jpg --html rapport.html
+uv run talax analyze photo.jpg --json           # format machine
+```
+
+Le rapport HTML est un fichier unique et autonome : l'ouvrir ne charge rien
+depuis le réseau.
+
 ## Comment l'utiliser
 
 - **Bibliothèque Python** — `pip install talax`, à intégrer dans votre

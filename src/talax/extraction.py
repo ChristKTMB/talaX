@@ -63,6 +63,21 @@ def read_metadata(path: Path) -> Metadata:
     return Metadata(record)
 
 
+def read_thumbnail(path: Path) -> bytes | None:
+    """Embedded EXIF preview image (IFD1), or None if the file has none."""
+    exiftool_version()
+    try:
+        proc = subprocess.run(
+            ["exiftool", "-b", "-ThumbnailImage", str(path.resolve())],
+            capture_output=True,
+            timeout=_TIMEOUT_SECONDS,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return None
+    return proc.stdout or None
+
+
 def _run(args: list[str]) -> str:
     try:
         proc = subprocess.run(
