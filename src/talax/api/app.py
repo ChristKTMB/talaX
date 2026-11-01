@@ -29,6 +29,7 @@ from starlette.types import Message as AsgiMessage
 
 from talax import __version__
 from talax.analysis import analyze
+from talax.api.tiles import router as tiles_router
 from talax.extraction import ExifToolError, exiftool_version
 from talax.i18n import Language, Message, translate
 from talax.model import Observation, Sky
@@ -75,6 +76,7 @@ app = FastAPI(
     docs_url=_DOCS_PATH,
     redoc_url=None,
 )
+app.include_router(tiles_router)
 
 
 @app.get("/api/health")
@@ -139,6 +141,10 @@ def _http_error(request: Request, exc: HTTPException) -> JSONResponse:
         message = Message("error.file_too_large", {"max_mb": MAX_UPLOAD_MB})
     elif exc.status_code in (404, 405):
         message = Message("error.not_found")
+    elif exc.status_code == 502:
+        message = Message("error.tiles_unavailable")
+    elif exc.status_code == 503:
+        message = Message("error.busy")
     else:
         message = Message("error.invalid_request")
     return _error(exc.status_code, message, language)

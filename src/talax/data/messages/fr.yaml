@@ -250,3 +250,4 @@ error.analysis_failed: Le fichier n'a pas pu être analysé. Il est peut-être e
 error.invalid_request: La requête est incomplète ou contient une valeur invalide.
 error.not_found: Cette adresse n'existe pas.
 error.internal: Une erreur interne s'est produite. On ne peut rien conclure sur le fichier.
+error.tiles_unavailable: La carte n'a pas pu être chargée. L'analyse elle-même n'est pas touchée.

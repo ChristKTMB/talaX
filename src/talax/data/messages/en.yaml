@@ -230,3 +230,4 @@ error.analysis_failed: The file could not be analysed. It may be damaged or in a
 error.invalid_request: The request is incomplete or contains an invalid value.
 error.not_found: This address does not exist.
 error.internal: An internal error occurred. Nothing can be concluded about the file.
+error.tiles_unavailable: The map could not be loaded. The analysis itself is not affected.
