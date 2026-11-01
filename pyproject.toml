@@ -1,7 +1,7 @@
 [project]
 name = "talax"
 version = "0.1.0"
-description = "Honest image and video verification: original camera file or platform copy?"
+description = "Honest image verification: original camera file or platform copy?"
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]

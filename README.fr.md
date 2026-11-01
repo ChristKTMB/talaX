@@ -4,10 +4,10 @@
 
 [English](https://github.com/ChristKTMB/talaX/blob/main/README.md)
 
-Tala X dit ce qu'on peut honnêtement affirmer d'une image ou d'une vidéo : si
-c'est un fichier original d'appareil ou une copie retraitée par une
-plateforme, où et quand elle a été prise, et si elle est passée par un
-logiciel de retouche.
+Tala X dit ce qu'on peut honnêtement affirmer d'une image : si c'est un
+fichier original d'appareil ou une copie retraitée par une plateforme, où et
+quand elle a été prise, et si elle est passée par un logiciel de retouche. La
+vidéo (métadonnées de conteneur) est prévue.
 
 > **État : pré-alpha (0.1).** Utilisable, mais les règles et la sortie peuvent encore changer.
 

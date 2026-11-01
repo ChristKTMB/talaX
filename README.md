@@ -4,9 +4,10 @@
 
 [Français](https://github.com/ChristKTMB/talaX/blob/main/README.fr.md)
 
-Tala X tells you what can honestly be said about an image or a video: whether
-it is an original camera file or a copy reprocessed by a platform, where and
-when it was taken, and whether it went through an editor.
+Tala X tells you what can honestly be said about an image: whether it is an
+original camera file or a copy reprocessed by a platform, where and when it was
+taken, and whether it went through an editor. Video support (container
+metadata) is planned.
 
 > **Status: pre-alpha (0.1).** Usable, but rules and output may still change.
 
