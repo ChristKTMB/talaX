@@ -1,0 +1,7 @@
+{
+  "status": 503,
+  "error": {
+    "code": "busy",
+    "message": "The service is busy. Please try again in a few seconds."
+  }
+}

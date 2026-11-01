@@ -1,0 +1,130 @@
+{
+  "schema": 2,
+  "lang": "fr",
+  "tools": {
+    "talax": "0.2.0",
+    "exiftool": "13.60"
+  },
+  "created_at": "2026-01-01T12:00:00+00:00",
+  "file": {
+    "name": null,
+    "sha256": "6175447d5f28536f9e920c2617ba9078226fdaa47a02cc921ba75c7400bb7fd7",
+    "size": 1949,
+    "declared_format": "image/png",
+    "real_format": "image/png"
+  },
+  "integrity": {
+    "verdict": "undetermined",
+    "label": "Indéterminé",
+    "pipeline": null,
+    "message": "integrity.no_metadata_other",
+    "explanation": "Le fichier ne contient aucune métadonnée d'appareil. Ce peut être une capture d'écran, un export ou une copie de plateforme ; rien dans le fichier ne permet de le dire.",
+    "evidence": {
+      "exif_present": false,
+      "make": null,
+      "model": null,
+      "datetime_original": null,
+      "vendor_groups": [],
+      "software": [],
+      "pixel_size": null,
+      "recorded_size": null,
+      "segments": null,
+      "progressive": null,
+      "basis": "generic"
+    }
+  },
+  "results": [
+    {
+      "signal": "real_format",
+      "name": "Format réel du fichier",
+      "state": "consistent",
+      "label": "Cohérent",
+      "message": "real_format.consistent",
+      "explanation": "L'extension et le contenu concordent : c'est un fichier PNG.",
+      "evidence": {
+        "declared": "image/png",
+        "real": "image/png",
+        "exiftool": "image/png"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "gps",
+      "name": "Position GPS",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "gps.absent",
+      "explanation": "Aucune position n'est enregistrée. La localisation était désactivée sur l'appareil, ou les métadonnées ont été supprimées ensuite.",
+      "evidence": {
+        "gps_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "capture_time",
+      "name": "Date et heure",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "capture_time.absent",
+      "explanation": "Aucune heure de prise de vue n'est enregistrée, ou elle est illisible : les métadonnées ont été supprimées ou jamais écrites.",
+      "evidence": {
+        "date_time_original": null
+      },
+      "confidence": null
+    },
+    {
+      "signal": "time_zone",
+      "name": "Fuseau horaire",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "time_zone.no_position",
+      "explanation": "Aucune position GPS n'est enregistrée : le fuseau horaire du lieu ne peut pas être comparé à celui de l'appareil.",
+      "evidence": {},
+      "confidence": null
+    },
+    {
+      "signal": "solar",
+      "name": "Cohérence solaire",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "solar.missing_input",
+      "explanation": "La position et l'heure de la photo sont toutes deux nécessaires pour calculer où était le soleil, et au moins l'une manque. Pour un fichier sans métadonnées, saisissez à la main le lieu et l'heure annoncés.",
+      "evidence": {},
+      "confidence": null
+    },
+    {
+      "signal": "software",
+      "name": "Logiciel de retouche",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "software.none",
+      "explanation": "Aucun logiciel n'est enregistré dans le fichier. Beaucoup de logiciels et de plateformes n'écrivent rien : cela ne suggère ni n'exclut une retouche.",
+      "evidence": {
+        "software": [],
+        "photoshop_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "c2pa",
+      "name": "Certificats C2PA",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "c2pa.absent",
+      "explanation": "Le fichier ne contient aucun certificat C2PA. La plupart des appareils photo et des téléphones n'en produisent pas, et les plateformes les suppriment : leur absence ne dit rien de l'image.",
+      "evidence": {
+        "present": false,
+        "state": null,
+        "codes": [],
+        "signer": null,
+        "signed_at": null,
+        "generator": null,
+        "ai_declared": false,
+        "error": null
+      },
+      "confidence": null
+    }
+  ],
+  "disclaimer": "Tala X ne certifie jamais qu'une image est authentique. Il rapporte ce qu'on peut honnêtement dire d'un fichier. Un original d'appareil ne prouve pas que son contenu est vrai : les métadonnées peuvent être falsifiées par qui sait le faire. Tala X est conçu contre le blanchiment par les plateformes et les images recyclées, pas contre les faussaires experts.",
+  "thumbnail": null
+}

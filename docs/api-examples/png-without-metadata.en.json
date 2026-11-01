@@ -1,0 +1,130 @@
+{
+  "schema": 2,
+  "lang": "en",
+  "tools": {
+    "talax": "0.2.0",
+    "exiftool": "13.60"
+  },
+  "created_at": "2026-01-01T12:00:00+00:00",
+  "file": {
+    "name": null,
+    "sha256": "6175447d5f28536f9e920c2617ba9078226fdaa47a02cc921ba75c7400bb7fd7",
+    "size": 1949,
+    "declared_format": "image/png",
+    "real_format": "image/png"
+  },
+  "integrity": {
+    "verdict": "undetermined",
+    "label": "Undetermined",
+    "pipeline": null,
+    "message": "integrity.no_metadata_other",
+    "explanation": "The file carries no camera metadata. It may be a screenshot, an export or a platform copy; nothing in it tells which.",
+    "evidence": {
+      "exif_present": false,
+      "make": null,
+      "model": null,
+      "datetime_original": null,
+      "vendor_groups": [],
+      "software": [],
+      "pixel_size": null,
+      "recorded_size": null,
+      "segments": null,
+      "progressive": null,
+      "basis": "generic"
+    }
+  },
+  "results": [
+    {
+      "signal": "real_format",
+      "name": "Real file format",
+      "state": "consistent",
+      "label": "Consistent",
+      "message": "real_format.consistent",
+      "explanation": "The extension and the content agree: this is a PNG file.",
+      "evidence": {
+        "declared": "image/png",
+        "real": "image/png",
+        "exiftool": "image/png"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "gps",
+      "name": "GPS position",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "gps.absent",
+      "explanation": "No position is recorded. Location was off on the device, or the metadata was removed afterwards.",
+      "evidence": {
+        "gps_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "capture_time",
+      "name": "Date and time",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "capture_time.absent",
+      "explanation": "No capture time is recorded, or it is unreadable: the metadata was removed or never written.",
+      "evidence": {
+        "date_time_original": null
+      },
+      "confidence": null
+    },
+    {
+      "signal": "time_zone",
+      "name": "Time zone",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "time_zone.no_position",
+      "explanation": "No GPS position is recorded, so the time zone of the place cannot be compared with the one the device used.",
+      "evidence": {},
+      "confidence": null
+    },
+    {
+      "signal": "solar",
+      "name": "Solar consistency",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "solar.missing_input",
+      "explanation": "The position and the time of the photo are both needed to compute where the sun was, and at least one is missing. For a file without metadata, enter the claimed place and time by hand.",
+      "evidence": {},
+      "confidence": null
+    },
+    {
+      "signal": "software",
+      "name": "Editing software",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "software.none",
+      "explanation": "No software is recorded in the file. Many editors and platforms write nothing, so this neither suggests nor rules out editing.",
+      "evidence": {
+        "software": [],
+        "photoshop_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "c2pa",
+      "name": "C2PA Content Credentials",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "c2pa.absent",
+      "explanation": "The file carries no Content Credentials (C2PA). Most cameras and phones do not produce them and platforms remove them, so their absence says nothing about the image.",
+      "evidence": {
+        "present": false,
+        "state": null,
+        "codes": [],
+        "signer": null,
+        "signed_at": null,
+        "generator": null,
+        "ai_declared": false,
+        "error": null
+      },
+      "confidence": null
+    }
+  ],
+  "disclaimer": "Tala X never certifies that an image is authentic. It reports what can honestly be said about a file. An original camera file is not proof that its content is true: metadata can be forged by anyone who knows how. Tala X is built against platform laundering and recycled images, not against expert forgers.",
+  "thumbnail": null
+}

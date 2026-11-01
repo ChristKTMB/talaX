@@ -1,0 +1,158 @@
+{
+  "schema": 2,
+  "lang": "fr",
+  "tools": {
+    "talax": "0.2.0",
+    "exiftool": "13.60"
+  },
+  "created_at": "2026-01-01T12:00:00+00:00",
+  "file": {
+    "name": null,
+    "sha256": "d6258ebfdcc471e4eaf01eb91fbd2de6ec61635a1944745ef4fdf01a9ee1b240",
+    "size": 8566,
+    "declared_format": "image/jpeg",
+    "real_format": "image/jpeg"
+  },
+  "integrity": {
+    "verdict": "original",
+    "label": "Original d'appareil",
+    "pipeline": null,
+    "message": "integrity.original",
+    "explanation": "Le fichier porte les marques d'un original d'appareil (Generic Camera 1) : marque et modèle, heure de prise de vue d'origine et données propres au fabricant (XMP-GCamera), sans logiciel de retouche enregistré. Cela dit d'où vient le fichier, pas si son contenu est vrai : les métadonnées peuvent être falsifiées par qui sait le faire.",
+    "evidence": {
+      "exif_present": true,
+      "make": "Generic",
+      "model": "Camera 1",
+      "datetime_original": "2025:06:21 13:50:00",
+      "vendor_groups": [
+        "XMP-GCamera"
+      ],
+      "software": [],
+      "pixel_size": [
+        640,
+        480
+      ],
+      "recorded_size": [
+        640,
+        480
+      ],
+      "segments": [
+        "SOI",
+        "APP0:JFIF",
+        "APP1:Exif",
+        "APP1:XMP",
+        "DQT",
+        "DQT",
+        "SOF0",
+        "DHT",
+        "DHT",
+        "DHT",
+        "DHT",
+        "SOS"
+      ],
+      "progressive": false,
+      "basis": "generic"
+    }
+  },
+  "results": [
+    {
+      "signal": "real_format",
+      "name": "Format réel du fichier",
+      "state": "consistent",
+      "label": "Cohérent",
+      "message": "real_format.consistent",
+      "explanation": "L'extension et le contenu concordent : c'est un fichier JPEG.",
+      "evidence": {
+        "declared": "image/jpeg",
+        "real": "image/jpeg",
+        "exiftool": "image/jpeg"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "gps",
+      "name": "Position GPS",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "gps.masked",
+      "explanation": "Le fichier contient un bloc GPS, mais ses champs de position sont vides. C'est ainsi qu'Android masque la position d'une photo partagée par une application qui n'a pas le droit de la voir. La position ne peut pas être retrouvée dans ce fichier : demandez à la source l'original, copié par câble.",
+      "evidence": {
+        "gps_block": true,
+        "masked": true
+      },
+      "confidence": null
+    },
+    {
+      "signal": "capture_time",
+      "name": "Date et heure",
+      "state": "consistent",
+      "label": "Cohérent",
+      "message": "capture_time.single_clock",
+      "explanation": "Prise le 2025-06-21 13:50:00 (UTC+02:00, d'après le décalage EXIF). Aucune autre horloge n'est enregistrée pour comparer.",
+      "evidence": {
+        "date_time_original": "2025-06-21T13:50:00",
+        "offset": "+02:00",
+        "offset_source": "exif",
+        "create_date": null,
+        "modify_date": null,
+        "vendor_clock": null,
+        "gps_utc": null
+      },
+      "confidence": null
+    },
+    {
+      "signal": "time_zone",
+      "name": "Fuseau horaire",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "time_zone.no_position",
+      "explanation": "Aucune position GPS n'est enregistrée : le fuseau horaire du lieu ne peut pas être comparé à celui de l'appareil.",
+      "evidence": {},
+      "confidence": null
+    },
+    {
+      "signal": "solar",
+      "name": "Cohérence solaire",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "solar.missing_input",
+      "explanation": "La position et l'heure de la photo sont toutes deux nécessaires pour calculer où était le soleil, et au moins l'une manque. Pour un fichier sans métadonnées, saisissez à la main le lieu et l'heure annoncés.",
+      "evidence": {},
+      "confidence": null
+    },
+    {
+      "signal": "software",
+      "name": "Logiciel de retouche",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "software.none",
+      "explanation": "Aucun logiciel n'est enregistré dans le fichier. Beaucoup de logiciels et de plateformes n'écrivent rien : cela ne suggère ni n'exclut une retouche.",
+      "evidence": {
+        "software": [],
+        "photoshop_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "c2pa",
+      "name": "Certificats C2PA",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "c2pa.absent",
+      "explanation": "Le fichier ne contient aucun certificat C2PA. La plupart des appareils photo et des téléphones n'en produisent pas, et les plateformes les suppriment : leur absence ne dit rien de l'image.",
+      "evidence": {
+        "present": false,
+        "state": null,
+        "codes": [],
+        "signer": null,
+        "signed_at": null,
+        "generator": null,
+        "ai_declared": false,
+        "error": null
+      },
+      "confidence": null
+    }
+  ],
+  "disclaimer": "Tala X ne certifie jamais qu'une image est authentique. Il rapporte ce qu'on peut honnêtement dire d'un fichier. Un original d'appareil ne prouve pas que son contenu est vrai : les métadonnées peuvent être falsifiées par qui sait le faire. Tala X est conçu contre le blanchiment par les plateformes et les images recyclées, pas contre les faussaires experts.",
+  "thumbnail": null
+}

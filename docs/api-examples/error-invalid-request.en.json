@@ -1,0 +1,10 @@
+{
+  "status": 422,
+  "error": {
+    "code": "invalid_request",
+    "message": "The request is incomplete or contains an invalid value.",
+    "fields": [
+      "sky"
+    ]
+  }
+}

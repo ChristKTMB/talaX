@@ -1,0 +1,178 @@
+{
+  "schema": 2,
+  "lang": "en",
+  "tools": {
+    "talax": "0.2.0",
+    "exiftool": "13.60"
+  },
+  "created_at": "2026-01-01T12:00:00+00:00",
+  "file": {
+    "name": null,
+    "sha256": "3aa650656f11f3ccb6ba5ae5c7de724849d2868d583d4c156b2373107c55cbf2",
+    "size": 9704,
+    "declared_format": "image/jpeg",
+    "real_format": "image/jpeg"
+  },
+  "integrity": {
+    "verdict": "original",
+    "label": "Original camera file",
+    "pipeline": null,
+    "message": "integrity.original",
+    "explanation": "The file has the marks of a camera original from a Generic Camera 1: make and model, original capture time, and manufacturer-specific data (XMP-GCamera), with no image editor recorded. This says where the file comes from, not whether its content is true: metadata can be forged by anyone who knows how.",
+    "evidence": {
+      "exif_present": true,
+      "make": "Generic",
+      "model": "Camera 1",
+      "datetime_original": "2025:06:21 13:50:00",
+      "vendor_groups": [
+        "XMP-GCamera"
+      ],
+      "software": [],
+      "pixel_size": [
+        640,
+        480
+      ],
+      "recorded_size": [
+        640,
+        480
+      ],
+      "segments": [
+        "SOI",
+        "APP0:JFIF",
+        "APP1:Exif",
+        "APP1:XMP",
+        "DQT",
+        "DQT",
+        "SOF0",
+        "DHT",
+        "DHT",
+        "DHT",
+        "DHT",
+        "SOS"
+      ],
+      "progressive": false,
+      "basis": "generic"
+    }
+  },
+  "results": [
+    {
+      "signal": "real_format",
+      "name": "Real file format",
+      "state": "consistent",
+      "label": "Consistent",
+      "message": "real_format.consistent",
+      "explanation": "The extension and the content agree: this is a JPEG file.",
+      "evidence": {
+        "declared": "image/jpeg",
+        "real": "image/jpeg",
+        "exiftool": "image/jpeg"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "gps",
+      "name": "GPS position",
+      "state": "consistent",
+      "label": "Consistent",
+      "message": "gps.consistent",
+      "explanation": "Position recorded: 48.85660, 2.35220. Accuracy is not recorded. A recorded position says where the device placed itself, which can be edited like any metadata.",
+      "evidence": {
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "altitude_m": null,
+        "method": null,
+        "error_m": null
+      },
+      "confidence": null
+    },
+    {
+      "signal": "capture_time",
+      "name": "Date and time",
+      "state": "consistent",
+      "label": "Consistent",
+      "message": "capture_time.single_clock",
+      "explanation": "Captured 2025-06-21 13:50:00 (UTC+02:00, from the EXIF offset). No other clock is recorded to compare with.",
+      "evidence": {
+        "date_time_original": "2025-06-21T13:50:00",
+        "offset": "+02:00",
+        "offset_source": "exif",
+        "create_date": null,
+        "modify_date": null,
+        "vendor_clock": null,
+        "gps_utc": null
+      },
+      "confidence": null
+    },
+    {
+      "signal": "time_zone",
+      "name": "Time zone",
+      "state": "consistent",
+      "label": "Consistent",
+      "message": "time_zone.consistent",
+      "explanation": "The device's time zone (UTC+02:00, from the EXIF offset) matches the GPS position, in Europe/Paris.",
+      "evidence": {
+        "zone": "Europe/Paris",
+        "zone_offset": "+02:00",
+        "recorded_offset": "+02:00",
+        "recorded_offset_source": "exif"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "solar",
+      "name": "Solar consistency",
+      "state": "suspicious",
+      "label": "Suspicious",
+      "message": "solar.impossible",
+      "explanation": "At the place and time recorded in the file (2025-06-21 13:50, time zone from the EXIF offset), the sun was 65° above the horizon, toward the south (179°): full daylight. Outdoor shadows should point north, about 0.5 times as long as the object is tall. The photo shows night: this is physically impossible at that place and time, and no clock error of up to 3 h explains it. The recorded or claimed time, or the place, is false.",
+      "evidence": {
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "moment": "2025-06-21T13:50:00+02:00",
+        "source": "file",
+        "offset_source": "exif",
+        "zone": null,
+        "sun_elevation": 64.58,
+        "sun_azimuth": 178.68,
+        "shadow_direction": "N",
+        "shadow_ratio": 0.48,
+        "observed_sky": "night"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "software",
+      "name": "Editing software",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "software.none",
+      "explanation": "No software is recorded in the file. Many editors and platforms write nothing, so this neither suggests nor rules out editing.",
+      "evidence": {
+        "software": [],
+        "photoshop_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "c2pa",
+      "name": "C2PA Content Credentials",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "c2pa.absent",
+      "explanation": "The file carries no Content Credentials (C2PA). Most cameras and phones do not produce them and platforms remove them, so their absence says nothing about the image.",
+      "evidence": {
+        "present": false,
+        "state": null,
+        "codes": [],
+        "signer": null,
+        "signed_at": null,
+        "generator": null,
+        "ai_declared": false,
+        "error": null
+      },
+      "confidence": null
+    }
+  ],
+  "disclaimer": "Tala X never certifies that an image is authentic. It reports what can honestly be said about a file. An original camera file is not proof that its content is true: metadata can be forged by anyone who knows how. Tala X is built against platform laundering and recycled images, not against expert forgers.",
+  "thumbnail": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAB4AKADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCvRRRX1Z84FFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//2Q=="
+}

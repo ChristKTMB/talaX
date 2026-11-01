@@ -1,0 +1,7 @@
+{
+  "status": 404,
+  "error": {
+    "code": "not_found",
+    "message": "This address does not exist."
+  }
+}

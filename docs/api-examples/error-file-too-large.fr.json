@@ -1,0 +1,7 @@
+{
+  "status": 413,
+  "error": {
+    "code": "file_too_large",
+    "message": "Le fichier dépasse 50 Mo, la limite du service web. Pour un fichier plus lourd, utilisez l'outil en ligne de commande."
+  }
+}

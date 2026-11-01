@@ -1,0 +1,7 @@
+{
+  "status": 413,
+  "error": {
+    "code": "file_too_large",
+    "message": "The file is larger than 50 MB, the limit of the web service. For larger files, use the command-line tool."
+  }
+}
