@@ -222,3 +222,11 @@ ui.report.preview: Embedded preview
 ui.report.no_preview: No embedded preview in this file.
 ui.report.footer: Generated {generated} by Tala X {talax} with ExifTool {exiftool}. Report
   schema {schema}.
+error.file_too_large: The file is larger than {max_mb} MB, the limit of the web service. For
+  larger files, use the command-line tool.
+error.busy: The service is busy. Please try again in a few seconds.
+error.analysis_failed: The file could not be analysed. It may be damaged or in an unsupported
+  format.
+error.invalid_request: The request is incomplete or contains an invalid value.
+error.not_found: This address does not exist.
+error.internal: An internal error occurred. Nothing can be concluded about the file.

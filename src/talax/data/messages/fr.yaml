@@ -242,3 +242,11 @@ ui.report.preview: Aperçu intégré
 ui.report.no_preview: Aucun aperçu intégré dans ce fichier.
 ui.report.footer: 'Généré le {generated} par Tala X {talax} avec ExifTool {exiftool}. Schéma
   du rapport : {schema}.'
+error.file_too_large: Le fichier dépasse {max_mb} Mo, la limite du service web. Pour un fichier
+  plus lourd, utilisez l'outil en ligne de commande.
+error.busy: Le service est occupé. Réessayez dans quelques secondes.
+error.analysis_failed: Le fichier n'a pas pu être analysé. Il est peut-être endommagé, ou dans un
+  format non pris en charge.
+error.invalid_request: La requête est incomplète ou contient une valeur invalide.
+error.not_found: Cette adresse n'existe pas.
+error.internal: Une erreur interne s'est produite. On ne peut rien conclure sur le fichier.

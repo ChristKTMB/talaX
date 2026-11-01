@@ -118,7 +118,12 @@ def serve(
     except ImportError as exc:
         err.print("error: the web API needs `pip install talax[server]`", style="red")
         raise typer.Exit(1) from exc
-    uvicorn.run(api, host=host, port=port)
+    import logging
+
+    # Uvicorn's access log records client addresses; the API logs its own
+    # requests without them.
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
+    uvicorn.run(api, host=host, port=port, access_log=False)
 
 
 def _safe(text: str) -> Text:

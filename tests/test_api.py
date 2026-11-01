@@ -1,6 +1,9 @@
+import logging
 import shutil
+import struct
 import subprocess
 import tempfile
+import threading
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -176,22 +179,163 @@ def test_failed_analysis_leaves_nothing_behind(
     monkeypatch.setattr(api_module, "analyze", fail)
     response = post(client, "a.jpg", jpeg)
     assert response.status_code == 500
-    assert response.json() == {"error": "analysis_failed"}
+    assert response.json()["error"]["code"] == "analysis_failed"
     assert "secret" not in response.text
     assert "secret" not in caplog.text
     assert list(tmpdir_for_uploads.iterdir()) == []
 
 
-def test_unexpected_error_leaves_nothing_behind(
+def test_unexpected_error_is_answered_and_logged_without_its_text(
     client: TestClient,
     jpeg: bytes,
     tmpdir_for_uploads: Path,
     monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
+    def crash(*_: object, **__: object) -> None:
+        raise RuntimeError("secret content from the file")
+
+    monkeypatch.setattr(api_module, "analyze", crash)
+    response = post(client, "a.jpg", jpeg)
+    assert response.status_code == 500
+    assert response.json()["error"]["code"] == "internal"
+    assert "RuntimeError" in caplog.text
+    assert "secret" not in response.text + caplog.text
+    assert list(tmpdir_for_uploads.iterdir()) == []
+
+
+def test_errors_follow_the_browser_language(client: TestClient) -> None:
+    response = client.get("/api/nowhere", headers={"accept-language": "fr-CD,fr"})
+    assert response.status_code == 404
+    error = response.json()["error"]
+    assert error["code"] == "not_found"
+    assert error["message"] == "Cette adresse n'existe pas."
+
+
+def test_analysis_follows_the_browser_language_unless_told(
+    client: TestClient, jpeg: bytes
+) -> None:
+    files = {"file": ("a.jpg", jpeg)}
+    fr = {"accept-language": "fr-FR"}
+    assert client.post("/api/analyze", files=files, headers=fr).json()["lang"] == "fr"
+    data = client.post("/api/analyze", files=files, headers=fr, data={"lang": "en"})
+    assert data.json()["lang"] == "en"
+
+
+def test_validation_errors_do_not_echo_the_values(
+    client: TestClient, jpeg: bytes
+) -> None:
+    response = post(client, "a.jpg", jpeg, sky="<script>")
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "invalid_request"
+    assert response.json()["error"]["fields"] == ["sky"]
+    assert "script" not in response.text
+
+
+def test_missing_file_is_an_invalid_request(client: TestClient) -> None:
+    response = client.post("/api/analyze", data={"lang": "fr"})
+    assert response.status_code == 422
+    assert response.json()["error"]["fields"] == ["file"]
+
+
+@pytest.fixture
+def small_limit(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(api_module, "MAX_UPLOAD_MB", 1)
+
+
+def test_declared_oversize_is_refused_before_reading(
+    client: TestClient, small_limit: None
+) -> None:
+    response = client.post(
+        "/api/analyze", content=b"x", headers={"content-length": str(10**9)}
+    )
+    assert response.status_code == 413
+    assert response.json()["error"]["code"] == "file_too_large"
+
+
+def test_oversize_is_refused_while_reading_even_without_length(
+    client: TestClient, small_limit: None, tmpdir_for_uploads: Path
+) -> None:
+    boundary = b"talaxboundary"
+    head = (
+        b"--" + boundary + b"\r\n"
+        b'Content-Disposition: form-data; name="file"; filename="a.jpg"\r\n\r\n'
+    )
+
+    def chunks() -> Iterator[bytes]:
+        yield head
+        for _ in range(40):  # 2.5 MB, sent without Content-Length
+            yield b"\xff" * 65536
+
+    response = client.post(
+        "/api/analyze",
+        content=chunks(),
+        headers={"content-type": f"multipart/form-data; boundary={boundary.decode()}"},
+    )
+    assert response.status_code == 413
+    assert "MB" in response.json()["error"]["message"]
+    assert list(tmpdir_for_uploads.iterdir()) == []
+
+
+def test_busy_service_refuses_at_once(
+    client: TestClient, jpeg: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(api_module, "_slots", threading.BoundedSemaphore(1))
+    api_module._slots.acquire()
+    response = post(client, "a.jpg", jpeg)
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "busy"
+
+
+def test_slot_is_released_after_a_failure(
+    client: TestClient, jpeg: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    slots = threading.BoundedSemaphore(1)
+    monkeypatch.setattr(api_module, "_slots", slots)
+
     def crash(*_: object, **__: object) -> None:
         raise RuntimeError("bug")
 
     monkeypatch.setattr(api_module, "analyze", crash)
-    with pytest.raises(RuntimeError):
-        post(client, "a.jpg", jpeg)
-    assert list(tmpdir_for_uploads.iterdir()) == []
+    assert post(client, "a.jpg", jpeg).status_code == 500
+    assert slots.acquire(blocking=False)
+
+
+def test_security_headers(client: TestClient, jpeg: bytes) -> None:
+    for response in (client.get("/api/health"), post(client, "a.jpg", jpeg)):
+        assert response.headers["x-content-type-options"] == "nosniff"
+        assert response.headers["cache-control"] == "no-store"
+        assert "default-src 'none'" in response.headers["content-security-policy"]
+
+
+def test_access_log_has_route_and_status_but_no_path_or_address(
+    client: TestClient, caplog: pytest.LogCaptureFixture
+) -> None:
+    with caplog.at_level(logging.INFO, logger="talax.api"):
+        client.get("/api/health")
+        client.get("/api/48.8566,2.3522")
+    assert "GET /api/health 200" in caplog.text
+    assert "GET - 404" in caplog.text
+    assert "48.85" not in caplog.text
+    assert "testclient" not in caplog.text
+
+
+def test_lying_preview_size_does_not_break_the_analysis(
+    client: TestClient, tmp_path: Path
+) -> None:
+    """An embedded preview whose header claims 60000 x 60000 pixels."""
+    small = tmp_path / "small.jpg"
+    Image.new("RGB", (16, 16)).save(small)
+    liar = bytearray(small.read_bytes())
+    sof = liar.find(b"\xff\xc0")
+    liar[sof + 5 : sof + 9] = struct.pack(">HH", 60000, 60000)
+    small.write_bytes(liar)
+    photo = tmp_path / "photo.jpg"
+    Image.new("RGB", (64, 48)).save(photo)
+    subprocess.run(
+        ["exiftool", "-q", "-overwrite_original", f"-ThumbnailImage<={small}", photo],
+        check=True,
+    )
+    response = post(client, "photo.jpg", photo.read_bytes())
+    assert response.status_code == 200
+    assert response.json()["thumbnail"] is None
