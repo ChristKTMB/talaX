@@ -65,3 +65,11 @@ def test_analysis_timestamp_must_be_timezone_aware(ctx: Context) -> None:
         Analysis(ctx.file, ctx.integrity, results=(), created_at=datetime.now())
 
     Analysis(ctx.file, ctx.integrity, results=(), created_at=datetime.now(UTC))
+
+
+def test_public_api() -> None:
+    import talax
+
+    assert callable(talax.analyze)
+    assert talax.__version__.count(".") == 2
+    assert set(talax.__all__) >= {"analyze", "Analysis", "State", "Observation"}

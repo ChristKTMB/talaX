@@ -18,13 +18,17 @@ _EXIF_GROUPS = ("IFD0", "ExifIFD", "GPS", "IFD1", "InteropIFD")
 @functools.cache
 def vendor_group_names() -> frozenset[str]:
     """Groups only a manufacturer writes, as observed in the corpus."""
-    raw = yaml.safe_load((files("talax") / "data" / "vendor_groups.yaml").read_text())
+    raw = yaml.safe_load(
+        (files("talax") / "data" / "vendor_groups.yaml").read_text(encoding="utf-8")
+    )
     return frozenset(raw["vendor_groups"])
 
 
 @functools.cache
 def known_editors() -> tuple[str, ...]:
-    raw = yaml.safe_load((files("talax") / "data" / "editors.yaml").read_text())
+    raw = yaml.safe_load(
+        (files("talax") / "data" / "editors.yaml").read_text(encoding="utf-8")
+    )
     return tuple(raw["editors"])
 
 

@@ -83,7 +83,7 @@ def analyze_command(
         html.write_text(render_html(analysis, file), encoding="utf-8")
 
     if json_output:
-        print(json.dumps(to_dict(analysis, file.name), indent=2, ensure_ascii=False))
+        print(json.dumps(to_dict(analysis, file.name), indent=2))
     else:
         _print_text(analysis, file, sky is not None)
     if html is not None:

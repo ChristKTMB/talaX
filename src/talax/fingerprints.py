@@ -80,7 +80,10 @@ def builtin_fingerprints() -> tuple[Fingerprint, ...]:
 
 def load_fingerprints(paths: Iterable[Path]) -> tuple[Fingerprint, ...]:
     loaded = sorted(
-        (parse_fingerprint(yaml.safe_load(p.read_text()), p.name) for p in paths),
+        (
+            parse_fingerprint(yaml.safe_load(p.read_text(encoding="utf-8")), p.name)
+            for p in paths
+        ),
         key=lambda f: f.id,
     )
     ids = [f.id for f in loaded]
