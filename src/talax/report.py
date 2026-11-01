@@ -21,6 +21,9 @@ from talax.extraction import exiftool_version, read_thumbnail
 from talax.i18n import Language, catalog, text
 from talax.model import Analysis, IntegrityVerdict, State
 
+REPORT_CSP = "default-src 'none'; img-src data:; style-src 'unsafe-inline'"
+"""The policy of the HTML report: nothing loaded from outside."""
+
 SCHEMA_VERSION = 2
 """2: messages carry a key (`message`) and the text in the requested `lang`."""
 
@@ -89,18 +92,24 @@ def to_dict(
 
 
 def render_html(
-    analysis: Analysis, source: Path | None = None, lang: Language = Language.EN
+    analysis: Analysis,
+    source: Path | None = None,
+    lang: Language = Language.EN,
+    file_name: str | None = None,
 ) -> str:
+    """`source` gives the previews; the name shown is `file_name`, never the
+    path's (the web service analyses a temporary copy)."""
     env = Environment(
         loader=PackageLoader("talax", "templates"),
         autoescape=select_autoescape(["html", "j2"], default=True),
     )
-    data = to_dict(analysis, source.name if source else None, lang)
+    data = to_dict(analysis, file_name, lang)
     results = sorted(
         data["results"], key=lambda r: _STATE_ORDER.index(State(r["state"]))
     )
     return env.get_template("report.html.j2").render(
         data=data,
+        csp=REPORT_CSP,
         results=results,
         lang=str(lang),
         t=lambda key, **params: text(key, lang, **params),

@@ -18,11 +18,11 @@ import traceback
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path, PurePath
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
-from fastapi import FastAPI, File, Form, Request, UploadFile
+from fastapi import FastAPI, File, Form, Query, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from starlette.exceptions import HTTPException
 from starlette.types import ASGIApp, Receive, Scope, Send
 from starlette.types import Message as AsgiMessage
@@ -32,7 +32,14 @@ from talax.analysis import analyze
 from talax.extraction import ExifToolError, exiftool_version
 from talax.i18n import Language, Message, translate
 from talax.model import Observation, Sky
-from talax.report import SCHEMA_VERSION, thumbnail_uri, to_dict, tool_versions
+from talax.report import (
+    REPORT_CSP,
+    SCHEMA_VERSION,
+    render_html,
+    thumbnail_uri,
+    to_dict,
+    tool_versions,
+)
 
 MAX_UPLOAD_MB = 50
 # Room for the multipart envelope and the small form fields around the file.
@@ -81,9 +88,12 @@ def analyze_upload(
     file: Annotated[UploadFile, File()],
     lang: Annotated[Language | None, Form()] = None,
     sky: Annotated[Sky | None, Form()] = None,
-) -> JSONResponse:
+    format: Annotated[Literal["json", "html"], Query()] = "json",
+) -> Response:
     """Analyse one file. The response is the schema-2 JSON of the CLI, plus
     `thumbnail`: the embedded preview as a `data:` URI, or null.
+    `?format=html` returns the self-contained HTML report instead, as a
+    download.
 
     `lang` defaults to the browser language (`Accept-Language`)."""
     language = lang or _language(request.headers.get("accept-language"))
@@ -97,6 +107,11 @@ def analyze_upload(
             try:
                 observation = Observation(sky) if sky else None
                 analysis = analyze(path, observation=observation)
+                if format == "html":
+                    # Built while the file still exists: it holds the previews.
+                    return _html_report(
+                        render_html(analysis, path, language), analysis.file.sha256
+                    )
                 thumbnail = thumbnail_uri(path)
             except (OSError, ExifToolError):
                 _log.warning("analysis failed")
@@ -175,7 +190,8 @@ class _Guard:
                 status = message["status"]
                 headers = list(message.get("headers", []))
                 headers += _SECURITY_HEADERS
-                if scope["path"] != _DOCS_PATH:
+                has_csp = any(k == _CSP[0] for k, _ in headers)
+                if not has_csp and scope["path"] != _DOCS_PATH:
                     headers.append(_CSP)
                 message = {**message, "headers": headers}
             await send(message)
@@ -200,6 +216,18 @@ def _error(status: int, message: Message, lang: Language, **extra: Any) -> JSONR
     code = message.key.removeprefix("error.")
     body = {"code": code, "message": translate(message, lang), **extra}
     return JSONResponse({"error": body}, status_code=status)
+
+
+def _html_report(html: str, sha256: str) -> HTMLResponse:
+    # A download, not a page of our site: the report shows metadata that
+    # anyone may have written. The name is the hash, never the file's name.
+    return HTMLResponse(
+        html,
+        headers={
+            "content-security-policy": REPORT_CSP,
+            "content-disposition": f'attachment; filename="talax-{sha256[:12]}.html"',
+        },
+    )
 
 
 def _access(scope: Scope, status: int, start: float) -> None:

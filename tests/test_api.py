@@ -12,6 +12,7 @@ import pytest
 from PIL import Image
 
 from talax.extraction import ExifToolError
+from talax.report import REPORT_CSP
 
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
@@ -339,3 +340,40 @@ def test_lying_preview_size_does_not_break_the_analysis(
     response = post(client, "photo.jpg", photo.read_bytes())
     assert response.status_code == 200
     assert response.json()["thumbnail"] is None
+
+
+HOSTILE = "<script>alert(1)</script>"
+
+
+def test_html_report_is_a_self_contained_download(
+    client: TestClient, tmp_path: Path, tmpdir_for_uploads: Path
+) -> None:
+    photo = tmp_path / "holiday.jpg"
+    Image.new("RGB", (64, 48)).save(photo)
+    subprocess.run(
+        ["exiftool", "-q", "-overwrite_original", f"-IFD0:Software={HOSTILE}", photo],
+        check=True,
+    )
+    response = client.post(
+        "/api/analyze?format=html",
+        files={"file": ("holiday.jpg", photo.read_bytes())},
+        data={"lang": "fr"},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    disposition = response.headers["content-disposition"]
+    assert disposition.startswith('attachment; filename="talax-')
+    # One policy only, the report's: a stricter one would hide its styles.
+    assert response.headers.get_list("content-security-policy") == [REPORT_CSP]
+    assert '<html lang="fr"' in response.text
+    assert HOSTILE not in response.text
+    assert "holiday" not in response.text + disposition
+    assert "upload" not in response.text
+    assert "data:image/jpeg;base64," in response.text  # the image preview
+    assert list(tmpdir_for_uploads.iterdir()) == []
+
+
+def test_unknown_format_is_rejected(client: TestClient, jpeg: bytes) -> None:
+    response = client.post("/api/analyze?format=pdf", files={"file": ("a.jpg", jpeg)})
+    assert response.status_code == 422
+    assert response.json()["error"]["fields"] == ["format"]

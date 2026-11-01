@@ -86,7 +86,8 @@ def analyze_command(
         raise typer.Exit(1) from exc
 
     if html is not None:
-        html.write_text(render_html(analysis, file, language), encoding="utf-8")
+        report = render_html(analysis, file, language, file_name=file.name)
+        html.write_text(report, encoding="utf-8")
 
     if json_output:
         print(json.dumps(to_dict(analysis, file.name, language), indent=2))
