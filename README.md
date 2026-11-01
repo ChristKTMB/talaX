@@ -2,13 +2,13 @@
 
 > *See beyond the pixel*
 
-[Français](README.fr.md)
+[Français](https://github.com/ChristKTMB/talaX/blob/main/README.fr.md)
 
 Tala X tells you what can honestly be said about an image or a video: whether
 it is an original camera file or a copy reprocessed by a platform, where and
 when it was taken, and whether it went through an editor.
 
-> **Status: early development.** There is no usable release yet.
+> **Status: pre-alpha (0.1).** Usable, but rules and output may still change.
 
 ## The question Tala X asks first
 
@@ -62,23 +62,15 @@ visual misinformation.
 - No automatic visual geolocation.
 - Video: container metadata only.
 
-## Install and try it (development version)
+## Install
 
-Tested on Linux (Ubuntu under WSL). Windows and macOS should work but have not
-been tested yet: please report any problem.
-
-**1. Install uv** (it also installs the right Python version for you):
+**1. Install Tala X** (Python 3.12 or newer):
 
 ```bash
-# macOS / Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-```powershell
-# Windows (PowerShell)
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+pipx install talax        # or: uv tool install talax    or: pip install talax
 ```
 
-**2. Install ExifTool 13.0 or newer** — Tala X refuses to run with an older
+**2. Install ExifTool 13.0 or newer.** Tala X refuses to run with an older
 version, because it would miss manufacturer tags and give different results.
 
 - **macOS**: `brew install exiftool`
@@ -96,40 +88,58 @@ version, because it would miss manufacturer tags and give different results.
   ln -sf ~/.local/opt/Image-ExifTool-$v/exiftool ~/.local/bin/exiftool
   ```
 
-Check with `exiftool -ver`.
+Check with `exiftool -ver`. Tested on Linux, macOS and Windows.
 
-**3. Get Tala X and analyse a photo:**
+## Use it from the command line
+
+```bash
+talax analyze photo.jpg                     # report in the terminal
+talax analyze photo.jpg --sky day           # what the photo shows, for the solar check
+talax analyze photo.jpg --html report.html  # self-contained HTML report
+talax analyze photo.jpg --json              # machine-readable
+```
+
+Nothing is ever sent over the network. The HTML report is a single file:
+opening it loads nothing from the network either.
+
+## Use it as a Python library
+
+```python
+from pathlib import Path
+
+from talax import Observation, Sky, analyze
+
+analysis = analyze(Path("photo.jpg"), observation=Observation(Sky.DAY))
+print(analysis.integrity.verdict, analysis.integrity.explanation)
+for result in analysis.results:
+    print(result.signal_id, result.state, result.explanation)
+```
+
+Every result carries a state, a plain-language explanation and the raw values
+behind it (`result.evidence`). The JSON output of the command line follows a
+versioned schema (`"schema": 1`).
+
+## Develop
 
 ```bash
 git clone https://github.com/ChristKTMB/talaX.git
 cd talaX
 uv sync
-uv run talax analyze photo.jpg                     # report in the terminal
-uv run talax analyze photo.jpg --sky day           # what the photo shows, for the solar check
-uv run talax analyze photo.jpg --html report.html  # self-contained HTML report
-uv run talax analyze photo.jpg --json              # machine-readable
-```
-
-The HTML report is a single file: opening it loads nothing from the network.
-Nothing is ever sent anywhere by the command line tool.
-
-**4. Run the tests** (contributors):
-
-```bash
 uv run pytest
 uv run ruff check && uv run ruff format --check && uv run mypy
 ```
 
 Tests that need the reference corpus are skipped when `corpus/files/` is
-absent: those files are not published (see `corpus/README.md`).
+absent: those files are not published (see the
+[corpus protocol](https://github.com/ChristKTMB/talaX/blob/main/corpus/README.md)).
 
-## How you will use it
+## Three ways to use it
 
 - **Python library** — `pip install talax`, to integrate into your own platform
 - **CLI** — runs on your machine; your file never leaves it. Recommended for
   sensitive material.
-- **Web app** — hosted, for quick checks. Files are analysed and deleted
-  immediately, never stored.
+- **Web app** (coming) — hosted, for quick checks. Files will be analysed and
+  deleted immediately, never stored.
 
 Requires [ExifTool](https://exiftool.org/) and, for video,
 [ffprobe](https://ffmpeg.org/).
@@ -143,4 +153,4 @@ first code.
 
 ## License
 
-[Apache-2.0](LICENSE)
+[Apache-2.0](https://github.com/ChristKTMB/talaX/blob/main/LICENSE)

@@ -2,14 +2,14 @@
 
 > *Regardez au-delà du pixel*
 
-[English](README.md)
+[English](https://github.com/ChristKTMB/talaX/blob/main/README.md)
 
 Tala X dit ce qu'on peut honnêtement affirmer d'une image ou d'une vidéo : si
 c'est un fichier original d'appareil ou une copie retraitée par une
 plateforme, où et quand elle a été prise, et si elle est passée par un
 logiciel de retouche.
 
-> **État : développement en cours.** Aucune version utilisable pour l'instant.
+> **État : pré-alpha (0.1).** Utilisable, mais les règles et la sortie peuvent encore changer.
 
 ## La question posée en premier
 
@@ -65,23 +65,15 @@ la forme la plus répandue de désinformation visuelle.
 - Pas de géolocalisation visuelle automatique.
 - Vidéo : métadonnées de conteneur uniquement.
 
-## Installer et essayer (version de développement)
+## Installer
 
-Testé sous Linux (Ubuntu dans WSL). Windows et macOS devraient fonctionner mais
-n'ont pas encore été testés : signalez tout problème.
-
-**1. Installer uv** (il installe aussi la bonne version de Python) :
+**1. Installer Tala X** (Python 3.12 ou plus récent) :
 
 ```bash
-# macOS / Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-```powershell
-# Windows (PowerShell)
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+pipx install talax        # ou : uv tool install talax    ou : pip install talax
 ```
 
-**2. Installer ExifTool 13.0 ou plus récent** — Tala X refuse de tourner avec
+**2. Installer ExifTool 13.0 ou plus récent.** Tala X refuse de tourner avec
 une version plus ancienne, qui manquerait des tags constructeur et donnerait
 d'autres résultats.
 
@@ -101,42 +93,59 @@ d'autres résultats.
   ln -sf ~/.local/opt/Image-ExifTool-$v/exiftool ~/.local/bin/exiftool
   ```
 
-Vérifiez avec `exiftool -ver`.
+Vérifiez avec `exiftool -ver`. Testé sous Linux, macOS et Windows.
 
-**3. Récupérer Tala X et analyser une photo :**
+## L'utiliser en ligne de commande
+
+```bash
+talax analyze photo.jpg                       # rapport dans le terminal
+talax analyze photo.jpg --sky day             # ce que montre la photo, pour la cohérence solaire
+talax analyze photo.jpg --html rapport.html   # rapport HTML autonome
+talax analyze photo.jpg --json                # format machine
+```
+
+Rien n'est jamais envoyé sur le réseau. Le rapport HTML est un fichier unique :
+l'ouvrir ne charge rien depuis le réseau non plus.
+
+## L'utiliser comme bibliothèque Python
+
+```python
+from pathlib import Path
+
+from talax import Observation, Sky, analyze
+
+analysis = analyze(Path("photo.jpg"), observation=Observation(Sky.DAY))
+print(analysis.integrity.verdict, analysis.integrity.explanation)
+for result in analysis.results:
+    print(result.signal_id, result.state, result.explanation)
+```
+
+Chaque résultat porte un état, une explication en langage clair et les valeurs
+brutes qui y ont mené (`result.evidence`). La sortie JSON de la ligne de
+commande suit un schéma versionné (`"schema": 1`).
+
+## Développer
 
 ```bash
 git clone https://github.com/ChristKTMB/talaX.git
 cd talaX
 uv sync
-uv run talax analyze photo.jpg                       # rapport dans le terminal
-uv run talax analyze photo.jpg --sky day             # ce que montre la photo, pour la cohérence solaire
-uv run talax analyze photo.jpg --html rapport.html   # rapport HTML autonome
-uv run talax analyze photo.jpg --json                # format machine
-```
-
-Le rapport HTML est un fichier unique : l'ouvrir ne charge rien depuis le
-réseau. La ligne de commande n'envoie jamais rien nulle part.
-
-**4. Lancer les tests** (contributeurs) :
-
-```bash
 uv run pytest
 uv run ruff check && uv run ruff format --check && uv run mypy
 ```
 
 Les tests qui ont besoin du corpus de référence sont sautés quand
-`corpus/files/` est absent : ces fichiers ne sont pas publiés (voir
-`corpus/README.md`).
+`corpus/files/` est absent : ces fichiers ne sont pas publiés (voir le
+[protocole du corpus](https://github.com/ChristKTMB/talaX/blob/main/corpus/README.md)).
 
-## Comment l'utiliser
+## Les trois façons de l'utiliser
 
 - **Bibliothèque Python** — `pip install talax`, à intégrer dans votre
   plateforme
 - **CLI** — tourne sur votre machine, votre fichier ne la quitte pas.
   Recommandée pour les fichiers sensibles.
-- **Application web** — hébergée, pour les vérifications rapides. Les fichiers
-  sont analysés puis supprimés immédiatement, jamais conservés.
+- **Application web** (à venir) — hébergée, pour les vérifications rapides. Les
+  fichiers seront analysés puis supprimés immédiatement, jamais conservés.
 
 Nécessite [ExifTool](https://exiftool.org/) et, pour la vidéo,
 [ffprobe](https://ffmpeg.org/).
@@ -150,4 +159,4 @@ contribution arrivera avec le premier code.
 
 ## Licence
 
-[Apache-2.0](LICENSE)
+[Apache-2.0](https://github.com/ChristKTMB/talaX/blob/main/LICENSE)
