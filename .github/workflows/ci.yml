@@ -6,19 +6,68 @@ on:
   pull_request:
 
 jobs:
-  check:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.3.3
-      - name: Install ExifTool (latest; the Ubuntu package is too old)
-        run: |
-          version=$(curl -fsS https://exiftool.org/ver.txt)
-          curl -fsSL "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-${version}.tar.gz/download" \
-            | tar -xz -C "$RUNNER_TEMP"
-          echo "$RUNNER_TEMP/Image-ExifTool-${version}" >> "$GITHUB_PATH"
       - run: uv sync --locked
       - run: uv run ruff check
       - run: uv run ruff format --check
       - run: uv run mypy
+
+  test:
+    name: test (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.12"]
+        include:
+          - os: ubuntu-latest
+            python: "3.13"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ matrix.python }}
+
+      # ExifTool 13+ on every system (distribution packages are too old).
+      - name: Install ExifTool (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          v=$(curl -fsS https://exiftool.org/ver.txt)
+          curl -fsSL "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-$v.tar.gz/download" \
+            | tar -xz -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/Image-ExifTool-$v" >> "$GITHUB_PATH"
+      - name: Install ExifTool (macOS)
+        if: runner.os == 'macOS'
+        run: brew install exiftool
+      - name: Install ExifTool (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          v=$(curl -fsS https://exiftool.org/ver.txt)
+          curl -fsSL -o exiftool.zip "https://sourceforge.net/projects/exiftool/files/exiftool-${v}_64.zip/download"
+          unzip -q exiftool.zip -d "$RUNNER_TEMP"
+          dir="$RUNNER_TEMP/exiftool-${v}_64"
+          mv "$dir/exiftool(-k).exe" "$dir/exiftool.exe"
+          cygpath -w "$dir" >> "$GITHUB_PATH"
+      - run: exiftool -ver
+
+      - run: uv sync --locked
       - run: uv run pytest
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+      - run: uv build
+      - run: uvx twine check --strict dist/*
+      - name: Install the wheel in a clean environment
+        run: |
+          uv venv /tmp/clean
+          uv pip install --python /tmp/clean/bin/python dist/*.whl
+          /tmp/clean/bin/python -c "import talax; print(talax.__version__)"
