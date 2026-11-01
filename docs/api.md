@@ -12,6 +12,13 @@ pip install "talax[server]"   # or: uv sync --all-extras
 talax serve                    # http://127.0.0.1:8000
 ```
 
+or the whole service, as deployed (API behind nginx, read-only containers,
+temporary files in memory):
+
+```sh
+docker compose up --build      # http://127.0.0.1:8088 (port: TALAX_PORT)
+```
+
 Real responses for every situation are in [`api-examples/`](api-examples/).
 
 ## What the server keeps
@@ -118,6 +125,4 @@ language:
 | 500 | `internal` | unexpected error; nothing can be concluded about the file |
 | 502 | `tiles_unavailable` | OpenStreetMap did not answer and the tile is not cached |
 | 503 | `busy` | four analyses already running; retry in a few seconds |
-
-Requests per address are also limited by the reverse proxy (10 analyses per
-minute).
+| 429 | `rate_limited` | more than 10 analyses per minute from one address (a burst of 5 is allowed), or too many tiles at once; sent by nginx |

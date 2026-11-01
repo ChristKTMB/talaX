@@ -71,3 +71,23 @@ jobs:
           uv venv /tmp/clean
           uv pip install --python /tmp/clean/bin/python dist/*.whl
           /tmp/clean/bin/python -c "import talax; print(talax.__version__)"
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker compose up --build --detach --wait
+      - name: Smoke test through nginx
+        run: |
+          curl -fsS http://127.0.0.1:8088/api/health | grep -q '"exiftool"'
+          head -c 2000 /dev/urandom > upload.jpg
+          curl -fsS -F file=@upload.jpg http://127.0.0.1:8088/api/analyze | grep -q '"schema":2'
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8088/api/nowhere)
+          test "$code" = 404
+      - name: No file left behind, no client address in the logs
+        run: |
+          test "$(docker compose exec -T api sh -c 'ls -A /tmp | wc -l')" = 0
+          # Clients reach nginx from Docker's private ranges.
+          ! docker compose logs | grep -E '\b(172\.(1[6-9]|2[0-9]|3[01])|192\.168|10)\.[0-9]+\.[0-9]+'
+      - if: always()
+        run: docker compose logs && docker compose down
