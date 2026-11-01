@@ -129,7 +129,7 @@ def _previews(source: Path) -> dict[str, str | None] | None:
             main = ImageOps.exif_transpose(im.convert("RGB"))
             main.thumbnail((_PREVIEW_SIZE, _PREVIEW_SIZE))
             main_uri = _data_uri(main)
-    except (OSError, ValueError):
+    except (OSError, ValueError, Image.DecompressionBombError):
         return None
     return {"image": main_uri, "thumbnail": _thumbnail(source, orientation)}
 
@@ -139,7 +139,7 @@ def thumbnail_uri(source: Path) -> str | None:
     try:
         with Image.open(source) as im:
             orientation = im.getexif().get(0x0112, 1)
-    except (OSError, ValueError):
+    except (OSError, ValueError, Image.DecompressionBombError):
         orientation = 1
     return _thumbnail(source, orientation)
 
@@ -151,7 +151,7 @@ def _thumbnail(source: Path, orientation: object) -> str | None:
     try:
         with Image.open(io.BytesIO(raw)) as th:
             return _data_uri(_orient(th.convert("RGB"), orientation))
-    except (OSError, ValueError):
+    except (OSError, ValueError, Image.DecompressionBombError):
         return None
 
 
