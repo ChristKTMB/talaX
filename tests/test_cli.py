@@ -46,7 +46,9 @@ def test_json_output_is_valid_and_has_no_banner(hostile_jpeg: Path) -> None:
     result = runner.invoke(app, ["analyze", str(hostile_jpeg), "--json"])
     assert result.exit_code == 0
     data = json.loads(result.output)
-    assert data["schema"] == 1
+    assert data["schema"] == 2
+    assert data["lang"] == "en"
+    assert all(r["message"] for r in data["results"])
     assert data["file"]["name"] == "photo.jpg"
     assert {r["signal"] for r in data["results"]} >= {"gps", "solar", "c2pa"}
     assert "See beyond" not in result.output
@@ -85,3 +87,34 @@ def test_bad_sky_value_is_a_usage_error(hostile_jpeg: Path) -> None:
 def test_missing_file_is_a_usage_error(tmp_path: Path) -> None:
     result = runner.invoke(app, ["analyze", str(tmp_path / "nope.jpg")])
     assert result.exit_code == 2
+
+
+def test_french_everywhere(hostile_jpeg: Path, tmp_path: Path) -> None:
+    report = tmp_path / "rapport.html"
+    text_out = runner.invoke(
+        app, ["analyze", str(hostile_jpeg), "--lang", "fr", "--html", str(report)]
+    )
+    assert text_out.exit_code == 0
+    assert "Intégrité" in text_out.output and "ne certifie jamais" in text_out.output
+
+    data = json.loads(
+        runner.invoke(
+            app, ["analyze", str(hostile_jpeg), "--lang", "fr", "--json"]
+        ).output
+    )
+    assert data["lang"] == "fr"
+    assert data["integrity"]["label"] in {
+        "Original d'appareil",
+        "Copie retraitée",
+        "Indéterminé",
+    }
+
+    html = report.read_text(encoding="utf-8")
+    assert '<html lang="fr">' in html and "Signaux" in html
+
+
+def test_system_language_is_the_default(hostile_jpeg: Path) -> None:
+    result = runner.invoke(
+        app, ["analyze", str(hostile_jpeg)], env={"LANG": "fr_FR.UTF-8", "LC_ALL": ""}
+    )
+    assert "Intégrité" in result.output

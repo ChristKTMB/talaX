@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'">
-<title>Tala X report — {{ data.file.name or data.file.sha256[:12] }}</title>
+<title>{{ t("ui.report.title") }} — {{ data.file.name or data.file.sha256[:12] }}</title>
 <style>
   :root {
     --ink: #1d232a; --muted: #5b6672; --line: #dfe3e8; --bg: #f6f7f9;
@@ -57,39 +57,39 @@
 <main>
   <header>
     <h1>Tala X</h1>
-    <span>See beyond the pixel</span>
+    <span>{{ t("ui.tagline") }}</span>
   </header>
 
   <section>
-    <h2>File</h2>
+    <h2>{{ t("ui.report.file") }}</h2>
     <dl>
-      {% if data.file.name %}<dt>Name</dt><dd>{{ data.file.name }}</dd>{% endif %}
+      {% if data.file.name %}<dt>{{ t("ui.report.name") }}</dt><dd>{{ data.file.name }}</dd>{% endif %}
       <dt>SHA-256</dt><dd><code>{{ data.file.sha256 }}</code></dd>
-      <dt>Size</dt><dd>{{ "{:,}".format(data.file.size) }} bytes</dd>
-      <dt>Format</dt><dd>{{ data.file.real_format or "unknown" }}</dd>
-      <dt>Analysed</dt><dd>{{ data.created_at }}</dd>
+      <dt>{{ t("ui.report.size") }}</dt><dd>{{ t("ui.cli.size", size=data.file.size) }}</dd>
+      <dt>{{ t("ui.report.format") }}</dt><dd>{{ data.file.real_format or t("ui.report.unknown") }}</dd>
+      <dt>{{ t("ui.report.analysed") }}</dt><dd>{{ data.created_at }}</dd>
     </dl>
   </section>
 
   <section class="verdict {{ verdict }}">
-    <h2>Integrity</h2>
-    <div class="label">{{ verdict_label }}</div>
+    <h2>{{ t("ui.integrity") }}</h2>
+    <div class="label">{{ data.integrity.label }}</div>
     <p>{{ data.integrity.explanation }}</p>
   </section>
 
   <section class="disclaimer">{{ data.disclaimer }}</section>
 
   <section>
-    <h2>Signals</h2>
+    <h2>{{ t("ui.report.signals") }}</h2>
     {% for r in results %}
     <div class="signal">
       <div class="head">
-        <span class="badge {{ r.state }}">{{ state_labels[r.state] }}</span>
-        <strong>{{ r.signal_id }}</strong>
+        <span class="badge {{ r.state }}">{{ r.label }}</span>
+        <strong>{{ r.name }}</strong>
       </div>
       <p>{{ r.explanation }}</p>
       {% if r.evidence %}
-      <details><summary>Raw values</summary>
+      <details><summary>{{ t("ui.report.raw_values") }}</summary>
         <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}
 {% endfor %}</pre>
       </details>
@@ -100,29 +100,23 @@
 
   {% if position %}
   <section>
-    <h2>Position</h2>
+    <h2>{{ t("ui.report.position") }}</h2>
     <p><code>{{ "%.6f"|format(position.lat) }}, {{ "%.6f"|format(position.lon) }}</code></p>
-    <p>No map is embedded: loading map tiles would reveal this position to a
-    map server. To see it on a map, copy the coordinates into the map service
-    of your choice, knowing it will receive them.</p>
+    <p>{{ t("ui.report.position_note") }}</p>
   </section>
   {% endif %}
 
   {% if previews %}
   <section>
-    <h2>Visual exploration — not conclusive</h2>
-    <p>The image and the small preview stored inside the file, side by side.
-    Some editors change the image but leave the old preview, which can then
-    show what was there before. On genuine photos the two can also differ
-    slightly (framing, colours), so no verdict is drawn from this: look for
-    yourself.</p>
+    <h2>{{ t("ui.report.exploration") }}</h2>
+    <p>{{ t("ui.report.exploration_note") }}</p>
     <div class="previews">
-      <figure><img src="{{ previews.image }}" alt="Image"><figcaption>Image</figcaption></figure>
+      <figure><img src="{{ previews.image }}" alt="{{ t("ui.report.image") }}"><figcaption>{{ t("ui.report.image") }}</figcaption></figure>
       <figure>
         {% if previews.thumbnail %}
-        <img src="{{ previews.thumbnail }}" alt="Embedded preview"><figcaption>Embedded preview</figcaption>
+        <img src="{{ previews.thumbnail }}" alt="{{ t("ui.report.preview") }}"><figcaption>{{ t("ui.report.preview") }}</figcaption>
         {% else %}
-        <figcaption>No embedded preview in this file.</figcaption>
+        <figcaption>{{ t("ui.report.no_preview") }}</figcaption>
         {% endif %}
       </figure>
     </div>
@@ -130,8 +124,7 @@
   {% endif %}
 
   <footer>
-    Generated {{ generated_at }} by Tala X {{ data.tools.talax }} with ExifTool
-    {{ data.tools.exiftool }}. Report schema {{ data.schema }}.
+    {{ t("ui.report.footer", generated=generated_at, talax=data.tools.talax, exiftool=data.tools.exiftool, schema=data.schema) }}
   </footer>
 </main>
 </body>

@@ -9,7 +9,7 @@ original camera file or a copy reprocessed by a platform, where and when it was
 taken, and whether it went through an editor. Video support (container
 metadata) is planned.
 
-> **Status: pre-alpha (0.1).** Usable, but rules and output may still change.
+> **Status: pre-alpha (0.2).** Usable, but rules and output may still change.
 
 ## The question Tala X asks first
 
@@ -98,7 +98,10 @@ talax analyze photo.jpg                     # report in the terminal
 talax analyze photo.jpg --sky day           # what the photo shows, for the solar check
 talax analyze photo.jpg --html report.html  # self-contained HTML report
 talax analyze photo.jpg --json              # machine-readable
+talax analyze photo.jpg --lang fr           # in French (default: your system language)
 ```
+
+Reports are available in English and French.
 
 Nothing is ever sent over the network. The HTML report is a single file:
 opening it loads nothing from the network either.
@@ -109,16 +112,18 @@ opening it loads nothing from the network either.
 from pathlib import Path
 
 from talax import Observation, Sky, analyze
+from talax.i18n import Language
 
 analysis = analyze(Path("photo.jpg"), observation=Observation(Sky.DAY))
-print(analysis.integrity.verdict, analysis.integrity.explanation)
+print(analysis.integrity.verdict, analysis.integrity.explain(Language.EN))
 for result in analysis.results:
-    print(result.signal_id, result.state, result.explanation)
+    print(result.signal_id, result.state, result.explain(Language.FR))
 ```
 
-Every result carries a state, a plain-language explanation and the raw values
-behind it (`result.evidence`). The JSON output of the command line follows a
-versioned schema (`"schema": 1`).
+Every result carries a state, a message (`result.message.key`, stable across
+languages), its explanation in English or French, and the raw values behind
+it (`result.evidence`). The JSON output of the command line follows a
+versioned schema (`"schema": 2`).
 
 ## Develop
 

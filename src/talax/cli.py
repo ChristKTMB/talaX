@@ -15,8 +15,9 @@ from rich.text import Text
 
 from talax.analysis import analyze
 from talax.extraction import ExifToolError
+from talax.i18n import Language, default_language, text
 from talax.model import Analysis, Observation, Sky, State
-from talax.report import DISCLAIMER, STATE_LABELS, VERDICT_LABELS, render_html, to_dict
+from talax.report import render_html, signal_name, state_label, to_dict, verdict_label
 
 BANNER = r"""
  _____         _           __  __
@@ -71,8 +72,13 @@ def analyze_command(
         Path | None,
         typer.Option(dir_okay=False, help="Also write a self-contained HTML report."),
     ] = None,
+    lang: Annotated[
+        Language | None,
+        typer.Option(help="Language of the report (default: the system language)."),
+    ] = None,
 ) -> None:
     """Analyse one file. Nothing is sent over the network."""
+    language = lang or default_language()
     try:
         analysis = analyze(file, observation=Observation(sky) if sky else None)
     except (OSError, ExifToolError) as exc:
@@ -80,12 +86,12 @@ def analyze_command(
         raise typer.Exit(1) from exc
 
     if html is not None:
-        html.write_text(render_html(analysis, file), encoding="utf-8")
+        html.write_text(render_html(analysis, file, language), encoding="utf-8")
 
     if json_output:
-        print(json.dumps(to_dict(analysis, file.name), indent=2))
+        print(json.dumps(to_dict(analysis, file.name, language), indent=2))
     else:
-        _print_text(analysis, file, sky is not None)
+        _print_text(analysis, file, language)
     if html is not None:
         err.print(_safe(f"HTML report written to {html}"))
 
@@ -104,37 +110,30 @@ def _safe(text: str) -> Text:
     return Text(_CONTROL.sub("", text))
 
 
-def _print_text(analysis: Analysis, file: Path, sky_given: bool) -> None:
+def _print_text(analysis: Analysis, file: Path, lang: Language) -> None:
     if sys.stdout.isatty():
         out.print(BANNER, highlight=False, markup=False)
     f = analysis.file
-    out.print(
-        _safe(f"{file.name}  {f.size:,} bytes  {f.real_format or ''}"), style="bold"
-    )
+    size = text("ui.cli.size", lang, size=f.size)
+    out.print(_safe(f"{file.name}  {size}  {f.real_format or ''}"), style="bold")
     out.print(_safe(f"SHA-256 {f.sha256}"), style="dim")
     out.print()
-    verdict = VERDICT_LABELS[analysis.integrity.verdict]
-    out.print(_safe(f"Integrity: {verdict}"), style="bold")
-    out.print(_safe(analysis.integrity.explanation))
+    verdict = verdict_label(analysis.integrity.verdict, lang)
+    out.print(_safe(text("ui.integrity_line", lang, verdict=verdict)), style="bold")
+    out.print(_safe(analysis.integrity.explain(lang)))
     out.print()
 
     table = Table(box=None, show_header=False, padding=(0, 1, 1, 0), expand=True)
     table.add_column(no_wrap=True)
     table.add_column(ratio=1)
     for r in analysis.results:
-        body = _safe(r.signal_id)
+        body = _safe(signal_name(r.signal_id, lang))
         body.stylize("bold")
         body.append("\n")
-        body.append_text(_safe(r.explanation))
-        table.add_row(Text(STATE_LABELS[r.state], style=_STYLES[r.state]), body)
+        body.append_text(_safe(r.explain(lang)))
+        table.add_row(Text(state_label(r.state, lang), style=_STYLES[r.state]), body)
     out.print(table)
 
-    if not sky_given and any(
-        r.signal_id == "solar" and "sun was" in r.explanation for r in analysis.results
-    ):
-        out.print(
-            "Tip: add --sky day|twilight|night to check the sun against the photo.",
-            style="cyan",
-            markup=False,
-        )
-    out.print(_safe(DISCLAIMER), style="dim")
+    if any(r.message.key == "solar.no_observation" for r in analysis.results):
+        out.print(text("ui.cli.sky_tip", lang), style="cyan", markup=False)
+    out.print(_safe(text("ui.disclaimer", lang)), style="dim")

@@ -95,7 +95,7 @@ def test_agreeing_clocks_are_consistent_and_offset_comes_from_vendor(
     result = capture(ctx)
     assert result.state is State.CONSISTENT
     assert result.evidence["offset"] == "+01:00"
-    assert "manufacturer" in str(result.evidence["offset_source"])
+    assert result.evidence["offset_source"] == "vendor"
     assert "5 clocks" in result.explanation
 
 

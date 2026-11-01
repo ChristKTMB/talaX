@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import pytest
 
 from talax import Context, Result, Signal, State, run_signals
+from tests.conftest import OK
 
 
 @dataclass
@@ -20,7 +21,7 @@ class FakeSignal:
             raise self.outcome
         if self.outcome is not None:
             return self.outcome  # type: ignore[return-value]
-        return Result(self.id, State.CONSISTENT, "Everything matches.")
+        return Result(self.id, State.CONSISTENT, OK)
 
 
 class RaisingRelevance(FakeSignal):
@@ -47,7 +48,7 @@ def test_irrelevant_signal_is_left_out(ctx: Context) -> None:
     [
         FakeSignal("a", outcome=RuntimeError("boom")),
         FakeSignal("a", outcome="not a result"),
-        FakeSignal("a", outcome=Result("other", State.CONSISTENT, "ok")),
+        FakeSignal("a", outcome=Result("other", State.CONSISTENT, OK)),
         RaisingRelevance("a"),
     ],
 )
@@ -67,12 +68,12 @@ def test_one_broken_signal_does_not_stop_the_others(ctx: Context) -> None:
     assert [r.state for r in results] == [State.UNVERIFIABLE, State.CONSISTENT]
 
 
-def test_empty_explanation_inside_a_signal_becomes_unverifiable(
+def test_plain_text_instead_of_a_message_becomes_unverifiable(
     ctx: Context,
 ) -> None:
     class Silent(FakeSignal):
         def evaluate(self, ctx: Context) -> Result:
-            return Result(self.id, State.SUSPICIOUS, "")
+            return Result(self.id, State.SUSPICIOUS, "")  # type: ignore[arg-type]
 
     (result,) = run_signals(ctx, [Silent("a")])
     assert result.state is State.UNVERIFIABLE

@@ -3,10 +3,16 @@
 
 id: whatsapp-gallery
 platform: WhatsApp
-route: photo sent from the gallery (standard quality)
-summary: >-
-  the camera metadata is gone and the image was re-encoded the way WhatsApp
-  does it.
+route:
+  en: photo sent from the gallery (standard quality)
+  fr: photo envoyée depuis la galerie (qualité standard)
+summary:
+  en: >-
+    the camera metadata is gone and the image was re-encoded the way WhatsApp
+    does it.
+  fr: >-
+    les métadonnées de l'appareil ont disparu et l'image a été réencodée comme
+    le fait WhatsApp.
 verdict: reprocessed
 
 # All conditions must hold for a file to match.

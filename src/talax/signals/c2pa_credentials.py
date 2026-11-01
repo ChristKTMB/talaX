@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
+from talax.i18n import Message
 from talax.model import C2paReport, Context, Result, State
 
 # The signed information itself was altered, or the signature is broken.
 _TAMPERED = {
-    "claimSignature.mismatch": "the signature does not match the credentials",
-    "claimSignature.missing": "the signature is missing",
-    "assertion.hashedURI.mismatch": "a statement in the credentials was altered "
-    "after signing",
-    "assertion.missing": "a signed statement is missing",
+    "claimSignature.mismatch",
+    "claimSignature.missing",
+    "assertion.hashedURI.mismatch",
+    "assertion.missing",
 }
 # The image no longer matches what was signed.
 _CONTENT_CHANGED = {
@@ -18,13 +18,19 @@ _CONTENT_CHANGED = {
     "assertion.bmffHash.mismatch",
     "assertion.boxesHash.mismatch",
 }
-_PLAIN = {
-    "signingCredential.untrusted": "the signer is not on a trust list known to Tala X",
-    "signingCredential.expired": "the signing certificate has expired",
-    "signingCredential.revoked": "the signing certificate was revoked",
-    "ingredient.manifest.missing": "the credentials of a source image it "
-    "refers to are missing",
+# Codes with their own plain-language message; others are shown as they are.
+_EXPLAINED = _TAMPERED | {
+    "signingCredential.untrusted",
+    "signingCredential.expired",
+    "signingCredential.revoked",
+    "ingredient.manifest.missing",
 }
+
+
+def _code(code: str) -> Message:
+    if code in _EXPLAINED:
+        return Message(f"c2pa.code.{code}")
+    return Message("c2pa.code.other", {"code": code})
 
 
 class C2paCredentials:
@@ -40,7 +46,7 @@ class C2paCredentials:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                "Content Credentials were not read for this analysis.",
+                Message("c2pa.not_read"),
             )
         evidence = _evidence(report)
 
@@ -48,72 +54,62 @@ class C2paCredentials:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                f"Content Credentials could not be read ({report.error}).",
+                Message("c2pa.read_error", {"error": report.error}),
                 evidence,
             )
         if not report.present:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                "The file carries no Content Credentials (C2PA). Most cameras "
-                "and phones do not produce them and platforms remove them, so "
-                "their absence says nothing about the image.",
+                Message("c2pa.absent"),
                 evidence,
             )
 
         about = _about(report)
-        tampered = [_TAMPERED[c] for c in report.codes if c in _TAMPERED]
+        tampered = [_code(c) for c in report.codes if c in _TAMPERED]
         if tampered:
             return Result(
                 self.id,
                 State.SUSPICIOUS,
-                f"The file carries Content Credentials, but {'; '.join(tampered)}. "
-                "Valid credentials cannot end up in this state by accident: "
-                f"they were tampered with or forged. {about}",
+                Message("c2pa.tampered", {"problems": tampered, "about": about}),
                 evidence,
             )
         if any(c in _CONTENT_CHANGED for c in report.codes):
             return Result(
                 self.id,
                 State.TO_CHECK,
-                "The file carries Content Credentials, but the image no longer "
-                "matches what was signed: it was modified or re-saved after "
-                f"signing, so the credentials do not describe this file. {about}",
+                Message("c2pa.content_changed", {"about": about}),
                 evidence,
             )
         if report.state == "Trusted":
             return Result(
                 self.id,
                 State.CONSISTENT,
-                "The file carries intact Content Credentials from a trusted "
-                f"signer. {about}",
+                Message("c2pa.trusted", {"about": about}),
                 evidence,
             )
-        problems = [_PLAIN.get(c, c) for c in report.codes] or [
-            "the library reported an unexplained problem"
-        ]
+        problems = [_code(c) for c in report.codes] or [Message("c2pa.code.none")]
         return Result(
             self.id,
             State.TO_CHECK,
-            f"The file carries Content Credentials, but {'; '.join(problems)}. "
-            "The signed information is intact, but who signed it cannot be "
-            f"confirmed. {about}",
+            Message("c2pa.unconfirmed_signer", {"problems": problems, "about": about}),
             evidence,
         )
 
 
-def _about(report: C2paReport) -> str:
-    parts = []
+def _about(report: C2paReport) -> Message:
+    parts: list[Message] = []
     if report.signer:
-        parts.append(f"Signer named in the certificate: “{report.signer}”")
+        parts.append(Message("c2pa.about.signer", {"signer": report.signer}))
     if report.generator:
-        parts.append(f"made with {report.generator}")
+        parts.append(Message("c2pa.about.generator", {"generator": report.generator}))
     if report.signed_at:
-        parts.append(f"signed {report.signed_at}")
-    text = (", ".join(parts) + ".") if parts else ""
+        parts.append(Message("c2pa.about.signed_at", {"when": report.signed_at}))
     if report.ai_declared:
-        text += " The credentials declare that the image was generated by AI."
-    return text.strip()
+        parts.append(Message("c2pa.about.ai_declared"))
+    if not parts:
+        return Message("c2pa.about.nothing")
+    return Message("c2pa.about", {"parts": parts})
 
 
 def _evidence(report: C2paReport) -> dict[str, object]:

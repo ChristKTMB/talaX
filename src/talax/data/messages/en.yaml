@@ -1,0 +1,224 @@
+# Tala X messages (English). Keys must match the other language file.
+state.consistent: Consistent
+state.to_check: To check
+state.suspicious: Suspicious
+state.unverifiable: Unverifiable
+verdict.original: Original camera file
+verdict.reprocessed: Reprocessed copy
+verdict.undetermined: Undetermined
+signal.real_format: Real file format
+signal.gps: GPS position
+signal.capture_time: Date and time
+signal.time_zone: Time zone
+signal.solar: Solar consistency
+signal.software: Editing software
+signal.c2pa: C2PA Content Credentials
+signal.internal_error: The “{signal}” check could not run because of an internal error. Nothing
+  can be concluded from it.
+duration.seconds: '{n} s'
+duration.minutes: '{n} min'
+duration.hours: '{n:g} h'
+duration.days: '{n} days'
+offset_source.exif: the EXIF offset
+offset_source.vendor: the manufacturer's clock
+offset_source.declaration: the declaration
+offset_source.zone: the legal time zone of the place, {zone}
+compass.N: north
+compass.NE: north-east
+compass.E: east
+compass.SE: south-east
+compass.S: south
+compass.SW: south-west
+compass.W: west
+compass.NW: north-west
+sky.day: day
+sky.twilight: twilight
+sky.night: night
+real_format.unrecognised: The file content is not a format Tala X recognises, so its real
+  format cannot be compared with its name.
+real_format.readers_disagree: The file content was read as {ours} by Tala X but as {exiftool}
+  by ExifTool. Such a disagreement is unusual and worth a closer look.
+real_format.no_extension: The file contains {real} data, but its name has no known extension
+  to compare with.
+real_format.consistent: 'The extension and the content agree: this is a {real} file.'
+real_format.mismatch: The file is named as {declared} but contains {real} data. This is often
+  harmless (a renamed file, an app saving in another format), but it means the file is not
+  what its name says.
+gps.masked: The file has a GPS block, but its position fields are blank. This matches how
+  Android hides the location of a photo shared through an app that is not allowed to see it.
+  The position cannot be recovered from this file; ask the source for the original copied
+  by cable.
+gps.absent: No position is recorded. Location was off on the device, or the metadata was removed
+  afterwards.
+gps.out_of_range: 'The recorded position ({lat}, {lon}) is outside the valid range: the GPS
+  data is corrupted or was written by hand.'
+gps.null_island: The recorded position is exactly 0, 0 (in the Gulf of Guinea). Devices write
+  this when they had no fix, so it is almost certainly not where the photo was taken.
+gps.consistent: 'Position recorded: {lat}, {lon}. {accuracy} A recorded position says where
+  the device placed itself, which can be edited like any metadata.'
+gps.accuracy.error: The device estimated its accuracy at {metres:.0f} m.
+gps.accuracy.gps: It comes from satellite positioning.
+gps.accuracy.cellid: It comes from the mobile network (cell towers); approximate, it can be
+  off by hundreds of metres or more.
+gps.accuracy.wlan: It comes from nearby Wi-Fi networks; approximate.
+gps.accuracy.network: It comes from the network (cell towers or Wi-Fi); approximate.
+gps.accuracy.fused: It comes from a mix of satellite and network positioning.
+gps.accuracy.other_method: 'Positioning method: {method}; accuracy not recorded.'
+gps.accuracy.unknown: Accuracy is not recorded.
+capture_time.absent: 'No capture time is recorded, or it is unreadable: the metadata was removed
+  or never written.'
+capture_time.when_offset: '{time} (UTC{offset}, from {source})'
+capture_time.when_local: '{time} local time (time zone not recorded)'
+capture_time.vendor_mismatch: The capture time says {when}, but the manufacturer's own clock,
+  written at the same instant, says {vendor} ({gap} apart). The device writes both together,
+  so one of them was most likely changed after the photo was taken.
+capture_time.note.created_later: the creation time ({time}) is {gap} away from the capture
+  time, so the file was probably saved again later
+capture_time.note.modified_later: the modification time ({time}) is {gap} away from the capture
+  time, so the file was probably saved again later
+capture_time.note.gps_gap: the GPS clock is {gap} away from the capture time; the device clock
+  may have been wrong, or the position fix was old
+capture_time.note.gps_not_whole_zone: the capture time and the GPS clock do not differ by
+  a whole time zone; the device clock may have been wrong
+capture_time.to_check: Captured {when}, but {notes}.
+capture_time.clocks_agree: Captured {when}. The {count} clocks recorded in the file agree.
+capture_time.single_clock: Captured {when}. No other clock is recorded to compare with.
+time_zone.no_position: No GPS position is recorded, so the time zone of the place cannot be
+  compared with the one the device used.
+time_zone.no_time: No capture time is recorded, so the time zone cannot be checked.
+time_zone.no_zone: The GPS position is not inside a known time zone (at sea, or invalid),
+  so the device's time zone cannot be checked.
+time_zone.not_recorded: The device recorded no time zone. The GPS position is in {zone} (UTC{expected}
+  on that date), which Tala X uses to place the photo in time.
+time_zone.consistent: The device's time zone (UTC{expected}, from {source}) matches the GPS
+  position, in {zone}.
+time_zone.ignored_dst: The device recorded UTC{recorded} (from {source}), but {zone} was on
+  daylight saving time, UTC{expected}, on that date. The device clock ignored daylight saving
+  time, which is common on cameras; the times in the file are then one hour off.
+time_zone.mismatch: The device recorded UTC{recorded} (from {source}), but the GPS position
+  is in {zone}, which was UTC{expected} on that date. A phone set to a fixed time zone while
+  travelling does this; so does an edited time or position.
+solar.missing_input: The position and the time of the photo are both needed to compute where
+  the sun was, and at least one is missing. For a file without metadata, enter the claimed
+  place and time by hand.
+solar.origin.file: recorded in the file
+solar.origin.declaration: declared
+solar.above: above
+solar.below: below
+sun.phase.day: full daylight
+sun.phase.low: low sun, close to sunrise or sunset
+sun.phase.civil: 'civil twilight: the sun is just below the horizon, the sky is still bright'
+sun.phase.dusk: 'dusk or dawn: the sky is darkening'
+sun.phase.night: night
+solar.description: 'At the place and time {origin} ({when}, time zone from {source}), the
+  sun was {elevation:.0f}° {side} the horizon, toward the {direction} ({azimuth:.0f}°): {phase}.'
+solar.description_with_shadows: 'At the place and time {origin} ({when}, time zone from {source}),
+  the sun was {elevation:.0f}° {side} the horizon, toward the {direction} ({azimuth:.0f}°):
+  {phase}. Outdoor shadows should point {shadow_direction}, about {shadow_ratio:.1f} times
+  as long as the object is tall.'
+solar.no_observation: '{description} Compare this with the photo: say whether it shows day,
+  twilight or night, and Tala X will check that it is physically possible.'
+solar.consistent: '{description} The photo shows {seen}, which matches.'
+solar.clock_shift: '{description} The photo shows {seen}, which does not match. It would match
+  if the clock or the time zone were off by {shift}, which happens (a phone set to the wrong
+  time zone while travelling). Otherwise the time or the place is false.'
+solar.impossible: '{description} The photo shows {seen}: this is physically impossible at
+  that place and time, and no clock error of up to {max} explains it. The recorded or claimed
+  time, or the place, is false.'
+software.editor: 'The file was saved by an image editor: {editors}. Editing is often legitimate
+  (cropping, exposure), but the image is no longer exactly what the camera produced.'
+software.photoshop_block: The file contains an Adobe Photoshop data block, a trace left by
+  Adobe editing software.
+software.other: 'Recorded software: {software}. It is not one of the image editors Tala X
+  recognises; that list is limited, and many editors write nothing at all.'
+software.none: No software is recorded in the file. Many editors and platforms write nothing,
+  so this neither suggests nor rules out editing.
+c2pa.not_read: Content Credentials were not read for this analysis.
+c2pa.read_error: Content Credentials could not be read ({error}).
+c2pa.absent: The file carries no Content Credentials (C2PA). Most cameras and phones do not
+  produce them and platforms remove them, so their absence says nothing about the image.
+c2pa.tampered: 'The file carries Content Credentials, but {problems}. Valid credentials cannot
+  end up in this state by accident: they were tampered with or forged. {about}'
+c2pa.content_changed: 'The file carries Content Credentials, but the image no longer matches
+  what was signed: it was modified or re-saved after signing, so the credentials do not describe
+  this file. {about}'
+c2pa.trusted: The file carries intact Content Credentials from a trusted signer. {about}
+c2pa.unconfirmed_signer: The file carries Content Credentials, but {problems}. The signed
+  information is intact, but who signed it cannot be confirmed. {about}
+c2pa.code.claimSignature.mismatch: the signature does not match the credentials
+c2pa.code.claimSignature.missing: the signature is missing
+c2pa.code.assertion.hashedURI.mismatch: a statement in the credentials was altered after signing
+c2pa.code.assertion.missing: a signed statement is missing
+c2pa.code.signingCredential.untrusted: the signer is not on a trust list known to Tala X
+c2pa.code.signingCredential.expired: the signing certificate has expired
+c2pa.code.signingCredential.revoked: the signing certificate was revoked
+c2pa.code.ingredient.manifest.missing: the credentials of a source image it refers to are
+  missing
+c2pa.code.other: the library reported “{code}”
+c2pa.code.none: the library reported an unexplained problem
+c2pa.about: 'Details: {parts}.'
+c2pa.about.signer: 'signer named in the certificate: “{signer}”'
+c2pa.about.generator: made with {generator}
+c2pa.about.signed_at: signed {when}
+c2pa.about.ai_declared: the credentials declare that the image was generated by AI
+c2pa.about.nothing: No details are given.
+integrity.several_fingerprints: The file matches the measured fingerprints of several apps
+  or platforms ({platforms}), which cannot be told apart on this file.
+integrity.fingerprint: 'The file matches the fingerprint of {platform}, {route}: {summary}
+  Fingerprint measured on {samples} files from {devices} device(s), {date}.'
+integrity.fingerprint_alone: 'The file matches the fingerprint of {platform}, {route}: {summary}
+  Fingerprint measured on {samples} files from {devices} device(s), {date}. No other app or
+  platform with a fingerprint has been measured against it yet, so one producing the same
+  output cannot be ruled out.'
+integrity.no_metadata_jpeg: The file carries no camera metadata at all. Phones and cameras
+  write it when they save a photo, so the file was re-saved by an app or platform that removed
+  it. No measured platform fingerprint matches, so which one is unknown.
+integrity.no_metadata_other: The file carries no camera metadata. It may be a screenshot,
+  an export or a platform copy; nothing in it tells which.
+integrity.editor: Camera metadata is present, but the file was saved by an image editor ({editors}).
+  It is no longer the file the camera produced, and it is not a platform copy either.
+integrity.size_mismatch: The image is {actual} pixels, but the camera recorded {recorded}.
+  The image was cropped, resized or rotated after it was taken, by an app that kept the original
+  metadata.
+integrity.mark.make_model: camera make and model
+integrity.mark.capture_time: original capture time
+integrity.mark.vendor_data: manufacturer-specific data
+integrity.missing_marks: 'Some camera metadata is present, but marks a camera original always
+  has are missing: {missing}. The file may have been re-saved by an app that kept part of
+  the metadata.'
+integrity.original: 'The file has the marks of a camera original from a {device}: make and
+  model, original capture time, and manufacturer-specific data ({vendor}), with no image editor
+  recorded. This says where the file comes from, not whether its content is true: metadata
+  can be forged by anyone who knows how.'
+ui.tagline: See beyond the pixel
+ui.disclaimer: 'Tala X never certifies that an image is authentic. It reports what can honestly
+  be said about a file. An original camera file is not proof that its content is true: metadata
+  can be forged by anyone who knows how. Tala X is built against platform laundering and recycled
+  images, not against expert forgers.'
+ui.integrity: Integrity
+ui.integrity_line: 'Integrity: {verdict}'
+ui.cli.sky_tip: 'Tip: add --sky day|twilight|night to check the sun against the photo.'
+ui.cli.size: '{size:,} bytes'
+ui.report.title: Tala X report
+ui.report.file: File
+ui.report.name: Name
+ui.report.size: Size
+ui.report.format: Format
+ui.report.unknown: unknown
+ui.report.analysed: Analysed
+ui.report.signals: Signals
+ui.report.raw_values: Raw values
+ui.report.position: Position
+ui.report.position_note: 'No map is embedded: loading map tiles would reveal this position
+  to a map server. To see it on a map, copy the coordinates into the map service of your choice,
+  knowing it will receive them.'
+ui.report.exploration: Visual exploration — not conclusive
+ui.report.exploration_note: 'The image and the small preview stored inside the file, side
+  by side. Some editors change the image but leave the old preview, which can then show what
+  was there before. On genuine photos the two can also differ slightly (framing, colours),
+  so no verdict is drawn from this: look for yourself.'
+ui.report.image: Image
+ui.report.preview: Embedded preview
+ui.report.no_preview: No embedded preview in this file.
+ui.report.footer: Generated {generated} by Tala X {talax} with ExifTool {exiftool}. Report
+  schema {schema}.

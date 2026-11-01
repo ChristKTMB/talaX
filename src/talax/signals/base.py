@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Protocol, runtime_checkable
 
+from talax.i18n import Language, Message, catalog
 from talax.model import Context, Result, State
 
 
@@ -52,12 +53,11 @@ def run_signals(ctx: Context, signals: Iterable[Signal]) -> tuple[Result, ...]:
 
 
 def _internal_error(signal: Signal, exc: Exception) -> Result:
+    name_key = f"signal.{signal.id}"
+    name = Message(name_key) if name_key in catalog(Language.EN) else signal.name
     return Result(
         signal_id=signal.id,
         state=State.UNVERIFIABLE,
-        explanation=(
-            f"The “{signal.name}” check could not run because of an internal "
-            "error. Nothing can be concluded from it."
-        ),
+        message=Message("signal.internal_error", {"signal": name}),
         evidence={"error_type": type(exc).__name__, "error": str(exc)},
     )

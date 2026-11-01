@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from talax.clock import format_offset, local, recorded_offset
+from talax.i18n import Message
 from talax.model import Context, Result, State
+from talax.phrases import offset_source
 from talax.solar import utc_offset, zone_at
 
 
@@ -22,22 +24,20 @@ class TimeZoneConsistency:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                "No GPS position is recorded, so the time zone of the place "
-                "cannot be compared with the one the device used.",
+                Message("time_zone.no_position"),
             )
         if when is None:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                "No capture time is recorded, so the time zone cannot be checked.",
+                Message("time_zone.no_time"),
             )
         zone = zone_at(lat, lon)
         if zone is None:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                "The GPS position is not inside a known time zone (at sea, or "
-                "invalid), so the device's time zone cannot be checked.",
+                Message("time_zone.no_zone"),
             )
         expected = format_offset(utc_offset(zone, when))
         recorded, source = recorded_offset(tags)
@@ -51,17 +51,23 @@ class TimeZoneConsistency:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                f"The device recorded no time zone. The GPS position is in "
-                f"{zone.key} (UTC{expected} on that date), which Tala X uses to "
-                "place the photo in time.",
+                Message(
+                    "time_zone.not_recorded", {"zone": zone.key, "expected": expected}
+                ),
                 evidence,
             )
         if format_offset(recorded) == expected:
             return Result(
                 self.id,
                 State.CONSISTENT,
-                f"The device's time zone (UTC{expected}, from {source}) matches "
-                f"the GPS position, in {zone.key}.",
+                Message(
+                    "time_zone.consistent",
+                    {
+                        "zone": zone.key,
+                        "expected": expected,
+                        "source": offset_source(source),
+                    },
+                ),
                 evidence,
             )
         dst = zone.dst(when.replace(tzinfo=zone))
@@ -70,19 +76,28 @@ class TimeZoneConsistency:
             return Result(
                 self.id,
                 State.TO_CHECK,
-                f"The device recorded UTC{format_offset(recorded)} (from "
-                f"{source}), but {zone.key} was on daylight saving time, "
-                f"UTC{expected}, on that date. The device clock ignored daylight "
-                "saving time, which is common on cameras; the times in the file "
-                "are then one hour off.",
+                Message(
+                    "time_zone.ignored_dst",
+                    {
+                        "recorded": format_offset(recorded),
+                        "source": offset_source(source),
+                        "zone": zone.key,
+                        "expected": expected,
+                    },
+                ),
                 evidence,
             )
         return Result(
             self.id,
             State.TO_CHECK,
-            f"The device recorded UTC{format_offset(recorded)} (from {source}), "
-            f"but the GPS position is in {zone.key}, which was UTC{expected} on "
-            "that date. A phone set to a fixed time zone while travelling does "
-            "this; so does an edited time or position.",
+            Message(
+                "time_zone.mismatch",
+                {
+                    "recorded": format_offset(recorded),
+                    "source": offset_source(source),
+                    "zone": zone.key,
+                    "expected": expected,
+                },
+            ),
             evidence,
         )

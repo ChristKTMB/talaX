@@ -1,0 +1,244 @@
+# Tala X messages (French). Keys must match the other language file.
+state.consistent: Cohérent
+state.to_check: À vérifier
+state.suspicious: Suspect
+state.unverifiable: Non vérifiable
+verdict.original: Original d'appareil
+verdict.reprocessed: Copie retraitée
+verdict.undetermined: Indéterminé
+signal.real_format: Format réel du fichier
+signal.gps: Position GPS
+signal.capture_time: Date et heure
+signal.time_zone: Fuseau horaire
+signal.solar: Cohérence solaire
+signal.software: Logiciel de retouche
+signal.c2pa: Certificats C2PA
+signal.internal_error: La vérification « {signal} » n'a pas pu s'exécuter à cause d'une erreur
+  interne. On ne peut rien en conclure.
+duration.seconds: '{n} s'
+duration.minutes: '{n} min'
+duration.hours: '{n:g} h'
+duration.days: '{n} jours'
+offset_source.exif: le décalage EXIF
+offset_source.vendor: l'horloge du fabricant
+offset_source.declaration: la déclaration
+offset_source.zone: le fuseau horaire légal du lieu, {zone}
+compass.N: le nord
+compass.NE: le nord-est
+compass.E: l'est
+compass.SE: le sud-est
+compass.S: le sud
+compass.SW: le sud-ouest
+compass.W: l'ouest
+compass.NW: le nord-ouest
+sky.day: le jour
+sky.twilight: le crépuscule
+sky.night: la nuit
+real_format.unrecognised: 'Le contenu du fichier n''est pas dans un format que Tala X reconnaît
+  : son format réel ne peut pas être comparé à son nom.'
+real_format.readers_disagree: Le contenu du fichier est lu comme du {ours} par Tala X, mais
+  comme du {exiftool} par ExifTool. Un tel désaccord est inhabituel et mérite un examen attentif.
+real_format.no_extension: Le fichier contient des données {real}, mais son nom n'a pas d'extension
+  connue à laquelle les comparer.
+real_format.consistent: 'L''extension et le contenu concordent : c''est un fichier {real}.'
+real_format.mismatch: Le fichier porte un nom de {declared} mais contient des données {real}.
+  C'est souvent anodin (fichier renommé, application qui enregistre dans un autre format),
+  mais le fichier n'est pas ce que son nom annonce.
+gps.masked: 'Le fichier contient un bloc GPS, mais ses champs de position sont vides. C''est
+  ainsi qu''Android masque la position d''une photo partagée par une application qui n''a
+  pas le droit de la voir. La position ne peut pas être retrouvée dans ce fichier : demandez
+  à la source l''original, copié par câble.'
+gps.absent: Aucune position n'est enregistrée. La localisation était désactivée sur l'appareil,
+  ou les métadonnées ont été supprimées ensuite.
+gps.out_of_range: 'La position enregistrée ({lat}, {lon}) est hors des valeurs possibles :
+  les données GPS sont corrompues ou ont été écrites à la main.'
+gps.null_island: 'La position enregistrée est exactement 0, 0 (dans le golfe de Guinée). Les
+  appareils l''écrivent quand ils n''ont pas de position : ce n''est presque certainement
+  pas l''endroit de la prise de vue.'
+gps.consistent: 'Position enregistrée : {lat}, {lon}. {accuracy} Une position enregistrée
+  dit où l''appareil s''est situé, et elle peut être modifiée comme toute métadonnée.'
+gps.accuracy.error: L'appareil a estimé sa précision à {metres:.0f} m.
+gps.accuracy.gps: Elle provient du positionnement par satellite.
+gps.accuracy.cellid: 'Elle provient du réseau mobile (antennes) : approximative, elle peut
+  être fausse de plusieurs centaines de mètres, voire davantage.'
+gps.accuracy.wlan: 'Elle provient des réseaux Wi-Fi proches : approximative.'
+gps.accuracy.network: 'Elle provient du réseau (antennes ou Wi-Fi) : approximative.'
+gps.accuracy.fused: Elle provient d'un mélange de positionnement par satellite et par réseau.
+gps.accuracy.other_method: 'Méthode de positionnement : {method} ; précision non enregistrée.'
+gps.accuracy.unknown: La précision n'est pas enregistrée.
+capture_time.absent: 'Aucune heure de prise de vue n''est enregistrée, ou elle est illisible
+  : les métadonnées ont été supprimées ou jamais écrites.'
+capture_time.when_offset: '{time} (UTC{offset}, d''après {source})'
+capture_time.when_local: '{time} heure locale (fuseau horaire non enregistré)'
+capture_time.vendor_mismatch: 'L''heure de prise de vue indique {when}, mais l''horloge propre
+  au fabricant, écrite au même instant, indique {vendor} ({gap} d''écart). L''appareil écrit
+  les deux en même temps : l''une des deux a très probablement été modifiée après la prise
+  de vue.'
+capture_time.note.created_later: 'l''heure de création ({time}) s''écarte de {gap} de l''heure
+  de prise de vue : le fichier a probablement été réenregistré plus tard'
+capture_time.note.modified_later: 'l''heure de modification ({time}) s''écarte de {gap} de
+  l''heure de prise de vue : le fichier a probablement été réenregistré plus tard'
+capture_time.note.gps_gap: 'l''horloge GPS s''écarte de {gap} de l''heure de prise de vue
+  : l''horloge de l''appareil était peut-être mal réglée, ou la position était ancienne'
+capture_time.note.gps_not_whole_zone: 'l''heure de prise de vue et l''horloge GPS ne diffèrent
+  pas d''un fuseau horaire entier : l''horloge de l''appareil était peut-être mal réglée'
+capture_time.to_check: Prise le {when}, mais {notes}.
+capture_time.clocks_agree: Prise le {when}. Les {count} horloges enregistrées dans le fichier
+  concordent.
+capture_time.single_clock: Prise le {when}. Aucune autre horloge n'est enregistrée pour comparer.
+time_zone.no_position: 'Aucune position GPS n''est enregistrée : le fuseau horaire du lieu
+  ne peut pas être comparé à celui de l''appareil.'
+time_zone.no_time: 'Aucune heure de prise de vue n''est enregistrée : le fuseau horaire ne
+  peut pas être vérifié.'
+time_zone.no_zone: 'La position GPS n''est dans aucun fuseau horaire connu (en mer, ou invalide)
+  : le fuseau de l''appareil ne peut pas être vérifié.'
+time_zone.not_recorded: L'appareil n'a enregistré aucun fuseau horaire. La position GPS est
+  dans le fuseau {zone} (UTC{expected} à cette date), que Tala X utilise pour situer la photo
+  dans le temps.
+time_zone.consistent: Le fuseau horaire de l'appareil (UTC{expected}, d'après {source}) correspond
+  à la position GPS, dans le fuseau {zone}.
+time_zone.ignored_dst: 'L''appareil a enregistré UTC{recorded} (d''après {source}), mais le
+  fuseau {zone} était à l''heure d''été, UTC{expected}, à cette date. L''horloge de l''appareil
+  ignorait l''heure d''été, ce qui est courant sur les appareils photo : les heures du fichier
+  sont alors décalées d''une heure.'
+time_zone.mismatch: L'appareil a enregistré UTC{recorded} (d'après {source}), mais la position
+  GPS est dans le fuseau {zone}, qui était à UTC{expected} à cette date. Un téléphone réglé
+  sur un fuseau fixe pendant un voyage produit cet écart ; une heure ou une position modifiée
+  aussi.
+solar.missing_input: La position et l'heure de la photo sont toutes deux nécessaires pour
+  calculer où était le soleil, et au moins l'une manque. Pour un fichier sans métadonnées,
+  saisissez à la main le lieu et l'heure annoncés.
+solar.origin.file: enregistrés dans le fichier
+solar.origin.declaration: déclarés
+solar.above: au-dessus
+solar.below: en dessous
+sun.phase.day: plein jour
+sun.phase.low: soleil bas, près du lever ou du coucher
+sun.phase.civil: 'crépuscule civil : le soleil est juste sous l''horizon, le ciel est encore
+  clair'
+sun.phase.dusk: 'aube ou crépuscule : le ciel s''assombrit'
+sun.phase.night: nuit
+solar.description: 'Au lieu et à l''heure {origin} ({when}, fuseau horaire d''après {source}),
+  le soleil était à {elevation:.0f}° {side} de l''horizon, vers {direction} ({azimuth:.0f}°)
+  : {phase}.'
+solar.description_with_shadows: 'Au lieu et à l''heure {origin} ({when}, fuseau horaire d''après
+  {source}), le soleil était à {elevation:.0f}° {side} de l''horizon, vers {direction} ({azimuth:.0f}°)
+  : {phase}. Les ombres extérieures devraient pointer vers {shadow_direction}, avec une longueur
+  d''environ {shadow_ratio:.1f} fois la hauteur de l''objet.'
+solar.no_observation: '{description} Comparez avec la photo : indiquez si elle montre le jour,
+  le crépuscule ou la nuit, et Tala X vérifiera que c''est physiquement possible.'
+solar.consistent: '{description} La photo montre {seen}, ce qui concorde.'
+solar.clock_shift: '{description} La photo montre {seen}, ce qui ne concorde pas. Cela concorderait
+  si l''horloge ou le fuseau horaire était décalé de {shift}, ce qui arrive (téléphone réglé
+  sur le mauvais fuseau pendant un voyage). Sinon, l''heure ou le lieu est faux.'
+solar.impossible: '{description} La photo montre {seen} : c''est physiquement impossible à
+  ce lieu et à cette heure, et aucune erreur d''horloge allant jusqu''à {max} ne l''explique.
+  L''heure enregistrée ou annoncée, ou le lieu, est faux.'
+software.editor: 'Le fichier a été enregistré par un logiciel de retouche : {editors}. La
+  retouche est souvent légitime (recadrage, exposition), mais l''image n''est plus exactement
+  celle produite par l''appareil.'
+software.photoshop_block: Le fichier contient un bloc de données Adobe Photoshop, une trace
+  laissée par les logiciels de retouche d'Adobe.
+software.other: 'Logiciel enregistré : {software}. Ce n''est pas un des logiciels de retouche
+  que Tala X reconnaît ; cette liste est limitée, et beaucoup de logiciels n''écrivent rien
+  du tout.'
+software.none: 'Aucun logiciel n''est enregistré dans le fichier. Beaucoup de logiciels et
+  de plateformes n''écrivent rien : cela ne suggère ni n''exclut une retouche.'
+c2pa.not_read: Les certificats C2PA n'ont pas été lus pour cette analyse.
+c2pa.read_error: Les certificats C2PA n'ont pas pu être lus ({error}).
+c2pa.absent: 'Le fichier ne contient aucun certificat C2PA. La plupart des appareils photo
+  et des téléphones n''en produisent pas, et les plateformes les suppriment : leur absence
+  ne dit rien de l''image.'
+c2pa.tampered: 'Le fichier contient des certificats C2PA, mais {problems}. Des certificats
+  valides ne peuvent pas arriver dans cet état par accident : ils ont été altérés ou fabriqués.
+  {about}'
+c2pa.content_changed: 'Le fichier contient des certificats C2PA, mais l''image ne correspond
+  plus à ce qui a été signé : elle a été modifiée ou réenregistrée après la signature, et
+  les certificats ne décrivent donc pas ce fichier. {about}'
+c2pa.trusted: Le fichier contient des certificats C2PA intacts, émis par un signataire de
+  confiance. {about}
+c2pa.unconfirmed_signer: Le fichier contient des certificats C2PA, mais {problems}. Les informations
+  signées sont intactes, mais l'identité du signataire ne peut pas être confirmée. {about}
+c2pa.code.claimSignature.mismatch: la signature ne correspond pas aux certificats
+c2pa.code.claimSignature.missing: la signature est absente
+c2pa.code.assertion.hashedURI.mismatch: une déclaration des certificats a été modifiée après
+  la signature
+c2pa.code.assertion.missing: une déclaration signée est absente
+c2pa.code.signingCredential.untrusted: le signataire ne figure sur aucune liste de confiance
+  connue de Tala X
+c2pa.code.signingCredential.expired: le certificat de signature a expiré
+c2pa.code.signingCredential.revoked: le certificat de signature a été révoqué
+c2pa.code.ingredient.manifest.missing: les certificats d'une image source à laquelle il renvoie
+  sont absents
+c2pa.code.other: la bibliothèque signale « {code} »
+c2pa.code.none: la bibliothèque signale un problème non expliqué
+c2pa.about: 'Détails : {parts}.'
+c2pa.about.signer: 'signataire nommé dans le certificat : « {signer} »'
+c2pa.about.generator: créé avec {generator}
+c2pa.about.signed_at: signé le {when}
+c2pa.about.ai_declared: les certificats déclarent que l'image a été générée par une IA
+c2pa.about.nothing: Aucun détail n'est fourni.
+integrity.several_fingerprints: Le fichier correspond aux empreintes mesurées de plusieurs
+  applications ou plateformes ({platforms}), impossibles à départager sur ce fichier.
+integrity.fingerprint: 'Le fichier correspond à l''empreinte de {platform}, {route} : {summary}
+  Empreinte mesurée sur {samples} fichiers provenant de {devices} appareil(s), le {date}.'
+integrity.fingerprint_alone: 'Le fichier correspond à l''empreinte de {platform}, {route}
+  : {summary} Empreinte mesurée sur {samples} fichiers provenant de {devices} appareil(s),
+  le {date}. Aucune autre application ou plateforme n''a encore été mesurée face à elle :
+  une autre produisant le même résultat ne peut pas être exclue.'
+integrity.no_metadata_jpeg: 'Le fichier ne contient aucune métadonnée d''appareil. Téléphones
+  et appareils photo les écrivent en enregistrant une photo : le fichier a donc été réenregistré
+  par une application ou une plateforme qui les a supprimées. Aucune empreinte de plateforme
+  mesurée ne correspond : on ne sait pas laquelle.'
+integrity.no_metadata_other: Le fichier ne contient aucune métadonnée d'appareil. Ce peut
+  être une capture d'écran, un export ou une copie de plateforme ; rien dans le fichier ne
+  permet de le dire.
+integrity.editor: Les métadonnées d'appareil sont présentes, mais le fichier a été enregistré
+  par un logiciel de retouche ({editors}). Ce n'est plus le fichier produit par l'appareil,
+  ni une copie de plateforme.
+integrity.size_mismatch: L'image fait {actual} pixels, mais l'appareil a enregistré {recorded}.
+  L'image a été recadrée, redimensionnée ou pivotée après la prise de vue, par une application
+  qui a conservé les métadonnées d'origine.
+integrity.mark.make_model: marque et modèle de l'appareil
+integrity.mark.capture_time: heure de prise de vue d'origine
+integrity.mark.vendor_data: données propres au fabricant
+integrity.missing_marks: 'Une partie des métadonnées d''appareil est présente, mais des marques
+  qu''un original possède toujours manquent : {missing}. Le fichier a peut-être été réenregistré
+  par une application qui a gardé une partie des métadonnées.'
+integrity.original: 'Le fichier porte les marques d''un original d''appareil ({device}) :
+  marque et modèle, heure de prise de vue d''origine et données propres au fabricant ({vendor}),
+  sans logiciel de retouche enregistré. Cela dit d''où vient le fichier, pas si son contenu
+  est vrai : les métadonnées peuvent être falsifiées par qui sait le faire.'
+ui.tagline: Regardez au-delà du pixel
+ui.disclaimer: 'Tala X ne certifie jamais qu''une image est authentique. Il rapporte ce qu''on
+  peut honnêtement dire d''un fichier. Un original d''appareil ne prouve pas que son contenu
+  est vrai : les métadonnées peuvent être falsifiées par qui sait le faire. Tala X est conçu
+  contre le blanchiment par les plateformes et les images recyclées, pas contre les faussaires
+  experts.'
+ui.integrity: Intégrité
+ui.integrity_line: 'Intégrité : {verdict}'
+ui.cli.sky_tip: 'Astuce : ajoutez --sky day|twilight|night pour comparer le soleil à la photo.'
+ui.cli.size: '{size:,} octets'
+ui.report.title: Rapport Tala X
+ui.report.file: Fichier
+ui.report.name: Nom
+ui.report.size: Taille
+ui.report.format: Format
+ui.report.unknown: inconnu
+ui.report.analysed: Analysé le
+ui.report.signals: Signaux
+ui.report.raw_values: Valeurs brutes
+ui.report.position: Position
+ui.report.position_note: 'Aucune carte n''est intégrée : charger des fonds de carte révélerait
+  cette position à un serveur. Pour la voir sur une carte, copiez les coordonnées dans le
+  service de votre choix, en sachant qu''il les recevra.'
+ui.report.exploration: Exploration visuelle — non concluante
+ui.report.exploration_note: 'L''image et le petit aperçu stocké dans le fichier, côte à côte.
+  Certains logiciels modifient l''image mais laissent l''ancien aperçu, qui peut alors montrer
+  ce qu''il y avait avant. Sur de vraies photos, les deux peuvent aussi différer légèrement
+  (cadrage, couleurs) : aucun verdict n''en est tiré, regardez par vous-même.'
+ui.report.image: Image
+ui.report.preview: Aperçu intégré
+ui.report.no_preview: Aucun aperçu intégré dans ce fichier.
+ui.report.footer: 'Généré le {generated} par Tala X {talax} avec ExifTool {exiftool}. Schéma
+  du rapport : {schema}.'

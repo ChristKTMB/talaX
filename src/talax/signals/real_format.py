@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from talax.i18n import Message
 from talax.model import Context, Result, State
 
 # Formats that are the same thing under two names.
@@ -47,40 +48,39 @@ class RealFormat:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                "The file content is not a format Tala X recognises, so its "
-                "real format cannot be compared with its name.",
+                Message("real_format.unrecognised"),
                 evidence,
             )
         if isinstance(exiftool, str) and _family(exiftool) != _family(real):
             return Result(
                 self.id,
                 State.TO_CHECK,
-                f"The file content was read as {_name(real)} by Tala X but as "
-                f"{_name(exiftool)} by ExifTool. Such a disagreement is unusual "
-                "and worth a closer look.",
+                Message(
+                    "real_format.readers_disagree",
+                    {"ours": _name(real), "exiftool": _name(exiftool)},
+                ),
                 evidence,
             )
         if declared is None:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                f"The file contains {_name(real)} data, but its name has no "
-                "known extension to compare with.",
+                Message("real_format.no_extension", {"real": _name(real)}),
                 evidence,
             )
         if _family(declared) == _family(real):
             return Result(
                 self.id,
                 State.CONSISTENT,
-                f"The extension and the content agree: this is a {_name(real)} file.",
+                Message("real_format.consistent", {"real": _name(real)}),
                 evidence,
             )
         return Result(
             self.id,
             State.TO_CHECK,
-            f"The file is named as {_name(declared)} but contains "
-            f"{_name(real)} data. This is often harmless (a renamed file, an "
-            "app saving in another format), but it means the file is not "
-            "what its name says.",
+            Message(
+                "real_format.mismatch",
+                {"declared": _name(declared), "real": _name(real)},
+            ),
             evidence,
         )

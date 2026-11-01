@@ -17,6 +17,7 @@ from typing import Any
 
 import yaml
 
+from talax.i18n import Localized
 from talax.model import IntegrityVerdict
 from talax.traits import Traits
 
@@ -43,8 +44,8 @@ class FingerprintError(ValueError):
 class Fingerprint:
     id: str
     platform: str
-    route: str
-    summary: str
+    route: Localized
+    summary: Localized
     """One plain-language sentence on what this app or platform does."""
     verdict: IntegrityVerdict
     match: Mapping[str, Any]
@@ -101,9 +102,18 @@ def parse_fingerprint(raw: object, source: str = "<fingerprint>") -> Fingerprint
         raise fail("must be a mapping")
     _check_keys(raw, _FIELDS, _FIELDS, fail)
 
-    for name in ("id", "platform", "route", "summary"):
+    for name in ("id", "platform"):
         if not isinstance(raw[name], str) or not raw[name].strip():
             raise fail(f"`{name}` must be a non-empty string")
+    localized = {}
+    for name in ("route", "summary"):
+        value = raw[name]
+        if not isinstance(value, dict) or set(value) != {"en", "fr"}:
+            raise fail(f"`{name}` needs exactly an `en` and a `fr` text")
+        try:
+            localized[name] = Localized(en=str(value["en"]), fr=str(value["fr"]))
+        except ValueError:
+            raise fail(f"`{name}` texts must not be empty") from None
     try:
         verdict = IntegrityVerdict(raw["verdict"])
     except ValueError:
@@ -147,8 +157,8 @@ def parse_fingerprint(raw: object, source: str = "<fingerprint>") -> Fingerprint
     return Fingerprint(
         id=raw["id"],
         platform=raw["platform"],
-        route=raw["route"],
-        summary=raw["summary"].strip(),
+        route=localized["route"],
+        summary=localized["summary"],
         verdict=verdict,
         match=match,
         measured_on=measured["date"],

@@ -47,14 +47,17 @@ def local(tags: Metadata, key: str, subsec_key: str | None = None) -> datetime |
 def recorded_offset(
     tags: Metadata, vendor: datetime | None = None
 ) -> tuple[timezone | None, str | None]:
-    """UTC offset recorded by the device, and where it was found."""
+    """UTC offset recorded by the device, and where it was found.
+
+    The source is a code: `exif` or `vendor` (the manufacturer's clock).
+    """
     if vendor is None:
         vendor = parse(tags.get("Samsung:TimeStamp"))
     raw = tags.get("ExifIFD:OffsetTimeOriginal")
     if isinstance(raw, str) and re.fullmatch(r"[+-]\d{2}:\d{2}", raw.strip()):
-        return offset_from_text(raw.strip()), "the EXIF offset"
+        return offset_from_text(raw.strip()), "exif"
     if vendor is not None and isinstance(vendor.tzinfo, timezone):
-        return vendor.tzinfo, "the manufacturer's clock"
+        return vendor.tzinfo, "vendor"
     return None, None
 
 

@@ -18,10 +18,7 @@ from timezonefinder import TimezoneFinder
 from talax.clock import local, recorded_offset
 from talax.model import Context
 
-_COMPASS = (
-    "north", "north-east", "east", "south-east",
-    "south", "south-west", "west", "north-west",
-)  # fmt: skip
+_COMPASS = ("N", "NE", "E", "SE", "S", "SW", "W", "NW")
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,22 +30,21 @@ class SunPosition:
 
     @property
     def phase(self) -> str:
+        """Code of the light phase: day, low, civil, dusk or night."""
         e = self.elevation
         if e >= 6:
-            return "full daylight"
+            return "day"
         if e >= 0:
-            return "low sun, close to sunrise or sunset"
+            return "low"
         if e >= -6:
-            return (
-                "civil twilight: the sun is just below the horizon, the sky is "
-                "still bright"
-            )
+            return "civil"
         if e >= -12:
-            return "dusk or dawn: the sky is darkening"
+            return "dusk"
         return "night"
 
     @property
     def shadow_direction(self) -> str | None:
+        """Compass code (N, NE, ...) the shadows point to."""
         if self.elevation <= 0:
             return None
         return compass((self.azimuth + 180) % 360)
@@ -70,6 +66,9 @@ class PlaceAndTime:
     source: str
     """`file` or `declaration`."""
     offset_source: str
+    """`exif`, `vendor`, `declaration` or `zone` (legal time zone of the place)."""
+    zone: str | None = None
+    """Time zone name when the offset comes from the place."""
 
 
 def sun_position(latitude: float, longitude: float, moment: datetime) -> SunPosition:
@@ -109,7 +108,7 @@ def place_and_time(ctx: Context) -> PlaceAndTime | None:
     if d is not None:
         if d.taken_at.tzinfo is not None:
             return PlaceAndTime(
-                d.latitude, d.longitude, d.taken_at, "declaration", "the declaration"
+                d.latitude, d.longitude, d.taken_at, "declaration", "declaration"
             )
         zone = zone_at(d.latitude, d.longitude)
         if zone is None:
@@ -119,7 +118,8 @@ def place_and_time(ctx: Context) -> PlaceAndTime | None:
             d.longitude,
             d.taken_at.replace(tzinfo=zone),
             "declaration",
-            f"the time zone at the declared place ({zone.key})",
+            "zone",
+            zone.key,
         )
 
     tags = ctx.metadata
@@ -129,13 +129,14 @@ def place_and_time(ctx: Context) -> PlaceAndTime | None:
         return None
     assert isinstance(lat, int | float) and isinstance(lon, int | float)
     offset, offset_source = recorded_offset(tags)
-    tz: tzinfo | None = offset
-    if tz is None:
-        zone = zone_at(lat, lon)
-        if zone is None:
-            return None
-        tz, offset_source = zone, f"the time zone at the GPS position ({zone.key})"
-    return PlaceAndTime(lat, lon, when.replace(tzinfo=tz), "file", str(offset_source))
+    if offset is not None:
+        return PlaceAndTime(
+            lat, lon, when.replace(tzinfo=offset), "file", str(offset_source)
+        )
+    zone = zone_at(lat, lon)
+    if zone is None:
+        return None
+    return PlaceAndTime(lat, lon, when.replace(tzinfo=zone), "file", "zone", zone.key)
 
 
 def utc_offset(zone: tzinfo, naive_local: datetime) -> timezone:

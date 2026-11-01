@@ -23,7 +23,7 @@ def test_sun_at_paris_on_the_summer_solstice_noon() -> None:
     )
     assert sun.elevation == pytest.approx(64.58, abs=0.1)
     assert sun.azimuth == pytest.approx(180, abs=3)
-    assert sun.shadow_direction == "north"
+    assert sun.shadow_direction == "N"
 
 
 def test_sun_is_below_the_horizon_at_midnight() -> None:
@@ -46,7 +46,7 @@ def test_zone_lookup() -> None:
 
 @pytest.mark.parametrize(
     ("degrees", "name"),
-    [(0, "north"), (44, "north-east"), (180, "south"), (350, "north")],
+    [(0, "N"), (44, "NE"), (180, "S"), (350, "N")],
 )
 def test_compass(degrees: float, name: str) -> None:
     assert compass(degrees) == name

@@ -10,13 +10,9 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 from talax.fingerprints import Fingerprint, builtin_fingerprints
+from talax.i18n import Message
 from talax.model import IntegrityAssessment, IntegrityVerdict
 from talax.traits import Traits, editors_in
-
-_FORGERY_CAVEAT = (
-    " This says where the file comes from, not whether its content is true: "
-    "metadata can be forged by anyone who knows how."
-)
 
 
 def assess_integrity(
@@ -45,25 +41,29 @@ def _from_fingerprints(
         verdicts = {f.verdict for f in matches}
         return IntegrityAssessment(
             verdicts.pop() if len(verdicts) == 1 else IntegrityVerdict.UNDETERMINED,
-            "The file matches the measured fingerprints of several apps or "
-            "platforms (" + ", ".join(platforms) + "), which cannot be told "
-            "apart on this file.",
+            Message(
+                "integrity.several_fingerprints", {"platforms": ", ".join(platforms)}
+            ),
             evidence=evidence,
         )
 
     f = matches[0]
-    explanation = (
-        f"The file matches the fingerprint of {f.platform}, {f.route}: "
-        f"{f.summary} Fingerprint measured on {f.samples} files from "
-        f"{len(f.devices)} device(s), {f.measured_on.isoformat()}."
+    params = {
+        "platform": f.platform,
+        "route": f.route,
+        "summary": f.summary,
+        "samples": f.samples,
+        "devices": len(f.devices),
+        "date": f.measured_on.isoformat(),
+    }
+    key = (
+        "integrity.fingerprint"
+        if f.distinguished_from
+        else "integrity.fingerprint_alone"
     )
-    if not f.distinguished_from:
-        explanation += (
-            " No other app or platform with a fingerprint has been measured "
-            "against it yet, so one producing the same output cannot be ruled "
-            "out."
-        )
-    return IntegrityAssessment(f.verdict, explanation, pipeline=f.id, evidence=evidence)
+    return IntegrityAssessment(
+        f.verdict, Message(key, params), pipeline=f.id, evidence=evidence
+    )
 
 
 def _from_generic_rules(t: Traits, evidence: dict[str, object]) -> IntegrityAssessment:
@@ -74,25 +74,19 @@ def _from_generic_rules(t: Traits, evidence: dict[str, object]) -> IntegrityAsse
         if t.real_format == "image/jpeg":
             return IntegrityAssessment(
                 IntegrityVerdict.REPROCESSED,
-                "The file carries no camera metadata at all. Phones and cameras "
-                "write it when they save a photo, so the file was re-saved by an "
-                "app or platform that removed it. No measured platform "
-                "fingerprint matches, so which one is unknown.",
+                Message("integrity.no_metadata_jpeg"),
                 evidence=evidence,
             )
         return IntegrityAssessment(
             IntegrityVerdict.UNDETERMINED,
-            "The file carries no camera metadata. It may be a screenshot, an "
-            "export or a platform copy; nothing in it tells which.",
+            Message("integrity.no_metadata_other"),
             evidence=evidence,
         )
 
     if editors:
         return IntegrityAssessment(
             IntegrityVerdict.UNDETERMINED,
-            "Camera metadata is present, but the file was saved by an image "
-            f"editor ({', '.join(editors)}). It is no longer the file the "
-            "camera produced, and it is not a platform copy either.",
+            Message("integrity.editor", {"editors": ", ".join(editors)}),
             evidence=evidence,
         )
 
@@ -100,34 +94,31 @@ def _from_generic_rules(t: Traits, evidence: dict[str, object]) -> IntegrityAsse
         (rw, rh), (pw, ph) = t.recorded_size, t.pixel_size
         return IntegrityAssessment(
             IntegrityVerdict.UNDETERMINED,
-            f"The image is {pw}x{ph} pixels, but the camera recorded {rw}x{rh}. "
-            "The image was cropped, resized or rotated after it was taken, by "
-            "an app that kept the original metadata.",
+            Message(
+                "integrity.size_mismatch",
+                {"actual": f"{pw}x{ph}", "recorded": f"{rw}x{rh}"},
+            ),
             evidence=evidence,
         )
 
     marks = {
-        "camera make and model": bool(t.make and t.model),
-        "original capture time": bool(t.datetime_original),
-        "manufacturer-specific data": bool(t.vendor_groups),
+        "integrity.mark.make_model": bool(t.make and t.model),
+        "integrity.mark.capture_time": bool(t.datetime_original),
+        "integrity.mark.vendor_data": bool(t.vendor_groups),
     }
-    missing = [name for name, ok in marks.items() if not ok]
+    missing = [Message(key) for key, ok in marks.items() if not ok]
     if missing:
         return IntegrityAssessment(
             IntegrityVerdict.UNDETERMINED,
-            "Some camera metadata is present, but marks a camera original "
-            f"always has are missing: {', '.join(missing)}. The file may have "
-            "been re-saved by an app that kept part of the metadata.",
+            Message("integrity.missing_marks", {"missing": missing}),
             evidence=evidence,
         )
 
-    device = f"{t.make} {t.model}"
     return IntegrityAssessment(
         IntegrityVerdict.ORIGINAL,
-        f"The file has the marks of a camera original from a {device}: make "
-        "and model, original capture time, and manufacturer-specific data ("
-        + ", ".join(t.vendor_groups)
-        + "), with no image editor recorded."
-        + _FORGERY_CAVEAT,
+        Message(
+            "integrity.original",
+            {"device": f"{t.make} {t.model}", "vendor": ", ".join(t.vendor_groups)},
+        ),
         evidence=evidence,
     )

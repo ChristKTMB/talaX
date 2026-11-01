@@ -9,7 +9,10 @@ from __future__ import annotations
 
 from datetime import timedelta
 
+from talax.i18n import Message
 from talax.model import Context, Result, Sky, State
+from talax.phrases import compass as compass_name
+from talax.phrases import hours, offset_source
 from talax.solar import PlaceAndTime, SunPosition, compass, place_and_time, sun_position
 
 # Sun elevations (degrees) compatible with what the user reports. Deliberately
@@ -37,10 +40,7 @@ class SolarConsistency:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                "The position and the time of the photo are both needed to "
-                "compute where the sun was, and at least one is missing. For a "
-                "file without metadata, enter the claimed place and time by "
-                "hand.",
+                Message("solar.missing_input"),
             )
 
         sun = sun_position(pt.latitude, pt.longitude, pt.moment)
@@ -52,19 +52,20 @@ class SolarConsistency:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                f"{description} Compare this with the photo: say whether it "
-                "shows day, twilight or night, and Tala X will check that it "
-                "is physically possible.",
+                Message("solar.no_observation", {"description": description}),
                 evidence,
             )
 
         seen = observation.sky
         evidence["observed_sky"] = str(seen)
+        seen_text = Message(f"sky.{seen}")
         if _COMPATIBLE[seen](sun.elevation):
             return Result(
                 self.id,
                 State.CONSISTENT,
-                f"{description} The photo shows {seen}, which matches.",
+                Message(
+                    "solar.consistent", {"description": description, "seen": seen_text}
+                ),
                 evidence,
             )
 
@@ -74,20 +75,27 @@ class SolarConsistency:
             return Result(
                 self.id,
                 State.TO_CHECK,
-                f"{description} The photo shows {seen}, which does not match. "
-                f"It would match if the clock or the time zone were off by "
-                f"{_hours(shift)}, which happens (a phone set to the wrong time "
-                "zone while travelling). Otherwise the time or the place is "
-                "false.",
+                Message(
+                    "solar.clock_shift",
+                    {
+                        "description": description,
+                        "seen": seen_text,
+                        "shift": hours(shift),
+                    },
+                ),
                 evidence,
             )
         return Result(
             self.id,
             State.SUSPICIOUS,
-            f"{description} The photo shows {seen}: this is physically "
-            "impossible at that place and time, and no clock error of up to "
-            f"{_hours(_CLOCK_ERROR)} explains it. The recorded or claimed time, "
-            "or the place, is false.",
+            Message(
+                "solar.impossible",
+                {
+                    "description": description,
+                    "seen": seen_text,
+                    "max": hours(_CLOCK_ERROR),
+                },
+            ),
             evidence,
         )
 
@@ -103,21 +111,27 @@ def _smallest_fitting_shift(pt: PlaceAndTime, seen: Sky) -> timedelta | None:
     return None
 
 
-def _describe(pt: PlaceAndTime, sun: SunPosition) -> str:
-    when = pt.moment.strftime("%Y-%m-%d %H:%M")
-    origin = "recorded in the file" if pt.source == "file" else "declared"
-    text = (
-        f"At the place and time {origin} ({when}, time zone from "
-        f"{pt.offset_source}), the sun was {abs(sun.elevation):.0f}° "
-        f"{'above' if sun.elevation >= 0 else 'below'} the horizon, toward the "
-        f"{compass(sun.azimuth)} ({sun.azimuth:.0f}°): {sun.phase}."
-    )
+def _describe(pt: PlaceAndTime, sun: SunPosition) -> Message:
+    params = {
+        "origin": Message(f"solar.origin.{pt.source}"),
+        "when": pt.moment.strftime("%Y-%m-%d %H:%M"),
+        "source": offset_source(pt.offset_source, pt.zone),
+        "elevation": abs(sun.elevation),
+        "side": Message("solar.above" if sun.elevation >= 0 else "solar.below"),
+        "direction": compass_name(compass(sun.azimuth)),
+        "azimuth": sun.azimuth,
+        "phase": Message(f"sun.phase.{sun.phase}"),
+    }
     if sun.shadow_direction and sun.shadow_ratio is not None:
-        text += (
-            f" Outdoor shadows should point {sun.shadow_direction}, about "
-            f"{sun.shadow_ratio:.1f} times as long as the object is tall."
+        return Message(
+            "solar.description_with_shadows",
+            {
+                **params,
+                "shadow_direction": compass_name(sun.shadow_direction),
+                "shadow_ratio": sun.shadow_ratio,
+            },
         )
-    return text
+    return Message("solar.description", params)
 
 
 def _evidence(pt: PlaceAndTime, sun: SunPosition) -> dict[str, object]:
@@ -127,13 +141,9 @@ def _evidence(pt: PlaceAndTime, sun: SunPosition) -> dict[str, object]:
         "moment": pt.moment.isoformat(),
         "source": pt.source,
         "offset_source": pt.offset_source,
+        "zone": pt.zone,
         "sun_elevation": round(sun.elevation, 2),
         "sun_azimuth": round(sun.azimuth, 2),
         "shadow_direction": sun.shadow_direction,
         "shadow_ratio": round(sun.shadow_ratio, 2) if sun.shadow_ratio else None,
     }
-
-
-def _hours(delta: timedelta) -> str:
-    hours = abs(delta.total_seconds()) / 3600
-    return f"{hours:g} hour" + ("" if hours == 1 else "s")

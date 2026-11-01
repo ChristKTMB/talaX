@@ -2,17 +2,11 @@
 
 from __future__ import annotations
 
+from talax.i18n import Message
 from talax.model import Context, Result, State
 
-# Values of GPSProcessingMethod and what they mean for accuracy.
-_METHODS = {
-    "GPS": "satellite positioning",
-    "CELLID": "the mobile network (cell towers); approximate, it can be off "
-    "by hundreds of metres or more",
-    "WLAN": "nearby Wi-Fi networks; approximate",
-    "NETWORK": "the network (cell towers or Wi-Fi); approximate",
-    "FUSED": "a mix of satellite and network positioning",
-}
+# Values of GPSProcessingMethod with a message explaining their accuracy.
+_METHODS = {"GPS", "CELLID", "WLAN", "NETWORK", "FUSED"}
 
 
 class GpsPosition:
@@ -33,18 +27,13 @@ class GpsPosition:
                 return Result(
                     self.id,
                     State.UNVERIFIABLE,
-                    "The file has a GPS block, but its position fields are "
-                    "blank. This matches how Android hides the location of a "
-                    "photo shared through an app that is not allowed to see "
-                    "it. The position cannot be recovered from this file; ask "
-                    "the source for the original copied by cable.",
+                    Message("gps.masked"),
                     {"gps_block": True, "masked": True},
                 )
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
-                "No position is recorded. Location was off on the device, or "
-                "the metadata was removed afterwards.",
+                Message("gps.absent"),
                 {"gps_block": False},
             )
 
@@ -56,45 +45,41 @@ class GpsPosition:
             "method": tags.get("GPS:GPSProcessingMethod") or None,
             "error_m": tags.get("GPS:GPSHPositioningError"),
         }
-        where = f"{lat:.5f}, {lon:.5f}"
+        # Coordinates keep a decimal point in every language.
+        where = {"lat": f"{lat:.5f}", "lon": f"{lon:.5f}"}
 
         if not (-90 <= lat <= 90 and -180 <= lon <= 180):
             return Result(
                 self.id,
                 State.TO_CHECK,
-                f"The recorded position ({where}) is outside the valid range: "
-                "the GPS data is corrupted or was written by hand.",
+                Message("gps.out_of_range", where),
                 evidence,
             )
         if lat == 0 and lon == 0:
             return Result(
                 self.id,
                 State.TO_CHECK,
-                "The recorded position is exactly 0, 0 (in the Gulf of "
-                "Guinea). Devices write this when they had no fix, so it is "
-                "almost certainly not where the photo was taken.",
+                Message("gps.null_island"),
                 evidence,
             )
         return Result(
             self.id,
             State.CONSISTENT,
-            f"Position recorded: {where}. {_accuracy(evidence)} A recorded "
-            "position says where the device placed itself, which can be "
-            "edited like any metadata.",
+            Message("gps.consistent", {**where, "accuracy": _accuracy(evidence)}),
             evidence,
         )
 
 
-def _accuracy(evidence: dict[str, object]) -> str:
+def _accuracy(evidence: dict[str, object]) -> Message:
     error = evidence["error_m"]
     if _is_number(error):
-        return f"The device estimated its accuracy at {error:.0f} m."
+        return Message("gps.accuracy.error", {"metres": float(error)})  # type: ignore[arg-type]
     method = str(evidence["method"] or "").strip().upper()
     if method in _METHODS:
-        return f"It comes from {_METHODS[method]}."
+        return Message(f"gps.accuracy.{method.lower()}")
     if method:
-        return f"Positioning method: {method}; accuracy not recorded."
-    return "Accuracy is not recorded."
+        return Message("gps.accuracy.other_method", {"method": method})
+    return Message("gps.accuracy.unknown")
 
 
 def _is_number(value: object) -> bool:

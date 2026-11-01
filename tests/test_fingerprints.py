@@ -11,8 +11,8 @@ from talax.traits import Traits
 VALID: dict[str, Any] = {
     "id": "demo",
     "platform": "Demo",
-    "route": "demo route",
-    "summary": "it does demo things.",
+    "route": {"en": "demo route", "fr": "itinéraire de démo"},
+    "summary": {"en": "it does demo things.", "fr": "il fait des choses de démo."},
     "verdict": "reprocessed",
     "match": {
         "formats": ["image/jpeg"],
@@ -105,6 +105,9 @@ def test_any_differing_trait_prevents_a_match(override: dict[str, Any]) -> None:
         ("verdict", "fake"),
         ("platform", " "),
         ("summary", KeyError),
+        ("summary", {"en": "only English"}),
+        ("route", "not localized"),
+        ("summary.fr", " "),
         ("match", {}),
         ("match.exif", "maybe"),
         ("match.progressive", "yes"),

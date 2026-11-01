@@ -9,7 +9,7 @@ fichier original d'appareil ou une copie retraitée par une plateforme, où et
 quand elle a été prise, et si elle est passée par un logiciel de retouche. La
 vidéo (métadonnées de conteneur) est prévue.
 
-> **État : pré-alpha (0.1).** Utilisable, mais les règles et la sortie peuvent encore changer.
+> **État : pré-alpha (0.2).** Utilisable, mais les règles et la sortie peuvent encore changer.
 
 ## La question posée en premier
 
@@ -102,7 +102,10 @@ talax analyze photo.jpg                       # rapport dans le terminal
 talax analyze photo.jpg --sky day             # ce que montre la photo, pour la cohérence solaire
 talax analyze photo.jpg --html rapport.html   # rapport HTML autonome
 talax analyze photo.jpg --json                # format machine
+talax analyze photo.jpg --lang en             # en anglais (par défaut : la langue du système)
 ```
+
+Les rapports existent en français et en anglais.
 
 Rien n'est jamais envoyé sur le réseau. Le rapport HTML est un fichier unique :
 l'ouvrir ne charge rien depuis le réseau non plus.
@@ -113,16 +116,18 @@ l'ouvrir ne charge rien depuis le réseau non plus.
 from pathlib import Path
 
 from talax import Observation, Sky, analyze
+from talax.i18n import Language
 
 analysis = analyze(Path("photo.jpg"), observation=Observation(Sky.DAY))
-print(analysis.integrity.verdict, analysis.integrity.explanation)
+print(analysis.integrity.verdict, analysis.integrity.explain(Language.FR))
 for result in analysis.results:
-    print(result.signal_id, result.state, result.explanation)
+    print(result.signal_id, result.state, result.explain(Language.FR))
 ```
 
-Chaque résultat porte un état, une explication en langage clair et les valeurs
-brutes qui y ont mené (`result.evidence`). La sortie JSON de la ligne de
-commande suit un schéma versionné (`"schema": 1`).
+Chaque résultat porte un état, un message (`result.message.key`, identique
+dans les deux langues), son explication en français ou en anglais, et les
+valeurs brutes qui y ont mené (`result.evidence`). La sortie JSON de la ligne
+de commande suit un schéma versionné (`"schema": 2`).
 
 ## Développer
 

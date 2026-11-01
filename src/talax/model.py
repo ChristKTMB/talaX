@@ -9,6 +9,8 @@ from enum import StrEnum
 from types import MappingProxyType
 from typing import Any
 
+from talax.i18n import Language, Message, translate
+
 
 def _freeze(value: Mapping[str, Any]) -> Mapping[str, Any]:
     return MappingProxyType(dict(value))
@@ -90,15 +92,22 @@ class Observation:
 @dataclass(frozen=True, slots=True)
 class IntegrityAssessment:
     verdict: IntegrityVerdict
-    explanation: str
+    message: Message
+    """Plain-language explanation, written in the reader's language on display."""
     pipeline: str | None = None
     """Identified platform pipeline, e.g. `whatsapp-gallery`, when known."""
     evidence: Mapping[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        if not self.explanation.strip():
-            raise ValueError("an integrity assessment needs an explanation")
         object.__setattr__(self, "evidence", _freeze(self.evidence))
+
+    def explain(self, lang: Language = Language.EN) -> str:
+        return translate(self.message, lang)
+
+    @property
+    def explanation(self) -> str:
+        """The explanation in English."""
+        return self.explain()
 
 
 @dataclass(frozen=True, slots=True)
@@ -136,19 +145,28 @@ class Context:
 class Result:
     signal_id: str
     state: State
-    explanation: str
-    """Plain language, never empty: a flag without explanation is never shown."""
+    message: Message
+    """Plain-language explanation, never missing: a flag without explanation is
+    never shown. Stored as a message key so it can be read in any language."""
     evidence: Mapping[str, Any] = field(default_factory=dict)
     """Raw values that led to the verdict, so the report can show the reasoning."""
     confidence: float | None = None
     """Only where a real probability exists; None for deterministic signals."""
 
     def __post_init__(self) -> None:
-        if not self.explanation.strip():
-            raise ValueError(f"signal {self.signal_id!r} returned no explanation")
+        if not isinstance(self.message, Message):
+            raise TypeError(f"signal {self.signal_id!r} returned no message")
         if self.confidence is not None and not 0.0 <= self.confidence <= 1.0:
             raise ValueError(f"confidence out of [0, 1]: {self.confidence}")
         object.__setattr__(self, "evidence", _freeze(self.evidence))
+
+    def explain(self, lang: Language = Language.EN) -> str:
+        return translate(self.message, lang)
+
+    @property
+    def explanation(self) -> str:
+        """The explanation in English."""
+        return self.explain()
 
 
 @dataclass(frozen=True, slots=True)

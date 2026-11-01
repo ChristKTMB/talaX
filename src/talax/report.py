@@ -18,31 +18,27 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from PIL import Image, ImageOps
 
 from talax.extraction import exiftool_version, read_thumbnail
+from talax.i18n import Language, catalog, text
 from talax.model import Analysis, IntegrityVerdict, State
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+"""2: messages carry a key (`message`) and the text in the requested `lang`."""
 
-DISCLAIMER = (
-    "Tala X never certifies that an image is authentic. It reports what can "
-    "honestly be said about a file. An original camera file is not proof that "
-    "its content is true: metadata can be forged by anyone who knows how. "
-    "Tala X is built against platform laundering and recycled images, not "
-    "against expert forgers."
-)
-
-STATE_LABELS = {
-    State.CONSISTENT: "Consistent",
-    State.TO_CHECK: "To check",
-    State.SUSPICIOUS: "Suspicious",
-    State.UNVERIFIABLE: "Unverifiable",
-}
-VERDICT_LABELS = {
-    IntegrityVerdict.ORIGINAL: "Original camera file",
-    IntegrityVerdict.REPROCESSED: "Reprocessed copy",
-    IntegrityVerdict.UNDETERMINED: "Undetermined",
-}
 _STATE_ORDER = [State.SUSPICIOUS, State.TO_CHECK, State.CONSISTENT, State.UNVERIFIABLE]
 _PREVIEW_SIZE = 640
+
+
+def state_label(state: State, lang: Language) -> str:
+    return text(f"state.{state}", lang)
+
+
+def verdict_label(verdict: IntegrityVerdict, lang: Language) -> str:
+    return text(f"verdict.{verdict}", lang)
+
+
+def signal_name(signal_id: str, lang: Language) -> str:
+    key = f"signal.{signal_id}"
+    return text(key, lang) if key in catalog(lang) else signal_id
 
 
 def tool_versions() -> dict[str, str]:
@@ -50,11 +46,14 @@ def tool_versions() -> dict[str, str]:
     return {"talax": version("talax"), "exiftool": f"{major}.{minor:02d}"}
 
 
-def to_dict(analysis: Analysis, file_name: str | None = None) -> dict[str, Any]:
+def to_dict(
+    analysis: Analysis, file_name: str | None = None, lang: Language = Language.EN
+) -> dict[str, Any]:
     """Stable, JSON-ready view of an analysis. Bump SCHEMA_VERSION on changes."""
     integrity = analysis.integrity
     return {
         "schema": SCHEMA_VERSION,
+        "lang": str(lang),
         "tools": tool_versions(),
         "created_at": analysis.created_at.isoformat(),
         "file": {
@@ -66,36 +65,45 @@ def to_dict(analysis: Analysis, file_name: str | None = None) -> dict[str, Any]:
         },
         "integrity": {
             "verdict": str(integrity.verdict),
+            "label": verdict_label(integrity.verdict, lang),
             "pipeline": integrity.pipeline,
-            "explanation": integrity.explanation,
+            "message": integrity.message.key,
+            "explanation": integrity.explain(lang),
             "evidence": _plain(integrity.evidence),
         },
         "results": [
             {
                 "signal": r.signal_id,
+                "name": signal_name(r.signal_id, lang),
                 "state": str(r.state),
-                "explanation": r.explanation,
+                "label": state_label(r.state, lang),
+                "message": r.message.key,
+                "explanation": r.explain(lang),
                 "evidence": _plain(r.evidence),
                 "confidence": r.confidence,
             }
             for r in analysis.results
         ],
-        "disclaimer": DISCLAIMER,
+        "disclaimer": text("ui.disclaimer", lang),
     }
 
 
-def render_html(analysis: Analysis, source: Path | None = None) -> str:
+def render_html(
+    analysis: Analysis, source: Path | None = None, lang: Language = Language.EN
+) -> str:
     env = Environment(
         loader=PackageLoader("talax", "templates"),
         autoescape=select_autoescape(["html", "j2"], default=True),
     )
-    data = to_dict(analysis, source.name if source else None)
-    results = sorted(analysis.results, key=lambda r: _STATE_ORDER.index(r.state))
+    data = to_dict(analysis, source.name if source else None, lang)
+    results = sorted(
+        data["results"], key=lambda r: _STATE_ORDER.index(State(r["state"]))
+    )
     return env.get_template("report.html.j2").render(
         data=data,
         results=results,
-        state_labels=STATE_LABELS,
-        verdict_label=VERDICT_LABELS[analysis.integrity.verdict],
+        lang=str(lang),
+        t=lambda key, **params: text(key, lang, **params),
         verdict=str(analysis.integrity.verdict),
         position=_position(analysis),
         previews=_previews(source) if source else None,

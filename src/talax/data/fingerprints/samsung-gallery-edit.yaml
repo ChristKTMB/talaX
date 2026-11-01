@@ -3,12 +3,21 @@
 
 id: samsung-gallery-edit
 platform: Samsung Gallery
-route: photo edited and saved on the phone
-summary: >-
-  the camera metadata was kept, but the image was re-encoded by the Samsung
-  Gallery editor (JFIF header added, byte order changed, embedded preview and
-  network country code removed). The content may have been changed in any
-  way the editor allows: filters, stickers, text, object removal.
+route:
+  en: photo edited and saved on the phone
+  fr: photo retouchée et enregistrée sur le téléphone
+summary:
+  en: >-
+    the camera metadata was kept, but the image was re-encoded by the Samsung
+    Gallery editor (JFIF header added, byte order changed, embedded preview and
+    network country code removed). The content may have been changed in any
+    way the editor allows: filters, stickers, text, object removal.
+  fr: >-
+    les métadonnées de l'appareil ont été conservées, mais l'image a été
+    réencodée par l'éditeur de la Galerie Samsung (en-tête JFIF ajouté, ordre
+    des octets modifié, aperçu intégré et code pays du réseau supprimés). Le
+    contenu a pu être modifié de toutes les façons que permet l'éditeur :
+    filtres, autocollants, texte, suppression d'objets.
 verdict: undetermined
 
 match:

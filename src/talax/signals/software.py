@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from talax.i18n import Message
 from talax.model import Context, Result, State
 from talax.traits import editors_in, software_strings
 
@@ -26,32 +27,26 @@ class EditingSoftware:
             return Result(
                 self.id,
                 State.TO_CHECK,
-                f"The file was saved by an image editor: {', '.join(editors)}. "
-                "Editing is often legitimate (cropping, exposure), but the "
-                "image is no longer exactly what the camera produced.",
+                Message("software.editor", {"editors": ", ".join(editors)}),
                 evidence,
             )
         if photoshop_block:
             return Result(
                 self.id,
                 State.TO_CHECK,
-                "The file contains an Adobe Photoshop data block, a trace "
-                "left by Adobe editing software.",
+                Message("software.photoshop_block"),
                 evidence,
             )
         if software:
             return Result(
                 self.id,
                 State.CONSISTENT,
-                f"Recorded software: {', '.join(software)}. It is not one of "
-                "the image editors Tala X recognises; that list is limited, "
-                "and many editors write nothing at all.",
+                Message("software.other", {"software": ", ".join(software)}),
                 evidence,
             )
         return Result(
             self.id,
             State.UNVERIFIABLE,
-            "No software is recorded in the file. Many editors and platforms "
-            "write nothing, so this neither suggests nor rules out editing.",
+            Message("software.none"),
             evidence,
         )
