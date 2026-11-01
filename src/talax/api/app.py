@@ -59,7 +59,6 @@ _SECURITY_HEADERS = [
     (b"cache-control", b"no-store"),
 ]
 _CSP = (b"content-security-policy", b"default-src 'none'; frame-ancestors 'none'")
-_DOCS_PATH = "/api/docs"  # the interactive docs page loads its own scripts
 
 
 @asynccontextmanager
@@ -73,7 +72,9 @@ app = FastAPI(
     version=__version__,
     lifespan=_lifespan,
     openapi_url="/api/openapi.json",
-    docs_url=_DOCS_PATH,
+    # The interactive docs page loads its scripts from a CDN: a leak, and the
+    # only page our security policy would have to exempt. The schema stays.
+    docs_url=None,
     redoc_url=None,
 )
 app.include_router(tiles_router)
@@ -197,7 +198,7 @@ class _Guard:
                 headers = list(message.get("headers", []))
                 headers += _SECURITY_HEADERS
                 has_csp = any(k == _CSP[0] for k, _ in headers)
-                if not has_csp and scope["path"] != _DOCS_PATH:
+                if not has_csp:
                     headers.append(_CSP)
                 message = {**message, "headers": headers}
             await send(message)
