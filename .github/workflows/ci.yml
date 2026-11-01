@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.3.3
-      - run: uv sync --locked
+      - run: uv sync --locked --all-extras
       - run: uv run ruff check
       - run: uv run ruff format --check
       - run: uv run mypy
@@ -56,7 +56,7 @@ jobs:
           cygpath -w "$dir" >> "$GITHUB_PATH"
       - run: exiftool -ver
 
-      - run: uv sync --locked
+      - run: uv sync --locked --all-extras
       - run: uv run pytest
 
   package:

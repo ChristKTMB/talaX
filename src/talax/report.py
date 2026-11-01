@@ -131,16 +131,28 @@ def _previews(source: Path) -> dict[str, str | None] | None:
             main_uri = _data_uri(main)
     except (OSError, ValueError):
         return None
-    thumb_uri = None
+    return {"image": main_uri, "thumbnail": _thumbnail(source, orientation)}
+
+
+def thumbnail_uri(source: Path) -> str | None:
+    """The embedded preview as a `data:` URI, upright like the image, or None."""
+    try:
+        with Image.open(source) as im:
+            orientation = im.getexif().get(0x0112, 1)
+    except (OSError, ValueError):
+        orientation = 1
+    return _thumbnail(source, orientation)
+
+
+def _thumbnail(source: Path, orientation: object) -> str | None:
     raw = read_thumbnail(source)
-    if raw:
-        try:
-            with Image.open(io.BytesIO(raw)) as th:
-                thumb = _orient(th.convert("RGB"), orientation)
-                thumb_uri = _data_uri(thumb)
-        except (OSError, ValueError):
-            thumb_uri = None
-    return {"image": main_uri, "thumbnail": thumb_uri}
+    if not raw:
+        return None
+    try:
+        with Image.open(io.BytesIO(raw)) as th:
+            return _data_uri(_orient(th.convert("RGB"), orientation))
+    except (OSError, ValueError):
+        return None
 
 
 _TRANSPOSE = {

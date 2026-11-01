@@ -105,6 +105,22 @@ def version() -> None:
     print(f"talax {versions['talax']} (ExifTool {versions['exiftool']})")
 
 
+@app.command()
+def serve(
+    host: Annotated[str, typer.Option(help="Address to listen on.")] = "127.0.0.1",
+    port: Annotated[int, typer.Option(help="Port to listen on.")] = 8000,
+) -> None:
+    """Start the web API (needs `pip install talax[server]`)."""
+    try:
+        import uvicorn
+
+        from talax.api.app import app as api
+    except ImportError as exc:
+        err.print("error: the web API needs `pip install talax[server]`", style="red")
+        raise typer.Exit(1) from exc
+    uvicorn.run(api, host=host, port=port)
+
+
 def _safe(text: str) -> Text:
     """File metadata is written by anyone: no markup, no terminal control codes."""
     return Text(_CONTROL.sub("", text))
