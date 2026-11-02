@@ -168,7 +168,9 @@
         "signed_at": null,
         "generator": null,
         "ai_declared": false,
-        "error": null
+        "error": null,
+        "trust_list_issued": null,
+        "trust_list_stale": false
       },
       "confidence": null
     }

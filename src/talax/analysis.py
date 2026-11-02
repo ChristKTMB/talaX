@@ -30,7 +30,7 @@ def analyze(
         metadata=metadata,
         integrity=assess_integrity(traits),
         declaration=declaration,
-        c2pa=read_c2pa(path, trust_anchors=embedded_trust_list().anchors),
+        c2pa=read_c2pa(path, embedded_trust_list()),
         observation=observation,
     )
     return Analysis(

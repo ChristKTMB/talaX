@@ -126,6 +126,11 @@ class C2paReport:
     ai_declared: bool = False
     error: str | None = None
     """Set when the file could not be read for C2PA at all."""
+    trust_list_issued: str | None = None
+    """Issue date of the trust list the signer was checked against, if any."""
+    trust_list_next_update: str | None = None
+    trust_list_stale: bool = False
+    """The list was past its announced renewal date at analysis time."""
 
 
 @dataclass(frozen=True, slots=True)

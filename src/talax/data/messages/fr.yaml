@@ -155,17 +155,18 @@ c2pa.tampered: 'Le fichier contient des certificats C2PA, mais {problems}. Des c
 c2pa.content_changed: 'Le fichier contient des certificats C2PA, mais l''image ne correspond
   plus à ce qui a été signé : elle a été modifiée ou réenregistrée après la signature, et
   les certificats ne décrivent donc pas ce fichier. {about}'
-c2pa.trusted: Le fichier contient des certificats C2PA intacts, émis par un signataire de
-  confiance. {about}
+c2pa.trusted: Le fichier contient des certificats C2PA intacts, signés par une organisation de la
+  liste de confiance C2PA. Une signature dit qui a signé le fichier, pas que ce qu'il montre est
+  vrai ; la révocation des certificats n'est pas contrôlée en ligne. {about} {trust_list}
 c2pa.unconfirmed_signer: Le fichier contient des certificats C2PA, mais {problems}. Les informations
-  signées sont intactes, mais l'identité du signataire ne peut pas être confirmée. {about}
+  signées sont intactes, mais l'identité du signataire ne peut pas être confirmée. {about} {trust_list}
 c2pa.code.claimSignature.mismatch: la signature ne correspond pas aux certificats
 c2pa.code.claimSignature.missing: la signature est absente
 c2pa.code.assertion.hashedURI.mismatch: une déclaration des certificats a été modifiée après
   la signature
 c2pa.code.assertion.missing: une déclaration signée est absente
-c2pa.code.signingCredential.untrusted: le signataire ne figure sur aucune liste de confiance
-  connue de Tala X
+c2pa.code.signingCredential.untrusted: le signataire ne figure pas sur la liste de confiance C2PA
+  embarquée dans Tala X
 c2pa.code.signingCredential.expired: le certificat de signature a expiré
 c2pa.code.signingCredential.revoked: le certificat de signature a été révoqué
 c2pa.code.ingredient.manifest.missing: les certificats d'une image source à laquelle il renvoie
@@ -178,6 +179,11 @@ c2pa.about.generator: créé avec {generator}
 c2pa.about.signed_at: signé le {when}
 c2pa.about.ai_declared: les certificats déclarent que l'image a été générée par une IA
 c2pa.about.nothing: Aucun détail n'est fourni.
+c2pa.trust_list: Liste de confiance du {issued}.
+c2pa.trust_list.stale: Liste de confiance du {issued}, à renouveler depuis le {next_update} ; une
+  version plus récente de Tala X peut reconnaître d'autres signataires, ou ne plus en reconnaître
+  certains.
+c2pa.trust_list.none: Aucune liste de confiance n'a été utilisée.
 integrity.several_fingerprints: Le fichier correspond aux empreintes mesurées de plusieurs
   applications ou plateformes ({platforms}), impossibles à départager sur ce fichier.
 integrity.fingerprint: 'Le fichier correspond à l''empreinte de {platform}, {route} : {summary}

@@ -6,6 +6,7 @@ Here a certificate authority is made on the spot, an image is signed with it,
 and the image must be trusted exactly when that authority is given as anchor.
 """
 
+import datetime as dt
 import hashlib
 import shutil
 from pathlib import Path
@@ -16,7 +17,7 @@ from cryptography import x509
 
 from talax import Context, FileInfo, IntegrityAssessment, IntegrityVerdict, Metadata
 from talax.analysis import analyze
-from talax.i18n import Message
+from talax.i18n import Language, Message
 from talax.model import C2paReport, State
 from talax.provenance import (
     TrustList,
@@ -28,6 +29,10 @@ from talax.signals.c2pa_credentials import C2paCredentials
 from tests.c2pa_authority import Authority, make_authority, make_root, pem
 
 EMBEDDED = Path(__file__).resolve().parent.parent / "src" / "talax" / "data" / "c2pa"
+
+
+def listed(anchors: str, next_update: str = "2099-01-01T00:00:00Z") -> TrustList:
+    return TrustList(anchors, "2026-10-23T16:57:29Z", next_update, "test")
 
 
 @pytest.fixture(scope="module")
@@ -55,7 +60,7 @@ def test_signer_is_untrusted_without_anchors(authority: Authority) -> None:
 
 
 def test_signer_is_trusted_when_its_root_is_an_anchor(authority: Authority) -> None:
-    report = read_c2pa(authority.signed, trust_anchors=authority.root_pem)
+    report = read_c2pa(authority.signed, trust=listed(authority.root_pem))
     assert report.state == "Trusted"
     assert report.codes == ()
     assert _verdict(report) is State.CONSISTENT
@@ -63,7 +68,7 @@ def test_signer_is_trusted_when_its_root_is_an_anchor(authority: Authority) -> N
 
 def test_another_root_does_not_make_it_trusted(authority: Authority) -> None:
     other, _ = make_root("Someone else")
-    report = read_c2pa(authority.signed, trust_anchors=pem(other))
+    report = read_c2pa(authority.signed, trust=listed(pem(other)))
     assert report.state == "Valid"
     assert "signingCredential.untrusted" in report.codes
 
@@ -75,7 +80,7 @@ def test_trusted_signer_does_not_hide_a_changed_image(
     data[-10] ^= 0xFF  # inside the image data, after the signature
     changed = tmp_path / "changed.jpg"
     changed.write_bytes(data)
-    report = read_c2pa(changed, trust_anchors=authority.root_pem)
+    report = read_c2pa(changed, trust=listed(authority.root_pem))
     assert "assertion.dataHash.mismatch" in report.codes
     assert _verdict(report) is State.TO_CHECK
 
@@ -115,10 +120,72 @@ def test_analysis_applies_the_embedded_list(
     # The official list does not trust a test authority...
     assert c2pa_state() is State.TO_CHECK
     # ...and what analyze() trusts is exactly what the embedded list says.
-    ours = TrustList(authority.root_pem, "2026-01-01", "2027-01-01", "test")
+    ours = listed(authority.root_pem)
     monkeypatch.setattr("talax.analysis.embedded_trust_list", lambda: ours)
     assert c2pa_state() is State.CONSISTENT
 
 
 def test_embedded_list_is_read_once() -> None:
     assert embedded_trust_list() is embedded_trust_list()
+
+
+def _explanation(report: C2paReport, lang: Language = Language.EN) -> str:
+    ctx = Context(
+        file=FileInfo("0" * 64, 1, "image/jpeg", "image/jpeg"),
+        metadata=Metadata({}),
+        integrity=IntegrityAssessment(
+            IntegrityVerdict.UNDETERMINED, Message("integrity.no_metadata_other")
+        ),
+        c2pa=report,
+    )
+    return C2paCredentials().evaluate(ctx).explain(lang)
+
+
+def test_trusted_explanation_states_its_limits(authority: Authority) -> None:
+    text = _explanation(read_c2pa(authority.signed, listed(authority.root_pem)))
+    assert "C2PA trust list" in text
+    assert "not that what it shows is true" in text
+    assert "revocation is not checked online" in text
+    assert "Trust list of 2026-10-23." in text
+    assert "renewal" not in text
+    fr = _explanation(
+        read_c2pa(authority.signed, listed(authority.root_pem)), Language.FR
+    )
+    assert "pas que ce qu'il montre est vrai" in fr
+    assert "Liste de confiance du 2026-10-23." in fr
+
+
+def test_untrusted_explanation_names_the_list(authority: Authority) -> None:
+    other, _ = make_root("Someone else")
+    text = _explanation(read_c2pa(authority.signed, listed(pem(other))))
+    assert "not on the C2PA trust list embedded in Tala X" in text
+    assert "Trust list of 2026-10-23." in text
+
+
+def test_stale_list_is_announced(authority: Authority) -> None:
+    stale = listed(authority.root_pem, next_update="2026-01-21T16:57:29Z")
+    report = read_c2pa(authority.signed, stale)
+    assert report.trust_list_stale
+    text = _explanation(report)
+    assert "due for renewal since 2026-01-21" in text
+    assert "newer version of Tala X" in text
+
+
+def test_staleness_is_judged_at_analysis_time(authority: Authority) -> None:
+    trust = listed(authority.root_pem, next_update="2027-01-21T16:57:29Z")
+    before = dt.datetime(2027, 1, 1, tzinfo=dt.UTC)
+    after = dt.datetime(2027, 2, 1, tzinfo=dt.UTC)
+    assert not read_c2pa(authority.signed, trust, now=before).trust_list_stale
+    assert read_c2pa(authority.signed, trust, now=after).trust_list_stale
+
+
+def test_date_without_time_zone_is_read_as_utc(authority: Authority) -> None:
+    trust = listed(authority.root_pem, next_update="2027-01-21")
+    report = read_c2pa(
+        authority.signed, trust, now=dt.datetime(2027, 2, 1, tzinfo=dt.UTC)
+    )
+    assert report.trust_list_stale
+
+
+def test_without_list_the_explanation_says_so(authority: Authority) -> None:
+    assert "No trust list was used." in _explanation(read_c2pa(authority.signed))

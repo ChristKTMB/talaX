@@ -81,18 +81,22 @@ class C2paCredentials:
                 Message("c2pa.content_changed", {"about": about}),
                 evidence,
             )
+        trust_list = _trust_list(report)
         if report.state == "Trusted":
             return Result(
                 self.id,
                 State.CONSISTENT,
-                Message("c2pa.trusted", {"about": about}),
+                Message("c2pa.trusted", {"about": about, "trust_list": trust_list}),
                 evidence,
             )
         problems = [_code(c) for c in report.codes] or [Message("c2pa.code.none")]
         return Result(
             self.id,
             State.TO_CHECK,
-            Message("c2pa.unconfirmed_signer", {"problems": problems, "about": about}),
+            Message(
+                "c2pa.unconfirmed_signer",
+                {"problems": problems, "about": about, "trust_list": trust_list},
+            ),
             evidence,
         )
 
@@ -112,6 +116,20 @@ def _about(report: C2paReport) -> Message:
     return Message("c2pa.about", {"parts": parts})
 
 
+def _trust_list(report: C2paReport) -> Message:
+    if report.trust_list_issued is None:
+        return Message("c2pa.trust_list.none")
+    if report.trust_list_stale:
+        return Message(
+            "c2pa.trust_list.stale",
+            {
+                "issued": report.trust_list_issued,
+                "next_update": report.trust_list_next_update,
+            },
+        )
+    return Message("c2pa.trust_list", {"issued": report.trust_list_issued})
+
+
 def _evidence(report: C2paReport) -> dict[str, object]:
     return {
         "present": report.present,
@@ -122,4 +140,6 @@ def _evidence(report: C2paReport) -> dict[str, object]:
         "generator": report.generator,
         "ai_declared": report.ai_declared,
         "error": report.error,
+        "trust_list_issued": report.trust_list_issued,
+        "trust_list_stale": report.trust_list_stale,
     }

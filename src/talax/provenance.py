@@ -6,6 +6,7 @@ import functools
 import hashlib
 import json
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from importlib.resources import files
 from importlib.resources.abc import Traversable
 from pathlib import Path
@@ -54,14 +55,16 @@ def load_trust_list(folder: Traversable) -> TrustList:
     )
 
 
-def read_c2pa(path: Path, trust_anchors: str | None = None) -> C2paReport:
-    """`trust_anchors`: PEM root certificates whose signers count as trusted.
-    Without them no signer can be trusted (state "Valid" at best)."""
+def read_c2pa(
+    path: Path, trust: TrustList | None = None, now: datetime | None = None
+) -> C2paReport:
+    """`trust`: the list whose signers count as trusted. Without one no signer
+    can be trusted (state "Valid" at best)."""
     settings: dict[str, Any] = dict(_SETTINGS)
-    if trust_anchors:
+    if trust is not None:
         # The library ignores unknown keys silently: tests/test_c2pa_trust.py
         # proves this one is read.
-        settings["trust"] = {"trust_anchors": trust_anchors}
+        settings["trust"] = {"trust_anchors": trust.anchors}
     context = c2pa.Context(settings=c2pa.Settings.from_dict(settings))
     try:
         with c2pa.Reader(str(path), context=context) as reader:
@@ -86,7 +89,21 @@ def read_c2pa(path: Path, trust_anchors: str | None = None) -> C2paReport:
         signed_at=signature.get("time"),
         generator=_generator(manifest),
         ai_declared=any(t in json.dumps(manifest) for t in _AI_SOURCE_TYPES),
+        **_trust_fields(trust, now or datetime.now(UTC)),
     )
+
+
+def _trust_fields(trust: TrustList | None, now: datetime) -> dict[str, Any]:
+    if trust is None:
+        return {}
+    next_update = datetime.fromisoformat(trust.next_update)
+    if next_update.tzinfo is None:
+        next_update = next_update.replace(tzinfo=UTC)
+    return {
+        "trust_list_issued": trust.issued[:10],
+        "trust_list_next_update": trust.next_update[:10],
+        "trust_list_stale": now > next_update,
+    }
 
 
 def _generator(manifest: dict[str, Any]) -> str | None:
