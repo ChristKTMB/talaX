@@ -160,3 +160,8 @@ first code.
 ## License
 
 [Apache-2.0](https://github.com/ChristKTMB/talaX/blob/main/LICENSE)
+
+The package embeds the [C2PA Trust List](https://github.com/c2pa-org/conformance-public/tree/main/trust-list)
+of the C2PA Conformance Program (© C2PA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)),
+used unchanged to recognise Content Credentials signers. Its date and origin
+are in `src/talax/data/c2pa/source.yaml`.

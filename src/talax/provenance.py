@@ -2,20 +2,56 @@
 
 from __future__ import annotations
 
+import functools
+import hashlib
 import json
+from dataclasses import dataclass
+from importlib.resources import files
+from importlib.resources.abc import Traversable
 from pathlib import Path
 from typing import Any
 
 import c2pa
+import yaml
 
 from talax.model import C2paReport
 
 # Nothing leaves the machine: no download of remote manifests, no online
-# certificate revocation check. (The library accepts unknown keys silently,
-# so these names follow the c2pa-rs settings documentation.)
+# certificate revocation check. (The library accepts unknown keys silently;
+# `signingCredential.ocsp.skipped` in its results shows the second is read.)
 _SETTINGS = {"verify": {"remote_manifest_fetch": False, "ocsp_fetch": False}}
 
 _AI_SOURCE_TYPES = ("trainedAlgorithmicMedia", "compositeWithTrainedAlgorithmicMedia")
+
+
+@dataclass(frozen=True, slots=True)
+class TrustList:
+    """The C2PA trust list embedded in the package (see data/c2pa/source.yaml)."""
+
+    anchors: str
+    issued: str
+    next_update: str
+    commit: str
+
+
+@functools.cache
+def embedded_trust_list() -> TrustList:
+    """Never downloaded at analysis time: refreshed before each release by
+    scripts/update_c2pa_trust.py."""
+    return load_trust_list(files("talax") / "data" / "c2pa")
+
+
+def load_trust_list(folder: Traversable) -> TrustList:
+    pem = (folder / "C2PA-TRUST-LIST.pem").read_bytes()
+    source = yaml.safe_load((folder / "source.yaml").read_text(encoding="utf-8"))
+    if hashlib.sha256(pem).hexdigest() != source["sha256"]:
+        raise RuntimeError("the embedded C2PA trust list does not match source.yaml")
+    return TrustList(
+        anchors=pem.decode("ascii"),
+        issued=str(source["issued"]),
+        next_update=str(source["next_update"]),
+        commit=str(source["commit"]),
+    )
 
 
 def read_c2pa(path: Path, trust_anchors: str | None = None) -> C2paReport:

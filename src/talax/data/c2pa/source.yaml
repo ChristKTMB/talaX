@@ -1,0 +1,30 @@
+# Origin of the embedded C2PA trust list. Written by
+# scripts/update_c2pa_trust.py; the sha256 is checked at load.
+name: C2PA Trust List
+url: https://github.com/c2pa-org/conformance-public/tree/d6dec63476e2636095d1291d24b29ffa2d4e1ac0/trust-list
+commit: d6dec63476e2636095d1291d24b29ffa2d4e1ac0
+license: CC-BY-4.0
+issued: '2026-10-23T16:57:29Z'
+next_update: '2027-01-21T16:57:29Z'
+sequence: 2
+certificates: 32
+sha256: b3949271a07b007e92ef1d18050b55388f5e0d2686a16fd864176c48421af8ae
+organisations:
+- Adobe Inc
+- Castlabs GmbH
+- DigiCert, Inc.
+- Encypher Corp.
+- Google LLC
+- Huanyu Trust Ltd
+- Huawei Technologies Co., Ltd.
+- Irdeto BV
+- NETLOCK Informatikai és Hálózatbiztonsági Korlátolt Felelősségű Társaság
+- SSL Corporation
+- Snowball Technology Co., Ltd.
+- Tauth Labs Inc.
+- Trufo Inc.
+- TrustAsia Technologies, Inc.
+- Verimago LLC
+- Whole Earth Labs LLC
+- Xiaomi Inc.
+- vivo Mobile Communication Co., Ltd.

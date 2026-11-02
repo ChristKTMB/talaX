@@ -165,3 +165,8 @@ contribution arrivera avec le premier code.
 ## Licence
 
 [Apache-2.0](https://github.com/ChristKTMB/talaX/blob/main/LICENSE)
+
+Le paquet embarque la [liste de confiance C2PA](https://github.com/c2pa-org/conformance-public/tree/main/trust-list)
+du programme de conformité de la C2PA (© C2PA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)),
+utilisée sans modification pour reconnaître les signataires des Content
+Credentials. Sa date et son origine sont dans `src/talax/data/c2pa/source.yaml`.
