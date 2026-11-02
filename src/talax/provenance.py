@@ -18,8 +18,15 @@ _SETTINGS = {"verify": {"remote_manifest_fetch": False, "ocsp_fetch": False}}
 _AI_SOURCE_TYPES = ("trainedAlgorithmicMedia", "compositeWithTrainedAlgorithmicMedia")
 
 
-def read_c2pa(path: Path) -> C2paReport:
-    context = c2pa.Context(settings=c2pa.Settings.from_dict(_SETTINGS))
+def read_c2pa(path: Path, trust_anchors: str | None = None) -> C2paReport:
+    """`trust_anchors`: PEM root certificates whose signers count as trusted.
+    Without them no signer can be trusted (state "Valid" at best)."""
+    settings: dict[str, Any] = dict(_SETTINGS)
+    if trust_anchors:
+        # The library ignores unknown keys silently: tests/test_c2pa_trust.py
+        # proves this one is read.
+        settings["trust"] = {"trust_anchors": trust_anchors}
+    context = c2pa.Context(settings=c2pa.Settings.from_dict(settings))
     try:
         with c2pa.Reader(str(path), context=context) as reader:
             store = json.loads(reader.json())
