@@ -152,9 +152,9 @@ c2pa.absent: 'Le fichier ne contient aucun certificat C2PA. La plupart des appar
 c2pa.tampered: 'Le fichier contient des certificats C2PA, mais {problems}. Des certificats
   valides ne peuvent pas arriver dans cet état par accident : ils ont été altérés ou fabriqués.
   {about}'
-c2pa.content_changed: 'Le fichier contient des certificats C2PA, mais l''image ne correspond
-  plus à ce qui a été signé : elle a été modifiée ou réenregistrée après la signature, et
-  les certificats ne décrivent donc pas ce fichier. {about}'
+c2pa.content_changed: 'Le fichier contient des certificats C2PA, mais il ne correspond plus à
+  ce qui a été signé : l''image ou ses métadonnées ont été modifiées après la signature,
+  et les certificats ne le décrivent donc pas tel qu''il est. {about}'
 c2pa.trusted: Le fichier contient des certificats C2PA intacts, signés par une organisation de la
   liste de confiance C2PA. Une signature dit qui a signé le fichier, pas que ce qu'il montre est
   vrai ; la révocation des certificats n'est pas contrôlée en ligne. {about} {trust_list}

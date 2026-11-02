@@ -139,9 +139,9 @@ c2pa.absent: The file carries no Content Credentials (C2PA). Most cameras and ph
   produce them and platforms remove them, so their absence says nothing about the image.
 c2pa.tampered: 'The file carries Content Credentials, but {problems}. Valid credentials cannot
   end up in this state by accident: they were tampered with or forged. {about}'
-c2pa.content_changed: 'The file carries Content Credentials, but the image no longer matches
-  what was signed: it was modified or re-saved after signing, so the credentials do not describe
-  this file. {about}'
+c2pa.content_changed: 'The file carries Content Credentials, but it no longer matches what was
+  signed: the image or its metadata was modified after signing, so the credentials do
+  not describe this file as it is. {about}'
 c2pa.trusted: The file carries intact Content Credentials, signed by an organisation on the C2PA
   trust list. A signature tells who signed the file, not that what it shows is true; certificate
   revocation is not checked online. {about} {trust_list}
