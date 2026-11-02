@@ -1,0 +1,125 @@
+# Truth sheet for corpus/files/c2pa-public-pixel10/
+# Google Pixel 10, 10 Pro and 10 Pro XL photos from Wikimedia Commons
+# (categories "Taken with Google Pixel 10…"), downloaded 2026-11-02.
+# Licenses: CC BY 4.0, CC BY-SA 3.0/4.0, CC0 (one per file, see its page).
+# Not redistributed: only described here. The files carry GPS positions of
+# their authors: never copy coordinates into this sheet.
+#
+# Unknown provenance for integrity (we do not know what each uploader did),
+# so expected_integrity is not evaluated. The C2PA expectation is a
+# cryptographic fact: a Google LLC signature that validates against the
+# embedded C2PA trust list, or its absence. First exam: 2026-11-02, before
+# any change to the rules (see CLAUDE.md).
+
+id: c2pa-public-pixel10
+source: https://commons.wikimedia.org/wiki/Category:Taken_with_Google_Pixel_10
+license: mixed (CC-BY-4.0, CC-BY-SA-3.0, CC-BY-SA-4.0, CC0)
+
+routes:
+  185666523-base:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:134424_-_Valladolid_desde_el_aire.jpg
+    license: CC BY 4.0
+    notes: signed by Google LLC, intact
+  183716861-base:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: to_check
+    source: https://commons.wikimedia.org/wiki/File:3%E4%BB%A3%E7%9B%AE%E7%89%87%E5%B2%A1%E5%B8%82%E8%94%B5%E3%83%BB9%E4%BB%A3%E7%9B%AE%E7%89%87%E5%B2%A1%E3%81%AB%E5%B7%A6%E5%8F%B3%E8%A1%9B%E9%96%80%E5%A2%93.jpg
+    license: CC BY-SA 4.0
+    notes: signed by Google, file changed after signing (capture time removed)
+  178895682-base:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: unverifiable
+    source: https://commons.wikimedia.org/wiki/File:A_large_banner_tifo_at_a_Vancouver_Whitecaps_game_at_BC_Place.jpg
+    license: CC BY-SA 4.0
+    notes: Lightroom export, no credentials
+  183883627-base:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:Aaliyah%E5%A2%93.jpg
+    license: CC BY-SA 4.0
+    notes: signed by Google LLC, intact
+  180572250-base:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: unverifiable
+    source: https://commons.wikimedia.org/wiki/File:Ariana%27s_Engagement.jpg
+    license: CC BY-SA 4.0
+    notes: Photoshop export, no credentials
+  179152926-pro:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:%22Star_Maiden%22.jpg
+    license: CC BY-SA 3.0
+    notes: signed by Google LLC, intact
+  202209684-pro:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:2026_%E9%8A%85%E5%B1%B1%E9%A4%A8%E7%A5%9E%E5%83%8F_01_%E8%99%8E%E7%88%BA.jpg
+    license: CC BY-SA 4.0
+    notes: signed by Google LLC, intact
+  202209683-pro:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:2026_%E9%8A%85%E5%B1%B1%E9%A4%A8%E7%A5%9E%E5%83%8F_02_%E8%99%8E%E7%88%BA.jpg
+    license: CC BY-SA 4.0
+    notes: signed by Google LLC, intact
+  202209682-pro:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:2026_%E9%8A%85%E5%B1%B1%E9%A4%A8%E7%A5%9E%E5%83%8F_03_%E8%99%8E%E7%88%BA%26%E9%A6%99%E7%88%90.jpg
+    license: CC BY-SA 4.0
+    notes: signed by Google LLC, intact
+  202209686-pro:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:2026_%E9%8A%85%E5%B1%B1%E9%A4%A8%E7%A5%9E%E5%83%8F_04.jpg
+    license: CC BY-SA 4.0
+    notes: signed by Google LLC, intact
+  177652143-xl:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:109%E3%82%B7%E3%83%8D%E3%83%9E%E3%82%BAHAT%E7%A5%9E%E6%88%B8_%E3%82%B7%E3%82%A2%E3%82%BF%E3%83%BC2_(54815318166).jpg
+    license: CC BY 4.0
+    notes: signed by Google LLC, intact
+  177652238-xl:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:1987%E5%B9%B4%E5%85%A8%E6%97%A5%E6%9C%AC%E3%83%97%E3%83%AD%E3%83%88%E3%83%BC%E3%83%8A%E3%83%A1%E3%83%B3%E3%83%88%E4%BD%BF%E7%94%A8%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB_%E3%82%AB%E3%83%95%E3%82%A7%EF%BC%86%E3%83%93%E3%83%AA%E3%83%A4%E3%83%BC%E3%83%89_%E3%83%AC%E3%82%A4%E3%83%A2%E3%83%B3%E3%83%89_(54800448109).jpg
+    license: CC BY 4.0
+    notes: signed by Google LLC, intact
+  176050992-xl:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:45Y_Male_Hernia_Laparoscopy_30th_Day_After.jpg
+    license: CC BY-SA 4.0
+    notes: signed by Google LLC, intact
+  178624636-xl:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:50%E5%86%86%E3%81%AE%E8%87%AA%E8%B2%A9%E6%A9%9F_%E6%96%B0%E9%96%8B%E5%9C%B0_(54909242646).jpg
+    license: CC BY 4.0
+    notes: signed by Google LLC, intact
+  179538236-xl:
+    expected_integrity: null   # unknown provenance
+    expected_c2pa: consistent
+    source: https://commons.wikimedia.org/wiki/File:A6_quiver_drawn.jpg
+    license: CC0
+    notes: signed by Google LLC, intact
+
+sha256:
+  176050992-xl.jpg: 11008e9a41640f425eeb3449f46f2af7b6116df3f2af086c338babd795296bc5
+  177652143-xl.jpg: 2516bfba276d55682727b36ae2740eb64922e3b09b3e8e7f6a1c3027e9be2bc4
+  177652238-xl.jpg: a24c06bbeb046212ea53b12f1102c1fd6b5721d9a44cba72c9c9cb4517014c7d
+  178624636-xl.jpg: 7b98c3bb8f6f015f307ce9d4c5db07c726d5b22300ce5ea60a9b85a187734e8f
+  178895682-base.jpg: 23cab8496d82bda7957bfbbb009158c1d9bfd3df9642e1c8fc43d71ce43ee52d
+  179152926-pro.jpg: 070d19c8af8b2574babc9be306a1cf679053401c56eef93bf04f38af5c1d98f8
+  179538236-xl.jpg: 8d85f0afd12f63e3ae9715e4de7ff93f66c922592eaded2e904cca7bca57b9de
+  180572250-base.jpg: 2dd67790bf31d6e098877bbf5f94e314821c2a01fb1a93de26d1d02dd0b2a951
+  183716861-base.jpg: fa4979745bc4686be4d5fee46a71befd452bae0430dcb1684037e43889ca669a
+  183883627-base.jpg: e8908071024c06fe07eac06d15d336c1c614312979a6e558bed8d54544669dbb
+  185666523-base.jpg: 749fbfc0101086878829caad5ad47e42ae2362c5beab97e73b0d00748a1bfe93
+  202209682-pro.jpg: d2cbe1b82ce2f57b0981966ee844fd15ee2e3a8a66b16df6a3f682b8654e6f31
+  202209683-pro.jpg: 4f28172c75bad3f57f55ad3f818019dec4936f72bd49269f4636c4305ac74626
+  202209684-pro.jpg: be391454cb58266d66e900d8c47d4a5ab010c60dbf865fa15cce988b53132206
+  202209686-pro.jpg: f5495059c42d4e4605d5a91ac255e2f8415c20b3e312054de73b3602b3ce4e24
