@@ -117,7 +117,11 @@ def serve(
 
         from talax.api.app import app as api
     except ImportError as exc:
-        err.print("error: the web API needs `pip install talax[server]`", style="red")
+        err.print(
+            "error: the web API needs `pip install talax[server]`",
+            style="red",
+            markup=False,
+        )
         raise typer.Exit(1) from exc
     import logging
 

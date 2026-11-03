@@ -118,3 +118,21 @@ def test_system_language_is_the_default(hostile_jpeg: Path) -> None:
         app, ["analyze", str(hostile_jpeg)], env={"LANG": "fr_FR.UTF-8", "LC_ALL": ""}
     )
     assert "Intégrité" in result.output
+
+
+def test_serve_without_the_server_extra_says_what_to_install(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import builtins
+
+    real_import = builtins.__import__
+
+    def no_uvicorn(name: str, *args: object, **kwargs: object) -> object:
+        if name == "uvicorn":
+            raise ImportError(name)
+        return real_import(name, *args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(builtins, "__import__", no_uvicorn)
+    result = runner.invoke(app, ["serve"])
+    assert result.exit_code == 1
+    assert "pip install talax[server]" in result.output
