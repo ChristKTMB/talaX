@@ -9,7 +9,7 @@ fichier original d'appareil ou une copie retraitée par une plateforme, où et
 quand elle a été prise, et si elle est passée par un logiciel de retouche. La
 vidéo (métadonnées de conteneur) est prévue.
 
-> **État : pré-alpha (0.2).** Utilisable, mais les règles et la sortie peuvent encore changer.
+> **État : pré-alpha (0.3).** Utilisable, mais les règles et la sortie peuvent encore changer.
 
 ## La question posée en premier
 
@@ -43,17 +43,26 @@ plateformes et les images recyclées, pas contre les faussaires experts.
 
 ## Ce qu'il vérifie
 
-- Intégrité du fichier et plateforme traversée (WhatsApp, Instagram, X…)
+- Intégrité du fichier : original d'appareil, copie de plateforme ou
+  indéterminé. Empreintes mesurées à ce jour : WhatsApp (galerie) et
+  retouches de la Galerie Samsung ; d'autres seront mesurées.
 - Format réel du fichier par rapport à son extension
 - **Cohérence solaire** : l'heure enregistrée est-elle physiquement possible
-  au lieu enregistré ?
-- Recoupement météo avec les relevés historiques
-- Position GPS, date et heure, logiciel de retouche, miniature intégrée
-- Certificats de provenance C2PA
+  au lieu enregistré, compte tenu de ce que vous voyez sur la photo ?
+- Fuseau horaire enregistré par l'appareil par rapport au fuseau légal de la
+  position GPS
+- Position GPS, date et heure, logiciel de retouche
+- Certificats C2PA (Content Credentials), vérifiés hors ligne avec la
+  [liste de confiance C2PA](https://github.com/c2pa-org/conformance-public/tree/main/trust-list)
+  officielle
+- La miniature intégrée, affichée à côté de l'image dans le rapport HTML
+  comme exploration visuelle, explicitement non concluante
 
-Il renvoie aussi vers la recherche d'image inversée (Google Lens, TinEye,
-Yandex), qui attrape les vieilles photos recyclées avec une fausse légende —
-la forme la plus répandue de désinformation visuelle.
+À venir : un mode manuel pour les fichiers dépouillés (saisie du lieu et de
+la date annoncés), un recoupement météo, et un renvoi vers la recherche
+d'image inversée (Google Lens, TinEye, Yandex), qui attrape les vieilles
+photos recyclées avec une fausse légende — la forme la plus répandue de
+désinformation visuelle.
 
 ## Ce qu'il refuse de faire
 
@@ -129,12 +138,28 @@ dans les deux langues), son explication en français ou en anglais, et les
 valeurs brutes qui y ont mené (`result.evidence`). La sortie JSON de la ligne
 de commande suit un schéma versionné (`"schema": 2`).
 
+## Héberger l'API web soi-même
+
+La même analyse derrière une API HTTP, pour votre propre serveur :
+
+```bash
+pip install "talax[server]"
+talax serve                    # http://127.0.0.1:8000
+```
+
+Les fichiers envoyés sont analysés dans un dossier temporaire puis supprimés
+aussitôt ; le serveur ne garde rien et ne journalise ni nom de fichier, ni
+position, ni adresse du client. Le dépôt contient aussi une configuration
+`docker compose` prête à l'emploi (API derrière nginx, conteneurs en lecture
+seule, fichiers en mémoire seulement). Voir la
+[documentation de l'API](https://github.com/ChristKTMB/talaX/blob/main/docs/api.md) (en anglais).
+
 ## Développer
 
 ```bash
 git clone https://github.com/ChristKTMB/talaX.git
 cd talaX
-uv sync
+uv sync --all-extras
 uv run pytest
 uv run ruff check && uv run ruff format --check && uv run mypy
 ```
@@ -152,8 +177,7 @@ Les tests qui ont besoin du corpus de référence sont sautés quand
 - **Application web** (à venir) — hébergée, pour les vérifications rapides. Les
   fichiers seront analysés puis supprimés immédiatement, jamais conservés.
 
-Nécessite [ExifTool](https://exiftool.org/) et, pour la vidéo,
-[ffprobe](https://ffmpeg.org/).
+Nécessite [ExifTool](https://exiftool.org/).
 
 ## Contribuer
 

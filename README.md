@@ -9,7 +9,7 @@ original camera file or a copy reprocessed by a platform, where and when it was
 taken, and whether it went through an editor. Video support (container
 metadata) is planned.
 
-> **Status: pre-alpha (0.2).** Usable, but rules and output may still change.
+> **Status: pre-alpha (0.3).** Usable, but rules and output may still change.
 
 ## The question Tala X asks first
 
@@ -42,17 +42,23 @@ and recycled images, not against expert forgers.
 
 ## What it checks
 
-- File integrity and platform pipeline (WhatsApp, Instagram, X…)
+- File integrity: camera original, platform copy or undetermined. Platform
+  fingerprints measured so far: WhatsApp (gallery) and Samsung Gallery
+  edits; more will be measured.
 - Real file format vs extension
 - **Solar consistency**: is the recorded time physically possible at the
-  recorded place?
-- Weather cross-check against historical records
-- GPS position, date and time, editing software, embedded thumbnail
-- C2PA provenance certificates
+  recorded place, given what you see in the photo?
+- Time zone recorded by the device vs the legal one at the GPS position
+- GPS position, date and time, editing software
+- C2PA Content Credentials, checked offline against the official
+  [C2PA Trust List](https://github.com/c2pa-org/conformance-public/tree/main/trust-list)
+- The embedded thumbnail, shown next to the image in the HTML report as a
+  visual exploration, explicitly not conclusive
 
-It also hands off to reverse image search (Google Lens, TinEye, Yandex), which
-catches old photos recycled with a false caption — the most common form of
-visual misinformation.
+Coming next: a manual mode for stripped files (enter the claimed place and
+time), a weather cross-check, and a hand-off to reverse image search (Google
+Lens, TinEye, Yandex), which catches old photos recycled with a false
+caption — the most common form of visual misinformation.
 
 ## What it deliberately does not do
 
@@ -125,12 +131,27 @@ languages), its explanation in English or French, and the raw values behind
 it (`result.evidence`). The JSON output of the command line follows a
 versioned schema (`"schema": 2`).
 
+## Run the web API yourself
+
+The same analysis behind an HTTP API, for your own server:
+
+```bash
+pip install "talax[server]"
+talax serve                    # http://127.0.0.1:8000
+```
+
+Uploaded files are analysed in a temporary folder and deleted at once; the
+server keeps nothing and logs no file name, position or client address. The
+repository also has a ready-made `docker compose` setup (API behind nginx,
+read-only containers, files in memory only). See the
+[API documentation](https://github.com/ChristKTMB/talaX/blob/main/docs/api.md).
+
 ## Develop
 
 ```bash
 git clone https://github.com/ChristKTMB/talaX.git
 cd talaX
-uv sync
+uv sync --all-extras
 uv run pytest
 uv run ruff check && uv run ruff format --check && uv run mypy
 ```
@@ -147,8 +168,7 @@ absent: those files are not published (see the
 - **Web app** (coming) — hosted, for quick checks. Files will be analysed and
   deleted immediately, never stored.
 
-Requires [ExifTool](https://exiftool.org/) and, for video,
-[ffprobe](https://ffmpeg.org/).
+Requires [ExifTool](https://exiftool.org/).
 
 ## Contributing
 
