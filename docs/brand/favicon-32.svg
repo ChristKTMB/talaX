@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32" role="img">
+<title>Tala X</title>
+<rect width="100" height="100" fill="#FAF8F2"/>
+<rect x="20.50" y="20.50" width="16.0" height="16.0" fill="none" stroke="#1B1A17" stroke-width="6.5"/>
+<rect x="42.00" y="20.50" width="16.0" height="16.0" fill="none" stroke="#1B1A17" stroke-width="6.5"/>
+<rect x="63.50" y="20.50" width="16.0" height="16.0" fill="none" stroke="#1B1A17" stroke-width="6.5"/>
+<rect x="20.50" y="42.00" width="16.0" height="16.0" fill="none" stroke="#1B1A17" stroke-width="6.5"/>
+<rect x="42.00" y="42.00" width="16.0" height="16.0" fill="#1B1A17"/>
+<rect x="63.50" y="42.00" width="16.0" height="16.0" fill="none" stroke="#1B1A17" stroke-width="6.5"/>
+<rect x="20.50" y="63.50" width="16.0" height="16.0" fill="none" stroke="#1B1A17" stroke-width="6.5"/>
+<rect x="42.00" y="63.50" width="16.0" height="16.0" fill="none" stroke="#1B1A17" stroke-width="6.5"/>
+<rect x="63.50" y="63.50" width="16.0" height="16.0" fill="none" stroke="#1B1A17" stroke-width="6.5"/>
+    <path d="M7.50 20.50 V7.50 H20.50" fill="none" stroke="#1B1A17" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M79.50 7.50 H92.50 V20.50" fill="none" stroke="#1B1A17" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M7.50 79.50 V92.50 H20.50" fill="none" stroke="#1B1A17" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M79.50 92.50 H92.50 V79.50" fill="none" stroke="#1B1A17" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
