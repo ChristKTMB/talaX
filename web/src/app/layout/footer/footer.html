@@ -1,0 +1,33 @@
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <svg width="28" height="28" viewBox="8 8 84 84" aria-hidden="true" class="footer__mark">
+        <path
+          d="M11.8 24V11.8H24M76 11.8H88.2V24M11.8 76V88.2H24M76 88.2H88.2V76"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <rect x="40" y="40" width="20" height="20" fill="currentColor" />
+      </svg>
+      <span>{{ i18n.t('footer.licence') }}</span>
+    </div>
+    <nav class="footer__nav" [attr.aria-label]="i18n.t('footer.nav')">
+      <a [href]="sourceUrl">{{ i18n.t('footer.source') }}</a>
+      <div class="footer__languages" role="group" [attr.aria-label]="i18n.t('footer.language')">
+        @for (language of languages; track language) {
+          <button
+            type="button"
+            [lang]="language"
+            [attr.aria-pressed]="i18n.language() === language"
+            (click)="i18n.language.set(language)"
+          >
+            {{ language.toUpperCase() }}
+          </button>
+        }
+      </div>
+    </nav>
+  </div>
+</footer>

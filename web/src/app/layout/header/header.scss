@@ -1,0 +1,31 @@
+.header {
+  border-bottom: 1px solid var(--line);
+}
+
+.header__inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header__home {
+  display: inline-flex;
+  margin-left: -10px;
+}
+
+.header__source {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+}

@@ -72,6 +72,24 @@ jobs:
           uv pip install --python /tmp/clean/bin/python dist/*.whl
           /tmp/clean/bin/python -c "import talax; print(talax.__version__)"
 
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
   docker:
     runs-on: ubuntu-latest
     steps:
@@ -84,6 +102,15 @@ jobs:
           curl -fsS -F file=@upload.jpg http://127.0.0.1:8088/api/analyze | grep -q '"schema":2'
           code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8088/api/nowhere)
           test "$code" = 404
+      - name: The front is served with its security policy
+        run: |
+          curl -fsS -D headers.txt http://127.0.0.1:8088/terms -o page.html
+          grep -q '<app-root' page.html
+          # A fresh nonce replaced the placeholder, and the policy names it.
+          ! grep -q '__CSP_NONCE__' page.html
+          nonce=$(grep -oE 'ngcspnonce="[0-9a-f]{32}"' page.html | cut -d'"' -f2)
+          grep -qi "content-security-policy: .*'nonce-$nonce'" headers.txt
+          grep -qi 'referrer-policy: strict-origin-when-cross-origin' headers.txt
       - name: No file left behind, no client address in the logs
         run: |
           test "$(docker compose exec -T api sh -c 'ls -A /tmp | wc -l')" = 0

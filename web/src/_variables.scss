@@ -1,0 +1,29 @@
+// Colours and type of the Tala X mockup. Ink and paper are the identity;
+// the state colours are used for the four verdict states only.
+:root {
+  --ink: #1b1a17;
+  --paper: #faf8f2;
+  --surface: #ffffff;
+  --sand: #f4f1e8;
+  --line: #dad5c8;
+  --muted: #5a574f;
+  --text-soft: #3d3a34;
+
+  --consistent-bg: #e2ece6;
+  --consistent-fg: #24513f;
+  --to-check-bg: #f3e7c9;
+  --to-check-fg: #6e4500;
+  --suspicious-bg: #f4ddd8;
+  --suspicious-fg: #8e2a1d;
+  --suspicious-panel: #fbf1ee;
+  --suspicious-border: #e2b6ac;
+  --unverifiable-bg: #ece9e1;
+  --unverifiable-fg: #4f4c45;
+
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, Cantarell, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-mono: 'Liberation Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  --container: 1180px;
+}

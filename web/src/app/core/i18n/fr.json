@@ -1,0 +1,12 @@
+{
+  "app.title": "Tala X — Regardez au-delà du pixel",
+  "header.home": "Tala X, accueil",
+  "header.source": "Code source",
+  "footer.licence": "Tala X · logiciel libre, licence Apache-2.0",
+  "footer.nav": "Pied de page",
+  "footer.source": "Code source sur GitHub",
+  "footer.language": "Langue",
+  "home.eyebrow": "Analyse de photo · logiciel libre",
+  "home.title": "Regardez au-delà du pixel",
+  "home.intro": "Tala X dit ce qu'on peut honnêtement affirmer d'une photo. D'abord, d'où vient le fichier : un original d'appareil, ou une copie retraitée par une plateforme comme WhatsApp. Ensuite : où et quand elle a été prise, si elle a été retouchée, et si l'heure est possible au lieu indiqué, d'après la position du soleil."
+}

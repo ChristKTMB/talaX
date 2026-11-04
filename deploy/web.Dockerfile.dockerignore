@@ -1,0 +1,10 @@
+# Only what the front image needs.
+*
+!web/
+!docs/brand/
+!deploy/nginx.conf
+web/node_modules
+web/dist
+web/.angular
+web/public/brand
+web/public/favicon.*
