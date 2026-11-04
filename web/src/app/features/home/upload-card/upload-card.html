@@ -1,0 +1,86 @@
+<form class="card" (submit)="submit($event)">
+  @if (problem(); as problem) {
+    <div class="problem" role="alert">
+      <div class="problem__body">
+        <app-icon [name]="problem.icon" [size]="22" />
+        <div class="problem__text">
+          <p class="problem__title">{{ problem.title }}</p>
+          <p>{{ problem.text }}</p>
+          @if (session.file(); as file) {
+            <p class="problem__kept">{{ i18n.t('error.kept', { name: file.name }) }}</p>
+          }
+        </div>
+      </div>
+      @if (problem.final) {
+        <label for="photo" class="button button--light">{{ i18n.t('error.choose_other') }}</label>
+      } @else if (session.file()) {
+        <button type="submit" class="button button--light" [disabled]="!session.canAnalyze()">
+          <app-icon name="retry" [size]="16" [weight]="1.8" />
+          @if (session.retryIn() > 0) {
+            {{ i18n.t('error.retry_in', { seconds: session.retryIn() }) }}
+          } @else {
+            {{ i18n.t('error.retry') }}
+          }
+        </button>
+      }
+    </div>
+  }
+
+  <div
+    class="drop"
+    [class.drop--over]="dragging()"
+    (dragover)="dragOver($event)"
+    (dragleave)="dragging.set(false)"
+    (drop)="drop($event)"
+  >
+    <span class="corner corner--tl" aria-hidden="true"></span>
+    <span class="corner corner--tr" aria-hidden="true"></span>
+    <span class="corner corner--bl" aria-hidden="true"></span>
+    <span class="corner corner--br" aria-hidden="true"></span>
+    <app-icon name="upload" [size]="40" />
+    <p class="drop__title">{{ i18n.t('upload.drop') }}</p>
+    <p class="drop__or">{{ i18n.t('upload.or') }}</p>
+    <label for="photo" class="button button--outline">{{ i18n.t('upload.choose') }}</label>
+    <input
+      #picker
+      id="photo"
+      type="file"
+      accept="image/*"
+      class="visually-hidden"
+      (change)="pick(picker)"
+    />
+    @if (session.file(); as file) {
+      <p class="drop__selected">
+        {{ i18n.t('upload.selected') }} <strong>{{ file.name }}</strong> ·
+        {{ i18n.size(file.size) }}
+      </p>
+    } @else {
+      <p class="drop__hint">{{ i18n.t('upload.limit') }}</p>
+    }
+  </div>
+
+  <button type="submit" class="submit" [disabled]="!session.canAnalyze() || problem()?.final">
+    {{ i18n.t('upload.submit') }}
+  </button>
+
+  <div class="notes">
+    <p class="note">
+      <app-icon name="trash" />
+      <span>{{ i18n.t('upload.deleted') }}</span>
+    </p>
+    <p class="note">
+      <app-icon name="terminal" />
+      <span
+        >{{ i18n.t('upload.cli_start') }}<code>pip install talax</code
+        >{{ i18n.t('upload.cli_end') }}</span
+      >
+    </p>
+    <p class="consent">
+      {{ i18n.t('upload.consent_start') }}
+      <a routerLink="/terms">{{ i18n.t('upload.consent_terms') }}</a
+      >{{ i18n.t('upload.consent_middle') }}
+      <a routerLink="/privacy">{{ i18n.t('upload.consent_privacy') }}</a
+      >.
+    </p>
+  </div>
+</form>

@@ -1,0 +1,35 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+:host(.badge--consistent) {
+  background: var(--consistent-bg);
+  color: var(--consistent-fg);
+}
+
+:host(.badge--to_check) {
+  background: var(--to-check-bg);
+  color: var(--to-check-fg);
+}
+
+:host(.badge--suspicious) {
+  background: var(--suspicious-bg);
+  color: var(--suspicious-fg);
+}
+
+:host(.badge--unverifiable) {
+  background: var(--unverifiable-bg);
+  color: var(--unverifiable-fg);
+}
+
+.cross {
+  stroke: var(--suspicious-bg);
+}

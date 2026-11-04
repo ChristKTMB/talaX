@@ -1,11 +1,33 @@
 .hero {
   max-width: var(--container);
   margin: 0 auto;
-  padding: 72px 24px;
+  padding: 72px 24px 64px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 56px;
+  align-items: flex-start;
+}
+
+.hero__text {
+  flex: 1 1 420px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 8px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.hero__card {
+  flex: 1 1 440px;
+  min-width: 0;
+  max-width: 560px;
 }
 
 .hero__eyebrow {
-  margin: 0 0 20px;
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.08em;
@@ -14,16 +36,72 @@
 }
 
 .hero__title {
-  margin: 0 0 24px;
-  max-width: 12ch;
+  margin: 0;
   font-family: var(--font-mono);
-  font-size: clamp(36px, 6vw, 56px);
-  line-height: 1.1;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 .hero__intro {
-  margin: 0;
   max-width: 34em;
   font-size: 20px;
+  line-height: 1.55;
+}
+
+.features {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+
+  li {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    line-height: 1.5;
+  }
+}
+
+.features__number {
+  flex: 0 0 28px;
+  padding-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.says {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 56px 24px 72px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+
+  h2 {
+    flex: 1 1 280px;
+    margin: 0;
+    font-size: 26px;
+    line-height: 1.25;
+  }
+}
+
+.says__text {
+  flex: 2 1 520px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 17px;
   line-height: 1.6;
+
+  p {
+    margin: 0;
+  }
+}
+
+.says__soft {
+  color: var(--text-soft);
 }

@@ -39,4 +39,13 @@ export class I18n {
       name in values ? String(values[name]) : match,
     );
   }
+
+  /** A file size in the current language: "2,3 Mo", "2.3 MB". */
+  size(bytes: number): string {
+    const number = (value: number) =>
+      new Intl.NumberFormat(this.language(), { maximumFractionDigits: 1 }).format(value);
+    if (bytes < 1024) return this.t('size.bytes', { value: number(bytes) });
+    if (bytes < 1024 * 1024) return this.t('size.kb', { value: number(bytes / 1024) });
+    return this.t('size.mb', { value: number(bytes / (1024 * 1024)) });
+  }
 }

@@ -1,5 +1,37 @@
-<section class="hero">
-  <p class="hero__eyebrow">{{ i18n.t('home.eyebrow') }}</p>
-  <h1 class="hero__title">{{ i18n.t('home.title') }}</h1>
-  <p class="hero__intro">{{ i18n.t('home.intro') }}</p>
-</section>
+@switch (session.phase()) {
+  @case ('analyzing') {
+    <app-analyzing />
+  }
+  @case ('done') {
+    <app-report />
+  }
+  @default {
+    <section class="hero">
+      <div class="hero__text">
+        <p class="hero__eyebrow">{{ i18n.t('home.eyebrow') }}</p>
+        <h1 class="hero__title">{{ i18n.t('home.title') }}</h1>
+        <p class="hero__intro">{{ i18n.t('home.intro') }}</p>
+        <ol class="features">
+          @for (feature of features; track feature) {
+            <li>
+              <span class="features__number">0{{ feature }}</span>
+              <span>{{ i18n.t('home.feature.' + feature) }}</span>
+            </li>
+          }
+        </ol>
+      </div>
+      <app-upload-card class="hero__card" />
+    </section>
+
+    <app-states-legend />
+
+    <section class="says">
+      <h2>{{ i18n.t('says.title') }}</h2>
+      <div class="says__text">
+        <p>{{ i18n.t('says.1') }}</p>
+        <p>{{ i18n.t('says.2') }}</p>
+        <p class="says__soft">{{ i18n.t('says.3') }}</p>
+      </div>
+    </section>
+  }
+}

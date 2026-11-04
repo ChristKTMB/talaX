@@ -46,6 +46,16 @@ describe('I18n', () => {
     expect(i18n.t('missing.key')).toBe('missing.key');
   });
 
+  it('writes file sizes the way each language does', () => {
+    const i18n = TestBed.inject(I18n);
+    i18n.language.set('fr');
+    expect(i18n.size(2_400_000)).toBe('2,3 Mo');
+    expect(i18n.size(2321)).toBe('2,3 ko');
+    i18n.language.set('en');
+    expect(i18n.size(2_400_000)).toBe('2.3 MB');
+    expect(i18n.size(512)).toBe('512 B');
+  });
+
   it('sets the language and the title of the page', () => {
     const i18n = TestBed.inject(I18n);
     const document = TestBed.inject(DOCUMENT);
