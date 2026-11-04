@@ -11,16 +11,16 @@
         <p class="hero__eyebrow">{{ i18n.t('home.eyebrow') }}</p>
         <h1 class="hero__title">{{ i18n.t('home.title') }}</h1>
         <p class="hero__intro">{{ i18n.t('home.intro') }}</p>
-        <ol class="features">
-          @for (feature of features; track feature) {
-            <li>
-              <span class="features__number">0{{ feature }}</span>
-              <span>{{ i18n.t('home.feature.' + feature) }}</span>
-            </li>
-          }
-        </ol>
       </div>
       <app-upload-card class="hero__card" />
+      <ol class="features">
+        @for (feature of features; track feature) {
+          <li>
+            <span class="features__number">0{{ feature }}</span>
+            <span>{{ i18n.t('home.feature.' + feature) }}</span>
+          </li>
+        }
+      </ol>
     </section>
 
     <app-states-legend />

@@ -180,4 +180,13 @@ describe('Report', () => {
     page.querySelector<HTMLButtonElement>('app-problem button')?.click();
     expect(session.retry).toHaveBeenCalled();
   });
+
+  it('offers a map only for a GPS position found consistent', () => {
+    expect(
+      render(EXAMPLES['cameraOriginal']!).page.querySelector('#check-gps app-location-map'),
+    ).not.toBeNull();
+    TestBed.resetTestingModule();
+    // The position was emptied on the device: nothing to show.
+    expect(render(EXAMPLES['gpsMasked']!).page.querySelector('app-location-map')).toBeNull();
+  });
 });

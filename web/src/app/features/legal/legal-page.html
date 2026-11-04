@@ -1,0 +1,26 @@
+@if (content().draft) {
+  <div class="draft">
+    <span class="draft__tag">{{ i18n.t('legal.draft') }}</span>
+    <div class="draft__text" [innerHTML]="content().draft"></div>
+  </div>
+}
+<div class="legal">
+  <nav class="toc" [attr.aria-label]="i18n.t('legal.toc')">
+    <p class="toc__title">{{ i18n.t('legal.toc') }}</p>
+    <ol>
+      @for (section of content().toc; track $index) {
+        <li>
+          <button type="button" (click)="show($index)">{{ section }}</button>
+        </li>
+      }
+    </ol>
+    <p class="toc__other">
+      {{ i18n.t('legal.see_also') }}
+      <a [routerLink]="'/' + other()">{{ i18n.t('legal.' + other()) }}</a>
+    </p>
+  </nav>
+  <article class="document">
+    <h1>{{ content().title }}</h1>
+    <div class="document__body" [innerHTML]="content().html"></div>
+  </article>
+</div>

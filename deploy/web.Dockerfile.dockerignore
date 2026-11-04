@@ -2,9 +2,11 @@
 *
 !web/
 !docs/brand/
+!docs/legal/
 !deploy/nginx.conf
 web/node_modules
 web/dist
 web/.angular
 web/public/brand
 web/public/favicon.*
+web/src/generated

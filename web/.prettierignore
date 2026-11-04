@@ -3,3 +3,6 @@ package-lock.json
 /dist
 /.angular
 /public/favicon.*
+/src/generated
+/test-results
+/playwright-report

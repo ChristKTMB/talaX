@@ -1,0 +1,150 @@
+.draft {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  padding: 14px max(24px, calc((100% - var(--container)) / 2 + 24px));
+  background: #eeeae0;
+  border-bottom: 1px dashed #a8a293;
+  font-size: 14px;
+}
+
+.draft__tag {
+  padding: 1px 8px;
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.draft__text :is(p) {
+  margin: 0;
+}
+
+.legal {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 56px;
+  align-items: flex-start;
+}
+
+.toc {
+  flex: 1 1 220px;
+  max-width: 280px;
+  position: sticky;
+  top: 24px;
+  font-size: 14px;
+
+  ol {
+    margin: 0 0 20px;
+    padding: 0 0 20px;
+    list-style: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  li + li {
+    margin-top: 8px;
+  }
+
+  button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.toc__title {
+  margin: 0 0 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.toc__other {
+  margin: 0;
+  color: var(--muted);
+}
+
+.document {
+  flex: 3 1 560px;
+  min-width: 0;
+  max-width: 760px;
+
+  h1 {
+    margin: 0 0 24px;
+    font-family: var(--font-mono);
+    font-size: clamp(28px, 4vw, 38px);
+    line-height: 1.15;
+  }
+}
+
+// The document's markup comes from scripts/sync-docs.mjs, outside Angular's view.
+.document__body ::ng-deep {
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+
+  h2 {
+    margin: 40px 0 14px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    font-size: 21px;
+    scroll-margin-top: 24px;
+  }
+
+  p,
+  ul,
+  ol {
+    margin: 0 0 14px;
+  }
+
+  li + li {
+    margin-top: 6px;
+  }
+
+  table {
+    width: 100%;
+    margin: 0 0 16px;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 1.5;
+    background: var(--surface);
+  }
+
+  th,
+  td {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--sand);
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: #f0ece2;
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+}

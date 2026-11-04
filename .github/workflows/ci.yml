@@ -111,6 +111,17 @@ jobs:
           nonce=$(grep -oE 'ngcspnonce="[0-9a-f]{32}"' page.html | cut -d'"' -f2)
           grep -qi "content-security-policy: .*'nonce-$nonce'" headers.txt
           grep -qi 'referrer-policy: strict-origin-when-cross-origin' headers.txt
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: End-to-end tests in a real browser, through nginx
+        working-directory: web
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npm run e2e
       - name: No file left behind, no client address in the logs
         run: |
           test "$(docker compose exec -T api sh -c 'ls -A /tmp | wc -l')" = 0

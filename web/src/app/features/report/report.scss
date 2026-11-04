@@ -48,6 +48,7 @@ p {
 
   h1 {
     margin: 0;
+    outline: none;
     font-family: var(--font-mono);
     font-size: clamp(32px, 5vw, 46px);
     line-height: 1.1;
@@ -270,5 +271,25 @@ p {
 
   code {
     font-family: var(--font-mono);
+  }
+}
+
+@media (max-width: 600px) {
+  .report {
+    padding-top: 24px;
+    gap: 36px;
+  }
+
+  .verdict {
+    padding: 32px 24px;
+  }
+
+  .verdict__text {
+    font-size: 17px;
+  }
+
+  .actions__buttons .button {
+    flex: 1 1 100%;
+    justify-content: center;
   }
 }

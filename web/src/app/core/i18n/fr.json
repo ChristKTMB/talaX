@@ -100,5 +100,21 @@
   "sky.change": "Modifier la réponse",
   "download.button": "Télécharger le rapport (HTML)",
   "download.preparing": "Préparation du rapport…",
-  "download.note": "Le rapport est fabriqué par le serveur : le fichier lui est envoyé de nouveau, puis supprimé. Le rapport s'ouvre sans connexion réseau."
+  "download.note": "Le rapport est fabriqué par le serveur : le fichier lui est envoyé de nouveau, puis supprimé. Changer de langue redemande le rapport de la même façon. Le rapport téléchargé s'ouvre sans connexion réseau.",
+  "map.show": "Afficher sur la carte",
+  "map.warning": "La zone sera demandée à OpenStreetMap par notre serveur. OpenStreetMap ne voit ni votre adresse ni votre fichier.",
+  "map.label": "Carte centrée sur la position enregistrée, {position}, avec un repère",
+  "map.marker": "Repère : position enregistrée dans le fichier, {position}.",
+  "map.hide": "Masquer la carte",
+  "map.zoom_in": "Zoom avant",
+  "map.zoom_out": "Zoom arrière",
+  "map.failed": "La carte n'a pas pu être chargée. L'analyse elle-même n'est pas touchée.",
+  "legal.toc": "Sommaire",
+  "legal.see_also": "Voir aussi :",
+  "legal.terms": "conditions d'utilisation",
+  "legal.privacy": "politique de confidentialité",
+  "legal.draft": "Brouillon",
+  "footer.terms": "Conditions d'utilisation",
+  "footer.privacy": "Confidentialité",
+  "app.skip": "Aller au contenu"
 }

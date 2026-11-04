@@ -7,3 +7,23 @@
 main {
   flex: 1;
 }
+
+main {
+  outline: none;
+}
+
+.skip {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
+}

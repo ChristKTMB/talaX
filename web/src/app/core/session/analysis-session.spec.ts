@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 import platformCopy from '../../../../../docs/api-examples/platform-copy.fr.json';
 import { AnalysisApi, MAX_UPLOAD_BYTES, SavedReport } from '../api/analysis-api';
+import { I18n } from '../i18n/i18n';
 import { AnalysisResult, ApiError } from '../models/analysis';
 import { AnalysisSession, RATE_LIMIT_PAUSE_SECONDS } from './analysis-session';
 
@@ -123,5 +124,23 @@ describe('AnalysisSession', () => {
     expect(session.error()?.code).toBe('busy');
     await session.retry();
     expect(report).toHaveBeenCalledTimes(2);
+  });
+
+  it('asks for a displayed report again when the language changes, once', async () => {
+    const { session, analyze } = setUp(() => of(platformCopy as AnalysisResult));
+    const i18n = TestBed.inject(I18n);
+    i18n.language.set('fr');
+    session.select(photo());
+    await session.analyze('day');
+    TestBed.tick();
+    expect(analyze).toHaveBeenCalledTimes(1);
+
+    i18n.language.set('en');
+    TestBed.tick();
+    await Promise.resolve();
+    // The example answers in French whatever is asked: no loop of requests.
+    TestBed.tick();
+    expect(analyze).toHaveBeenCalledTimes(2);
+    expect(analyze.mock.calls[1]?.slice(1)).toEqual(['en', 'day']);
   });
 });

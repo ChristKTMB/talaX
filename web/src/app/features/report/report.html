@@ -31,7 +31,7 @@
       <span class="corner corner--bl" aria-hidden="true"></span>
       <span class="corner corner--br" aria-hidden="true"></span>
       <p class="eyebrow">{{ i18n.t('report.integrity') }}</p>
-      <h1 id="verdict">{{ result.integrity.label }}</h1>
+      <h1 id="verdict" tabindex="-1">{{ result.integrity.label }}</h1>
       <p class="verdict__text">{{ result.integrity.explanation }}</p>
     </section>
 
@@ -74,6 +74,9 @@
           <app-check-row [result]="check">
             @if (check.signal === 'solar') {
               <app-sky-question [check]="check" />
+            }
+            @if (mapPosition(check); as position) {
+              <app-location-map [latitude]="position.latitude" [longitude]="position.longitude" />
             }
           </app-check-row>
         }

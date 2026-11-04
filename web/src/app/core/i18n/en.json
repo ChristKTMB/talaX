@@ -100,5 +100,21 @@
   "sky.change": "Change the answer",
   "download.button": "Download the report (HTML)",
   "download.preparing": "Preparing the report…",
-  "download.note": "The server makes the report: the file is sent to it again, then deleted. The report opens without a network connection."
+  "download.note": "The server makes the report: the file is sent to it again, then deleted. Changing the language asks for the report again in the same way. The downloaded report opens without a network connection.",
+  "map.show": "Show on the map",
+  "map.warning": "The area will be requested from OpenStreetMap by our server. OpenStreetMap sees neither your address nor your file.",
+  "map.label": "Map centred on the recorded position, {position}, with a marker",
+  "map.marker": "Marker: position recorded in the file, {position}.",
+  "map.hide": "Hide the map",
+  "map.zoom_in": "Zoom in",
+  "map.zoom_out": "Zoom out",
+  "map.failed": "The map could not be loaded. The analysis itself is not affected.",
+  "legal.toc": "Contents",
+  "legal.see_also": "See also:",
+  "legal.terms": "terms of use",
+  "legal.privacy": "privacy policy",
+  "legal.draft": "Draft",
+  "footer.terms": "Terms of use",
+  "footer.privacy": "Privacy",
+  "app.skip": "Skip to the content"
 }

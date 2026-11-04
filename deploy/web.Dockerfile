@@ -7,8 +7,10 @@ WORKDIR /src/web
 COPY web/package.json web/package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY web/ ./
-# The front reads the logo from docs/ at build time (web/scripts/sync-docs.mjs).
+# The front reads the logo and the legal pages from docs/ at build time
+# (web/scripts/sync-docs.mjs).
 COPY docs/brand /src/docs/brand
+COPY docs/legal /src/docs/legal
 RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:1.30.6-alpine

@@ -1,0 +1,25 @@
+@if (shown()) {
+  <div class="map">
+    <div
+      #map
+      class="map__canvas"
+      role="img"
+      [attr.aria-label]="i18n.t('map.label', { position: position() })"
+    ></div>
+    @if (failed()) {
+      <p class="map__failed" role="status">{{ i18n.t('map.failed') }}</p>
+    }
+    <div class="map__foot">
+      <span>{{ i18n.t('map.marker', { position: position() }) }}</span>
+      <button type="button" class="link" (click)="hide()">{{ i18n.t('map.hide') }}</button>
+    </div>
+  </div>
+} @else {
+  <div class="offer">
+    <button type="button" class="offer__button" (click)="shown.set(true)">
+      <app-icon name="map" [size]="18" [weight]="1.7" />
+      {{ i18n.t('map.show') }}
+    </button>
+    <p>{{ i18n.t('map.warning') }}</p>
+  </div>
+}

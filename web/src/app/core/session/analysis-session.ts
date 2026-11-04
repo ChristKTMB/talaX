@@ -1,4 +1,4 @@
-import { DOCUMENT, DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
+import { DOCUMENT, DestroyRef, Injectable, computed, effect, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AnalysisApi, MAX_UPLOAD_BYTES } from '../api/analysis-api';
 import { I18n } from '../i18n/i18n';
@@ -38,6 +38,23 @@ export class AnalysisSession {
   );
 
   private lastAction: Action = 'analyze';
+  /** The language a report was last asked again in, so that it is asked only once. */
+  private relanguaged: string | null = null;
+
+  /**
+   * Changing the language applies to the whole application, report included:
+   * a displayed report is asked again in the new language (the file is sent
+   * again), never left half in one language. Once per language: after a
+   * failure, the user retries.
+   */
+  private readonly followLanguage = effect(() => {
+    const language = this.i18n.language();
+    const result = this.result();
+    if (!result || result.lang === language || this.relanguaged === language) return;
+    if (this.phase() !== 'done' || !this.canAnalyze()) return;
+    this.relanguaged = language;
+    void this.analyze();
+  });
   private countdown: ReturnType<typeof setInterval> | undefined;
 
   constructor() {
@@ -134,6 +151,7 @@ export class AnalysisSession {
     this.result.set(null);
     this.sky.set(null);
     this.lastAction = 'analyze';
+    this.relanguaged = null;
     if (this.retryIn() === 0) this.error.set(null);
   }
 }

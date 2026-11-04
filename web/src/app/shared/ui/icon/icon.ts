@@ -11,7 +11,8 @@ export type IconName =
   | 'download'
   | 'day'
   | 'twilight'
-  | 'night';
+  | 'night'
+  | 'map';
 
 /** The line icons of the mockup, drawn on a 24 px grid, in the current text colour. */
 @Component({
@@ -66,6 +67,10 @@ export type IconName =
         @case ('twilight') {
           <path d="M6.5 17a5.5 5.5 0 0 1 11 0" />
           <path d="M2.5 17h19M12 7.5V10M5.6 10.6l1.6 1.6M18.4 10.6l-1.6 1.6M7 20.5h10" />
+        }
+        @case ('map') {
+          <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" />
+          <path d="M9 4v14M15 6v14" />
         }
         @case ('night') {
           <path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10Z" />
