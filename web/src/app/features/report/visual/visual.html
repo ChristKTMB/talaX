@@ -1,0 +1,45 @@
+<section class="visual" aria-labelledby="visual-title">
+  <div class="visual__head">
+    <h2 id="visual-title">
+      {{ i18n.t(thumbnail() ? 'report.visual.both' : 'report.visual.one') }}
+    </h2>
+    <span class="visual__note">{{ i18n.t('report.visual.note') }}</span>
+  </div>
+  <div class="visual__figures" [class.visual__figures--single]="!thumbnail()">
+    <figure>
+      <div class="frame">
+        @if (image() && !unreadable()) {
+          <img
+            #picture
+            [src]="image()"
+            [alt]="i18n.t('report.image.alt')"
+            (load)="loaded(picture)"
+            (error)="unreadable.set(true)"
+          />
+        } @else {
+          <p class="frame__message">{{ i18n.t('report.image_unavailable') }}</p>
+        }
+      </div>
+      <figcaption>
+        <strong>{{ i18n.t('report.image') }}</strong>
+        @if (size(); as size) {
+          <span class="muted"> · {{ i18n.t('report.dimensions', size) }}</span>
+        }
+        @if (!thumbnail()) {
+          <span class="muted">. {{ i18n.t('report.no_thumbnail') }}</span>
+        }
+      </figcaption>
+    </figure>
+    @if (thumbnail(); as thumbnail) {
+      <figure>
+        <div class="frame">
+          <img [src]="thumbnail" [alt]="i18n.t('report.thumbnail.alt')" />
+        </div>
+        <figcaption>
+          <strong>{{ i18n.t('report.thumbnail') }}</strong>
+          <span class="muted"> · {{ i18n.t('report.thumbnail.detail') }}</span>
+        </figcaption>
+      </figure>
+    }
+  </div>
+</section>

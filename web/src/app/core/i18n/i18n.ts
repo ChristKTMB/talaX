@@ -40,6 +40,11 @@ export class I18n {
     );
   }
 
+  /** A whole number in the current language: "9 704", "9,704". */
+  number(value: number): string {
+    return new Intl.NumberFormat(this.language()).format(value);
+  }
+
   /** A file size in the current language: "2,3 Mo", "2.3 MB". */
   size(bytes: number): string {
     const number = (value: number) =>

@@ -1,0 +1,98 @@
+@if (result(); as result) {
+  <article class="report">
+    <div class="report__top">
+      <p class="eyebrow">{{ i18n.t('report.eyebrow') }}</p>
+      <p class="report__file">
+        @if (session.file(); as file) {
+          {{ file.name }} ·
+        }
+        @if (format(); as format) {
+          {{ format }} ·
+        }
+        {{ i18n.size(result.file.size) }}
+      </p>
+    </div>
+
+    <section class="verdict" aria-labelledby="verdict">
+      <span class="corner corner--tl" aria-hidden="true"></span>
+      <span class="corner corner--tr" aria-hidden="true"></span>
+      <span class="corner corner--bl" aria-hidden="true"></span>
+      <span class="corner corner--br" aria-hidden="true"></span>
+      <p class="eyebrow">{{ i18n.t('report.integrity') }}</p>
+      <h1 id="verdict">{{ result.integrity.label }}</h1>
+      <p class="verdict__text">{{ result.integrity.explanation }}</p>
+    </section>
+
+    @for (check of suspicious(); track check.signal) {
+      <div class="alert">
+        <p class="alert__text">
+          <app-state-badge [state]="check.state" [label]="check.label" />
+          <span
+            ><strong>{{ i18n.t('report.suspicious_name', { name: check.name }) }}</strong>
+            {{ i18n.t('report.suspicious') }}</span
+          >
+        </p>
+        <button type="button" class="link" (click)="show(check.signal)">
+          {{ i18n.t('report.see_check') }}
+        </button>
+      </div>
+    }
+
+    <app-visual [image]="session.imageUrl()" [thumbnail]="result.thumbnail" />
+
+    <section class="checks" aria-labelledby="checks">
+      <h2 id="checks">{{ i18n.t('report.checks') }}</h2>
+      <div class="checks__list">
+        @for (check of result.results; track check.signal) {
+          <app-check-row [result]="check" />
+        }
+      </div>
+    </section>
+
+    <section class="disclaimer" aria-labelledby="disclaimer">
+      <h2 id="disclaimer">{{ i18n.t('report.disclaimer') }}</h2>
+      <p>{{ result.disclaimer }}</p>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="button button--outline" (click)="another()">
+        {{ i18n.t('report.another') }}
+      </button>
+    </div>
+
+    <section aria-labelledby="details">
+      <h2 id="details" class="visually-hidden">{{ i18n.t('report.details') }}</h2>
+      <dl class="details">
+        <div>
+          <dt>SHA-256</dt>
+          <dd>
+            <code>{{ result.file.sha256 }}</code>
+          </dd>
+        </div>
+        <div>
+          <dt>{{ i18n.t('report.size') }}</dt>
+          <dd>{{ i18n.t('report.bytes', { value: i18n.number(result.file.size) }) }}</dd>
+        </div>
+        <div>
+          <dt>{{ i18n.t('report.analysed') }}</dt>
+          <dd>{{ analysedAt() }}</dd>
+        </div>
+        @if (result.integrity.pipeline; as pipeline) {
+          <div>
+            <dt>{{ i18n.t('report.fingerprint') }}</dt>
+            <dd>
+              <code>{{ pipeline }}</code>
+            </dd>
+          </div>
+        }
+        <div>
+          <dt>{{ i18n.t('report.tools') }}</dt>
+          <dd>
+            <code>talax {{ result.tools['talax'] }}</code> ·
+            <code>ExifTool {{ result.tools['exiftool'] }}</code>
+          </dd>
+        </div>
+      </dl>
+    </section>
+  </article>
+}

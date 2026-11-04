@@ -42,4 +42,6 @@ code_extern_*
 # Generated reports: they embed the photo and its position
 rapport*.html
 report*.html
+# ...but not the templates of the Angular front.
+!web/src/app/**/*.html
 exif_data.*
