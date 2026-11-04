@@ -105,9 +105,10 @@ time_zone.mismatch: L'appareil a enregistré UTC{recorded} (d'après {source}), 
   GPS est dans le fuseau {zone}, qui était à UTC{expected} à cette date. Un téléphone réglé
   sur un fuseau fixe pendant un voyage produit cet écart ; une heure ou une position modifiée
   aussi.
-solar.missing_input: La position et l'heure de la photo sont toutes deux nécessaires pour
-  calculer où était le soleil, et au moins l'une manque. Pour un fichier sans métadonnées,
-  saisissez à la main le lieu et l'heure annoncés.
+solar.missing_input: "La position et l'heure de la photo sont toutes deux nécessaires pour
+  calculer où était le soleil, et au moins l'une manque. Si la photo vous a été transmise,
+  demandez l'original à votre source, envoyé comme document ou en pièce jointe d'un e-mail :
+  il peut les avoir conservées."
 solar.origin.file: enregistrés dans le fichier
 solar.origin.declaration: déclarés
 solar.above: au-dessus

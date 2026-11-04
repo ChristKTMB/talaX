@@ -116,7 +116,7 @@
       "state": "unverifiable",
       "label": "Non vérifiable",
       "message": "solar.missing_input",
-      "explanation": "La position et l'heure de la photo sont toutes deux nécessaires pour calculer où était le soleil, et au moins l'une manque. Pour un fichier sans métadonnées, saisissez à la main le lieu et l'heure annoncés.",
+      "explanation": "La position et l'heure de la photo sont toutes deux nécessaires pour calculer où était le soleil, et au moins l'une manque. Si la photo vous a été transmise, demandez l'original à votre source, envoyé comme document ou en pièce jointe d'un e-mail : il peut les avoir conservées.",
       "evidence": {},
       "confidence": null
     },

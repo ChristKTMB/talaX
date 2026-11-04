@@ -88,7 +88,7 @@
       "state": "unverifiable",
       "label": "Unverifiable",
       "message": "solar.missing_input",
-      "explanation": "The position and the time of the photo are both needed to compute where the sun was, and at least one is missing. For a file without metadata, enter the claimed place and time by hand.",
+      "explanation": "The position and the time of the photo are both needed to compute where the sun was, and at least one is missing. If the photo was forwarded to you, ask your source for the original, sent as a document or an email attachment: it may still hold them.",
       "evidence": {},
       "confidence": null
     },

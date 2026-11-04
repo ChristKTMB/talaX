@@ -98,9 +98,9 @@ time_zone.ignored_dst: The device recorded UTC{recorded} (from {source}), but {z
 time_zone.mismatch: The device recorded UTC{recorded} (from {source}), but the GPS position
   is in {zone}, which was UTC{expected} on that date. A phone set to a fixed time zone while
   travelling does this; so does an edited time or position.
-solar.missing_input: The position and the time of the photo are both needed to compute where
-  the sun was, and at least one is missing. For a file without metadata, enter the claimed
-  place and time by hand.
+solar.missing_input: "The position and the time of the photo are both needed to compute where
+  the sun was, and at least one is missing. If the photo was forwarded to you, ask your source
+  for the original, sent as a document or an email attachment: it may still hold them."
 solar.origin.file: recorded in the file
 solar.origin.declaration: declared
 solar.above: above
