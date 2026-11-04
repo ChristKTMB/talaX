@@ -1,16 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 import platformCopy from '../../../../../docs/api-examples/platform-copy.fr.json';
-import { AnalysisApi, MAX_UPLOAD_BYTES } from '../api/analysis-api';
+import { AnalysisApi, MAX_UPLOAD_BYTES, SavedReport } from '../api/analysis-api';
 import { AnalysisResult, ApiError } from '../models/analysis';
 import { AnalysisSession, RATE_LIMIT_PAUSE_SECONDS } from './analysis-session';
 
 const photo = (size = 10) => new File([new Uint8Array(size)], 'photo.jpg', { type: 'image/jpeg' });
 
-function setUp(answer: () => Observable<AnalysisResult>) {
-  const analyze = vi.fn(answer);
-  TestBed.configureTestingModule({ providers: [{ provide: AnalysisApi, useValue: { analyze } }] });
-  return { session: TestBed.inject(AnalysisSession), analyze };
+function setUp(
+  answer: () => Observable<AnalysisResult>,
+  report: () => Observable<SavedReport> = () =>
+    of({ blob: new Blob(['<html>']), name: 'talax-ab.html' }),
+) {
+  const analyze = vi.fn((..._args: unknown[]) => answer());
+  const html = vi.fn((..._args: unknown[]) => report());
+  TestBed.configureTestingModule({
+    providers: [{ provide: AnalysisApi, useValue: { analyze, report: html } }],
+  });
+  return { session: TestBed.inject(AnalysisSession), analyze, report: html };
 }
 
 describe('AnalysisSession', () => {
@@ -76,5 +83,45 @@ describe('AnalysisSession', () => {
     expect(session.file()).toBeNull();
     expect(session.result()).toBeNull();
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:photo');
+  });
+
+  it('sends the sky the user saw with every later request for the same file', async () => {
+    const { session, analyze, report } = setUp(() => of(platformCopy as AnalysisResult));
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    session.select(photo());
+    await session.analyze();
+    await session.analyze('night');
+    await session.download();
+    expect(analyze.mock.calls.map((call) => call[2])).toEqual([null, 'night']);
+    expect(report.mock.calls[0]?.[2]).toBe('night');
+  });
+
+  it('saves the report under the name the API gave', async () => {
+    const { session } = setUp(() => of(platformCopy as AnalysisResult));
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      expect(this.download).toBe('talax-ab.html');
+    });
+    session.select(photo());
+    await session.analyze();
+    await session.download();
+    expect(click).toHaveBeenCalledTimes(1);
+    expect(session.downloading()).toBe(false);
+  });
+
+  it('keeps the report when a later request fails, and retries that request', async () => {
+    const { session, report } = setUp(
+      () => of(platformCopy as AnalysisResult),
+      () => throwError(() => ({ code: 'busy', message: 'Occupé.' })),
+    );
+    session.select(photo());
+    await session.analyze();
+    await session.download();
+    expect(session.phase()).toBe('done');
+    expect(session.result()).not.toBeNull();
+    expect(session.error()?.code).toBe('busy');
+    await session.retry();
+    expect(report).toHaveBeenCalledTimes(2);
   });
 });

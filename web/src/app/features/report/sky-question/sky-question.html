@@ -1,0 +1,34 @@
+@if (asking()) {
+  <section id="sky-question" class="question" aria-labelledby="sky-title" tabindex="-1">
+    <span class="corner corner--tl" aria-hidden="true"></span>
+    <span class="corner corner--tr" aria-hidden="true"></span>
+    <span class="corner corner--bl" aria-hidden="true"></span>
+    <span class="corner corner--br" aria-hidden="true"></span>
+    <h4 id="sky-title">{{ i18n.t('sky.title') }}</h4>
+    <p>{{ i18n.t('sky.help') }}</p>
+    <div class="choices" role="group" [attr.aria-labelledby]="'sky-title'">
+      @for (sky of skies; track sky) {
+        <button
+          type="button"
+          [attr.aria-pressed]="observed() === sky"
+          [disabled]="!session.canAnalyze()"
+          (click)="answer(sky)"
+        >
+          <app-icon [name]="sky" [size]="22" [weight]="1.7" />
+          @if (observed() === sky) {
+            {{ i18n.t('sky.chosen', { sky: i18n.t('sky.' + sky) }) }}
+          } @else {
+            {{ i18n.t('sky.' + sky) }}
+          }
+        </button>
+      }
+    </div>
+  </section>
+} @else if (observed(); as sky) {
+  <p class="given">
+    {{ i18n.t('sky.your_answer', { sky: i18n.t('sky.shows.' + sky) }) }}
+    <button type="button" class="link" (click)="changing.set(true)">
+      {{ i18n.t('sky.change') }}
+    </button>
+  </p>
+}

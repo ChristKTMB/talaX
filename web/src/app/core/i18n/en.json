@@ -83,5 +83,22 @@
   "report.analysed": "Analysis",
   "report.tools": "Tools",
   "report.fingerprint": "Fingerprint matched",
-  "report.suspicious_name": "{name}:"
+  "report.suspicious_name": "{name}:",
+  "sky.banner_lead": "A question to complete the solar check:",
+  "sky.banner_question": "what does the photo show: day, twilight or night?",
+  "sky.answer": "Answer ↓",
+  "sky.title": "What does the photo show?",
+  "sky.help": "Look at the photo and choose what it shows. Your choice runs the analysis of the same file again: it is sent again, analysed, then deleted, like the first time.",
+  "sky.day": "Day",
+  "sky.twilight": "Twilight",
+  "sky.night": "Night",
+  "sky.chosen": "{sky} · chosen",
+  "sky.shows.day": "daylight",
+  "sky.shows.twilight": "twilight",
+  "sky.shows.night": "night",
+  "sky.your_answer": "Your answer: the photo shows {sky}.",
+  "sky.change": "Change the answer",
+  "download.button": "Download the report (HTML)",
+  "download.preparing": "Preparing the report…",
+  "download.note": "The server makes the report: the file is sent to it again, then deleted. The report opens without a network connection."
 }

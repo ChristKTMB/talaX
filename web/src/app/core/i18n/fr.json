@@ -83,5 +83,22 @@
   "report.analysed": "Analyse",
   "report.tools": "Outils",
   "report.fingerprint": "Empreinte reconnue",
-  "report.suspicious_name": "{name} :"
+  "report.suspicious_name": "{name} :",
+  "sky.banner_lead": "Une question pour compléter le contrôle solaire :",
+  "sky.banner_question": "que montre la photo, le jour, le crépuscule ou la nuit ?",
+  "sky.answer": "Répondre ↓",
+  "sky.title": "Que montre la photo ?",
+  "sky.help": "Regardez la photo et choisissez ce qu'elle montre. Votre choix relance l'analyse du même fichier : il est envoyé de nouveau, analysé, puis supprimé, comme la première fois.",
+  "sky.day": "Jour",
+  "sky.twilight": "Crépuscule",
+  "sky.night": "Nuit",
+  "sky.chosen": "{sky} · choisi",
+  "sky.shows.day": "le jour",
+  "sky.shows.twilight": "le crépuscule",
+  "sky.shows.night": "la nuit",
+  "sky.your_answer": "Votre réponse : la photo montre {sky}.",
+  "sky.change": "Modifier la réponse",
+  "download.button": "Télécharger le rapport (HTML)",
+  "download.preparing": "Préparation du rapport…",
+  "download.note": "Le rapport est fabriqué par le serveur : le fichier lui est envoyé de nouveau, puis supprimé. Le rapport s'ouvre sans connexion réseau."
 }

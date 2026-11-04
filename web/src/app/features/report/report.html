@@ -1,5 +1,17 @@
 @if (result(); as result) {
   <article class="report">
+    @if (session.error(); as error) {
+      <app-problem [error]="error">
+        @if (!finalError()) {
+          <app-retry-button
+            [waitSeconds]="session.retryIn()"
+            [disabled]="session.busy() || session.retryIn() > 0"
+            (retry)="session.retry()"
+          />
+        }
+      </app-problem>
+    }
+
     <div class="report__top">
       <p class="eyebrow">{{ i18n.t('report.eyebrow') }}</p>
       <p class="report__file">
@@ -32,8 +44,23 @@
             {{ i18n.t('report.suspicious') }}</span
           >
         </p>
-        <button type="button" class="link" (click)="show(check.signal)">
+        <button type="button" class="link" (click)="show('check-' + check.signal)">
           {{ i18n.t('report.see_check') }}
+        </button>
+      </div>
+    }
+
+    @if (asksForSky()) {
+      <div class="ask">
+        <p>
+          <app-icon name="day" [size]="20" />
+          <span
+            ><strong>{{ i18n.t('sky.banner_lead') }}</strong>
+            {{ i18n.t('sky.banner_question') }}</span
+          >
+        </p>
+        <button type="button" class="link link--light" (click)="show('sky-question')">
+          {{ i18n.t('sky.answer') }}
         </button>
       </div>
     }
@@ -44,7 +71,11 @@
       <h2 id="checks">{{ i18n.t('report.checks') }}</h2>
       <div class="checks__list">
         @for (check of result.results; track check.signal) {
-          <app-check-row [result]="check" />
+          <app-check-row [result]="check">
+            @if (check.signal === 'solar') {
+              <app-sky-question [check]="check" />
+            }
+          </app-check-row>
         }
       </div>
     </section>
@@ -55,9 +86,21 @@
     </section>
 
     <div class="actions">
-      <button type="button" class="button button--outline" (click)="another()">
-        {{ i18n.t('report.another') }}
-      </button>
+      <div class="actions__buttons">
+        <button
+          type="button"
+          class="button button--solid"
+          [disabled]="!session.canAnalyze()"
+          (click)="session.download()"
+        >
+          <app-icon name="download" [size]="18" [weight]="1.8" />
+          {{ i18n.t(session.downloading() ? 'download.preparing' : 'download.button') }}
+        </button>
+        <button type="button" class="button button--outline" (click)="another()">
+          {{ i18n.t('report.another') }}
+        </button>
+      </div>
+      <p class="actions__note">{{ i18n.t('download.note') }}</p>
     </div>
 
     <section aria-labelledby="details">

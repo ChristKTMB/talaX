@@ -15,6 +15,9 @@ module.exports = defineConfig([
     ],
     processor: angular.processInlineTemplates,
     rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@angular-eslint/prefer-on-push-component-change-detection': 'error',
       '@angular-eslint/directive-selector': [
         'error',
         {

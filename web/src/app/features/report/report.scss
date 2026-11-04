@@ -168,8 +168,50 @@ p {
 
 .actions {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.actions__buttons {
+  display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.actions__note {
+  max-width: 46em;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: -24px;
+  padding: 18px 24px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 6px;
+
+  p {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  app-icon {
+    margin-top: 2px;
+  }
+}
+
+.link--light {
+  color: var(--paper);
 }
 
 .button {
@@ -188,6 +230,17 @@ p {
     border: 1px solid var(--ink);
     background: transparent;
     color: var(--ink);
+  }
+
+  &--solid {
+    border: 0;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
   }
 }
 

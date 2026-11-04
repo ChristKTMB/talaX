@@ -1,29 +1,16 @@
 <form class="card" (submit)="submit($event)">
-  @if (problem(); as problem) {
-    <div class="problem" role="alert">
-      <div class="problem__body">
-        <app-icon [name]="problem.icon" [size]="22" />
-        <div class="problem__text">
-          <p class="problem__title">{{ problem.title }}</p>
-          <p>{{ problem.text }}</p>
-          @if (session.file(); as file) {
-            <p class="problem__kept">{{ i18n.t('error.kept', { name: file.name }) }}</p>
-          }
-        </div>
-      </div>
-      @if (problem.final) {
+  @if (session.error(); as error) {
+    <app-problem [error]="error" [fileName]="session.file()?.name ?? null">
+      @if (final()) {
         <label for="photo" class="button button--light">{{ i18n.t('error.choose_other') }}</label>
       } @else if (session.file()) {
-        <button type="submit" class="button button--light" [disabled]="!session.canAnalyze()">
-          <app-icon name="retry" [size]="16" [weight]="1.8" />
-          @if (session.retryIn() > 0) {
-            {{ i18n.t('error.retry_in', { seconds: session.retryIn() }) }}
-          } @else {
-            {{ i18n.t('error.retry') }}
-          }
-        </button>
+        <app-retry-button
+          [submit]="true"
+          [waitSeconds]="session.retryIn()"
+          [disabled]="!session.canAnalyze()"
+        />
       }
-    </div>
+    </app-problem>
   }
 
   <div
@@ -59,7 +46,7 @@
     }
   </div>
 
-  <button type="submit" class="submit" [disabled]="!session.canAnalyze() || problem()?.final">
+  <button type="submit" class="submit" [disabled]="!session.canAnalyze() || final()">
     {{ i18n.t('upload.submit') }}
   </button>
 

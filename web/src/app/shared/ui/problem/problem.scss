@@ -1,0 +1,43 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--sand);
+  border: 1px solid #a8a293;
+  border-radius: 4px;
+}
+
+p {
+  margin: 0;
+}
+
+.problem__body {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  app-icon {
+    margin-top: 1px;
+  }
+}
+
+.problem__text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.problem__title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.problem__kept {
+  font-size: 14px;
+  color: var(--muted);
+}

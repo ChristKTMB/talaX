@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import busy from '../../../../../docs/api-examples/error-busy.fr.json';
 import tooLarge from '../../../../../docs/api-examples/error-file-too-large.en.json';
 import platformCopy from '../../../../../docs/api-examples/platform-copy.fr.json';
-import { AnalysisApi, toApiError } from './analysis-api';
+import { AnalysisApi, fileName, toApiError } from './analysis-api';
 
 describe('toApiError', () => {
   it('reads the error body of the API, as documented in docs/api-examples', () => {
@@ -52,5 +52,33 @@ describe('AnalysisApi', () => {
 
     expect((await answer).integrity.verdict).toBe('reprocessed');
     http.verify();
+  });
+
+  it('asks for the HTML report and reads its error bodies, which arrive as a Blob', async () => {
+    const api = TestBed.inject(AnalysisApi);
+    const http = TestBed.inject(HttpTestingController);
+    const file = new File(['x'], 'photo.jpg');
+
+    const saved = firstValueFrom(api.report(file, 'en'));
+    const ok = http.expectOne((request) => request.params.get('format') === 'html');
+    ok.flush(new Blob(['<html>']), {
+      headers: { 'Content-Disposition': 'attachment; filename="talax-3aa650656f11.html"' },
+    });
+    expect((await saved).name).toBe('talax-3aa650656f11.html');
+
+    const refused = firstValueFrom(api.report(file, 'en')).catch((error: unknown) => error);
+    const body = new Blob([JSON.stringify({ error: { code: 'rate_limited', message: 'Wait.' } })]);
+    http
+      .expectOne((request) => request.params.get('format') === 'html')
+      .flush(body, { status: 429, statusText: 'Too Many Requests' });
+    expect(await refused).toEqual({ code: 'rate_limited', message: 'Wait.' });
+  });
+});
+
+describe('fileName', () => {
+  it('keeps only a name of the form the API gives', () => {
+    expect(fileName('attachment; filename="talax-0a1b.html"')).toBe('talax-0a1b.html');
+    expect(fileName('attachment; filename="../../etc/passwd"')).toBe('talax-report.html');
+    expect(fileName(null)).toBe('talax-report.html');
   });
 });
