@@ -122,6 +122,16 @@ jobs:
           npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
           npm run e2e
+      - name: Rate limits follow the visitor's address given by the server's nginx
+        run: |
+          head -c 2000 /dev/urandom > upload.jpg
+          send() { curl -s -o /dev/null -w '%{http_code}\n' -H "X-Real-IP: $1" -F file=@upload.jpg http://127.0.0.1:8088/api/analyze; }
+          # A burst of 5 is allowed: the 7th request of one visitor is refused...
+          for i in 1 2 3 4 5 6; do send 203.0.113.1 > /dev/null; done
+          test "$(send 203.0.113.1)" = 429
+          # ...while another visitor is not.
+          test "$(send 203.0.113.2)" = 200
+          ! docker compose logs | grep -q '203\.0\.113'
       - name: No file left behind, no client address in the logs
         run: |
           test "$(docker compose exec -T api sh -c 'ls -A /tmp | wc -l')" = 0

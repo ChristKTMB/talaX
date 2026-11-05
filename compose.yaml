@@ -4,6 +4,14 @@
 # Both containers: read-only file system, no privileges, temporary files in
 # memory only (tmpfs), so that no user file ever reaches a disk.
 
+# Logs hold no file name, position or address, but they still must not fill
+# the server's disk.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "3"
+
 services:
   api:
     build: .
@@ -17,6 +25,7 @@ services:
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     restart: unless-stopped
+    logging: *logging
 
   # Serves the Angular front and passes /api on to the API.
   nginx:
@@ -29,9 +38,11 @@ services:
     read_only: true
     tmpfs:
       - /tmp:size=64m
-    # Local only. On the server, HTTPS in front comes with the deployment.
+    # Only the machine itself can reach this port: on the server, its own nginx
+    # terminates HTTPS in front (deploy/host-nginx.conf, docs/deploy.md).
     ports:
       - "127.0.0.1:${TALAX_PORT:-8088}:8080"
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     restart: unless-stopped
+    logging: *logging
