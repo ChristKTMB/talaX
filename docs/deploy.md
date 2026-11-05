@@ -7,7 +7,7 @@ terminates HTTPS in front of it, with a certificate from certbot:
 
 ```
 Internet ──HTTPS──▶ nginx of the server (certbot)    HTTPS only
-                         │ http://127.0.0.1:8088
+                         │ http://127.0.0.1:9188
                          ▼
                     nginx container                  site, security policy, limits
                          │
@@ -43,18 +43,20 @@ cd /opt/talax
 
 ### 2. Choose the local port
 
-The containers listen on `127.0.0.1:8088` by default. If another application
-of the server already uses it (`ss -ltn | grep 8088`), choose another one:
+The containers listen on `127.0.0.1:9188` by default. If another application
+of the server already uses it (`ss -ltn | grep 9188`), choose another one:
 
 ```sh
-echo "TALAX_PORT=8088" > .env
+echo "TALAX_PORT=9288" > .env      # example: any free port
 ```
+
+Then use that port in every command below and in `proxy_pass` (step 4).
 
 ### 3. Start the service
 
 ```sh
 docker compose up --build --detach --wait
-curl -fsS http://127.0.0.1:8088/api/health
+curl -fsS http://127.0.0.1:9188/api/health
 ```
 
 The answer gives the versions of Tala X and ExifTool. The first build takes a

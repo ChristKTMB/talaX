@@ -97,14 +97,14 @@ jobs:
       - run: docker compose up --build --detach --wait
       - name: Smoke test through nginx
         run: |
-          curl -fsS http://127.0.0.1:8088/api/health | grep -q '"exiftool"'
+          curl -fsS http://127.0.0.1:9188/api/health | grep -q '"exiftool"'
           head -c 2000 /dev/urandom > upload.jpg
-          curl -fsS -F file=@upload.jpg http://127.0.0.1:8088/api/analyze | grep -q '"schema":2'
-          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8088/api/nowhere)
+          curl -fsS -F file=@upload.jpg http://127.0.0.1:9188/api/analyze | grep -q '"schema":2'
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:9188/api/nowhere)
           test "$code" = 404
       - name: The front is served with its security policy
         run: |
-          curl -fsS -D headers.txt http://127.0.0.1:8088/terms -o page.html
+          curl -fsS -D headers.txt http://127.0.0.1:9188/terms -o page.html
           grep -q '<app-root' page.html
           # A fresh nonce replaced the placeholder, and the policy names it.
           ! grep -q '__CSP_NONCE__' page.html
@@ -125,7 +125,7 @@ jobs:
       - name: Rate limits follow the visitor's address given by the server's nginx
         run: |
           head -c 2000 /dev/urandom > upload.jpg
-          send() { curl -s -o /dev/null -w '%{http_code}\n' -H "X-Real-IP: $1" -F file=@upload.jpg http://127.0.0.1:8088/api/analyze; }
+          send() { curl -s -o /dev/null -w '%{http_code}\n' -H "X-Real-IP: $1" -F file=@upload.jpg http://127.0.0.1:9188/api/analyze; }
           # A burst of 5 is allowed: the 7th request of one visitor is refused...
           for i in 1 2 3 4 5 6; do send 203.0.113.1 > /dev/null; done
           test "$(send 203.0.113.1)" = 429

@@ -9,7 +9,7 @@ export default defineConfig({
   retries: process.env['CI'] ? 1 : 0,
   reporter: process.env['CI'] ? 'github' : 'list',
   use: {
-    baseURL: process.env['TALAX_URL'] ?? 'http://127.0.0.1:8088',
+    baseURL: process.env['TALAX_URL'] ?? 'http://127.0.0.1:9188',
     locale: 'fr-FR',
     trace: 'retain-on-failure',
   },

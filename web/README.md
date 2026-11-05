@@ -23,4 +23,4 @@ turns the terms of use and privacy policy of `../docs/legal` into HTML, before
 every build, dev server and test run: `docs/` stays the only source.
 
 The whole service, as deployed, from the repository root:
-`docker compose up --build`, then http://127.0.0.1:8088.
+`docker compose up --build`, then http://127.0.0.1:9188.

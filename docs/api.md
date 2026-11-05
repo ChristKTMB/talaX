@@ -16,7 +16,7 @@ or the whole service, as deployed (API behind nginx, read-only containers,
 temporary files in memory):
 
 ```sh
-docker compose up --build      # http://127.0.0.1:8088 (port: TALAX_PORT)
+docker compose up --build      # http://127.0.0.1:9188 (port: TALAX_PORT)
 ```
 
 Real responses for every situation are in [`api-examples/`](api-examples/).

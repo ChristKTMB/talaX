@@ -1,5 +1,5 @@
 # Local run of the web service: `docker compose up --build`, then
-# http://127.0.0.1:8088 (port: TALAX_PORT)
+# http://127.0.0.1:9188 (port: TALAX_PORT)
 #
 # Both containers: read-only file system, no privileges, temporary files in
 # memory only (tmpfs), so that no user file ever reaches a disk.
@@ -41,7 +41,7 @@ services:
     # Only the machine itself can reach this port: on the server, its own nginx
     # terminates HTTPS in front (deploy/host-nginx.conf, docs/deploy.md).
     ports:
-      - "127.0.0.1:${TALAX_PORT:-8088}:8080"
+      - "127.0.0.1:${TALAX_PORT:-9188}:8080"
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     restart: unless-stopped
