@@ -117,13 +117,14 @@ test('changing the language asks for the report again in that language', async (
   expect(asked).toEqual(['fr', 'en']);
 });
 
-test('the legal pages come from docs/legal, with their draft notice', async ({ page }) => {
+test('the legal pages come from docs/legal, with their version', async ({ page }) => {
   const problems = watch(page);
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Politique de confidentialité',
   );
-  await expect(page.locator('.draft')).toContainText('pas encore en vigueur');
+  await expect(page.locator('.document__body')).toContainText('Version du 2026-11-05');
+  await expect(page.locator('.draft')).toHaveCount(0);
   await page.locator('footer').getByRole('link', { name: "Conditions d'utilisation" }).click();
   await expect(page).toHaveURL(/\/terms$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText("Conditions d'utilisation");

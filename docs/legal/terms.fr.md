@@ -1,7 +1,6 @@
 # Conditions d'utilisation — Tala X
 
-> **Brouillon du 2026-11-02, pas encore en vigueur.** À faire relire par un
-> juriste avant la mise en ligne.
+Version du 2026-11-05.
 
 Tala X (talax.online) est un service web gratuit, sans compte, qui analyse
 une image pour dire ce qu'on peut honnêtement en affirmer : s'il s'agit d'un
@@ -78,8 +77,7 @@ version française prévaut.
 Ces conditions sont régies par le droit de la République démocratique du
 Congo ; les tribunaux de Kinshasa sont compétents. Cela ne vous prive pas
 des protections que vous accorde la loi de votre pays de résidence, si elle
-est plus favorable. À vérifier : formalités liées aux services numériques
-(arrêté de février 2026).
+est plus favorable.
 
 ## 9. Contact
 

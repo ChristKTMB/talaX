@@ -24,10 +24,12 @@ async function open(url: string, language: 'en' | 'fr' = 'fr') {
 }
 
 describe('LegalPage', () => {
-  it('shows the privacy policy from docs/legal, with its draft notice and contents', async () => {
+  it('shows the privacy policy from docs/legal, with its version and contents', async () => {
     const { page } = await open('/privacy');
     expect(page.querySelector('h1')?.textContent).toContain('Politique de confidentialité');
-    expect(page.querySelector('.draft')?.textContent).toContain('pas encore en vigueur');
+    // Approved: no draft banner (it only appears while docs/legal holds one).
+    expect(page.querySelector('.draft')).toBeNull();
+    expect(page.querySelector('.document__body')?.textContent).toContain('Version du 2026-11-05');
     expect(page.querySelectorAll('.toc li').length).toBeGreaterThan(5);
     expect(page.querySelector('.document__body')?.textContent).toContain("Rien n'est conservé");
     expect(page.querySelector('.document__body table')).not.toBeNull();

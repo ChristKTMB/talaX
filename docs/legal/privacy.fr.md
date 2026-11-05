@@ -1,7 +1,6 @@
 # Politique de confidentialité — Tala X
 
-> **Brouillon du 2026-11-02, pas encore en vigueur.** À faire relire par un
-> juriste avant la mise en ligne (voir les points marqués « À vérifier »).
+Version du 2026-11-05.
 
 Cette page explique ce que le service web Tala X (talax.online) fait des
 fichiers et des données qu'il reçoit. Elle décrit le fonctionnement réel du
@@ -14,9 +13,6 @@ ni le fichier, ni son nom, ni son empreinte, ni le résultat.**
 
 Christ KATUMBA KATUMBA, Kinshasa, République démocratique du Congo.
 Contact : <contact@talax.online>
-
-À vérifier : représentant dans l'Union européenne (article 27 du RGPD).
-[EU_REPRESENTATIVE]
 
 ## 2. Ce que nous traitons, et pourquoi
 
@@ -42,9 +38,7 @@ publicité, aucun service tiers dans la page (polices, scripts).
 - La limitation du nombre de requêtes repose sur notre **intérêt légitime** à
   protéger le service contre la surcharge (RGPD, article 6, paragraphe 1, f).
 - En République démocratique du Congo : Code du numérique (ordonnance-loi
-  n° 23/010 du 13 mars 2023), titre III. À vérifier : formalités de
-  déclaration ou d'autorisation auprès de l'autorité de protection des
-  données.
+  n° 23/010 du 13 mars 2023), titre III.
 
 ## 4. Qui d'autre reçoit des données
 

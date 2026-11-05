@@ -1,7 +1,6 @@
 # Privacy policy — Tala X
 
-> **Draft of 2026-11-02, not yet in force.** To be reviewed by a lawyer
-> before going live (see the points marked "To check").
+Version of 2026-11-05.
 
 This page explains what the Tala X web service (talax.online) does with the
 files and data it receives. It describes how the software actually works;
@@ -14,9 +13,6 @@ file, not its name, not its fingerprint, not the result.**
 
 Christ KATUMBA KATUMBA, Kinshasa, Democratic Republic of the Congo.
 Contact: <contact@talax.online>
-
-To check: representative in the European Union (GDPR, Article 27).
-[EU_REPRESENTATIVE]
 
 ## 2. What we process, and why
 
@@ -42,8 +38,7 @@ third-party service in the page (fonts, scripts).
 - Limiting the number of requests relies on our **legitimate interest** in
   protecting the service from overload (GDPR, Article 6(1)(f)).
 - In the Democratic Republic of the Congo: Digital Code (Ordinance-Law
-  No. 23/010 of 13 March 2023), Title III. To check: declaration or
-  authorisation formalities with the data protection authority.
+  No. 23/010 of 13 March 2023), Title III.
 
 ## 4. Who else receives data
 

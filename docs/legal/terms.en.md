@@ -1,7 +1,6 @@
 # Terms of use — Tala X
 
-> **Draft of 2026-11-02, not yet in force.** To be reviewed by a lawyer
-> before going live.
+Version of 2026-11-05.
 
 Tala X (talax.online) is a free web service, without accounts, that analyses
 an image to say what can honestly be said about it: whether it is a camera
@@ -73,8 +72,7 @@ prevails.
 These terms are governed by the law of the Democratic Republic of the Congo;
 the courts of Kinshasa have jurisdiction. This does not take away the
 protections that the law of your country of residence gives you, where it
-is more favourable. To check: formalities for digital services (order of
-February 2026).
+is more favourable.
 
 ## 9. Contact
 
