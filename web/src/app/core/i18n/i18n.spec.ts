@@ -56,12 +56,20 @@ describe('I18n', () => {
     expect(i18n.size(512)).toBe('512 B');
   });
 
-  it('sets the language and the title of the page', () => {
+  it('sets the language of the page', () => {
     const i18n = TestBed.inject(I18n);
-    const document = TestBed.inject(DOCUMENT);
     i18n.language.set('fr');
     TestBed.tick();
-    expect(document.documentElement.lang).toBe('fr');
-    expect(document.title).toBe('Tala X — Regardez au-delà du pixel');
+    expect(TestBed.inject(DOCUMENT).documentElement.lang).toBe('fr');
+  });
+
+  it('gives the address of each page in the current language', () => {
+    const i18n = TestBed.inject(I18n);
+    i18n.language.set('fr');
+    expect(i18n.path('home')).toBe('/fr');
+    expect(i18n.path('privacy')).toBe('/fr/confidentialite');
+    i18n.language.set('en');
+    expect(i18n.path('home')).toBe('/');
+    expect(i18n.path('terms')).toBe('/terms');
   });
 });

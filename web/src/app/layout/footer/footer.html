@@ -15,8 +15,8 @@
       <span>{{ i18n.t('footer.licence') }}</span>
     </div>
     <nav class="footer__nav" [attr.aria-label]="i18n.t('footer.nav')">
-      <a routerLink="/terms">{{ i18n.t('footer.terms') }}</a>
-      <a routerLink="/privacy">{{ i18n.t('footer.privacy') }}</a>
+      <a [routerLink]="i18n.path('terms')">{{ i18n.t('footer.terms') }}</a>
+      <a [routerLink]="i18n.path('privacy')">{{ i18n.t('footer.privacy') }}</a>
       <a [href]="sourceUrl">{{ i18n.t('footer.source') }}</a>
       <div class="footer__languages" role="group" [attr.aria-label]="i18n.t('footer.language')">
         @for (language of languages; track language) {
@@ -24,7 +24,7 @@
             type="button"
             [lang]="language"
             [attr.aria-pressed]="i18n.language() === language"
-            (click)="i18n.language.set(language)"
+            (click)="head.switchTo(language)"
           >
             {{ language.toUpperCase() }}
           </button>

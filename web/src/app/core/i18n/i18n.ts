@@ -1,9 +1,9 @@
 import { DOCUMENT, Injectable, effect, inject, signal } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import en from './en.json';
 import fr from './fr.json';
+import { Language, PATHS, PageName, languageOfPath } from './pages';
 
-export type Language = 'en' | 'fr';
+export type { Language } from './pages';
 export const LANGUAGES: readonly Language[] = ['fr', 'en'];
 
 export type Catalog = Readonly<Record<string, string>>;
@@ -21,16 +21,25 @@ export function languageFrom(preferred: readonly string[]): Language {
 @Injectable({ providedIn: 'root' })
 export class I18n {
   private readonly document = inject(DOCUMENT);
-  private readonly title = inject(Title);
 
+  /**
+   * The address says the language (`/fr/...`); the browser's language only
+   * decides for an address that does not. The router keeps it in step
+   * afterwards (`PageHead`).
+   */
   readonly language = signal<Language>(
-    languageFrom(this.document.defaultView?.navigator.languages ?? []),
+    languageOfPath(this.document.location?.pathname ?? '') ??
+      languageFrom(this.document.defaultView?.navigator.languages ?? []),
   );
 
   private readonly syncDocument = effect(() => {
     this.document.documentElement.lang = this.language();
-    this.title.setTitle(this.t('app.title'));
   });
+
+  /** The address of `page` in the current language. */
+  path(page: PageName): string {
+    return PATHS[page][this.language()];
+  }
 
   /** The text of `key` in the current language, with `{name}` placeholders filled. */
   t(key: string, values: Readonly<Record<string, string | number>> = {}): string {

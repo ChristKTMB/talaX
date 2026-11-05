@@ -11,6 +11,9 @@ metadata) is planned.
 
 > **Status: pre-alpha (0.3).** Usable, but rules and output may still change.
 
+**Try it online: [talax.online](https://talax.online)** (for a sensitive file, use
+the command-line tool: the file never leaves your machine).
+
 ## The question Tala X asks first
 
 Not *"is this image fake?"* — no technology answers that reliably today. But:

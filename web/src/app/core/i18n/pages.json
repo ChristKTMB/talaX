@@ -1,0 +1,8 @@
+{
+  "site": "https://talax.online",
+  "paths": {
+    "home": { "en": "/", "fr": "/fr" },
+    "terms": { "en": "/terms", "fr": "/fr/conditions" },
+    "privacy": { "en": "/privacy", "fr": "/fr/confidentialite" }
+  }
+}

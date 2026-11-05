@@ -64,9 +64,9 @@
     </p>
     <p class="consent">
       {{ i18n.t('upload.consent_start') }}
-      <a routerLink="/terms">{{ i18n.t('upload.consent_terms') }}</a
+      <a [routerLink]="i18n.path('terms')">{{ i18n.t('upload.consent_terms') }}</a
       >{{ i18n.t('upload.consent_middle') }}
-      <a routerLink="/privacy">{{ i18n.t('upload.consent_privacy') }}</a
+      <a [routerLink]="i18n.path('privacy')">{{ i18n.t('upload.consent_privacy') }}</a
       >.
     </p>
   </div>

@@ -50,8 +50,11 @@ test('the home page loads under the security policy, from our own server only', 
 }) => {
   const problems = watch(page);
   await page.goto('/');
+  // A French browser arriving from elsewhere gets the French page.
+  await expect(page).toHaveURL(/\/fr$/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Regardez au-delà du pixel');
   await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
+  await expect(page).toHaveTitle('Tala X — Regardez au-delà du pixel');
   const font = await page.evaluate(async () => {
     await document.fonts.ready;
     return [...document.fonts].some((face) => face.status === 'loaded');
@@ -114,20 +117,42 @@ test('changing the language asks for the report again in that language', async (
   await page.locator('footer').getByRole('button', { name: 'EN' }).click();
   await expect(page.locator('app-report h1')).toHaveText('Reprocessed copy');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page).toHaveURL(/:\d+\/$/);
   expect(asked).toEqual(['fr', 'en']);
 });
 
 test('the legal pages come from docs/legal, with their version', async ({ page }) => {
   const problems = watch(page);
-  await page.goto('/privacy');
+  await page.goto('/fr/confidentialite');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Politique de confidentialité',
   );
   await expect(page.locator('.document__body')).toContainText('Version du 2026-11-05');
   await expect(page.locator('.draft')).toHaveCount(0);
   await page.locator('footer').getByRole('link', { name: "Conditions d'utilisation" }).click();
-  await expect(page).toHaveURL(/\/terms$/);
+  await expect(page).toHaveURL(/\/fr\/conditions$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText("Conditions d'utilisation");
+  expect(problems).toEqual([]);
+});
+
+test('search engines get one page per language, and real 404s', async ({ page, request }) => {
+  // What a crawler reads before running any script.
+  const html = await (await request.get('/fr/conditions')).text();
+  expect(html).toContain('<html lang="fr">');
+  expect(html).toContain("<title>Conditions d'utilisation — Tala X</title>");
+  expect(html).toContain('<link rel="canonical" href="https://talax.online/fr/conditions" />');
+  expect(html).toContain(
+    '<link rel="alternate" hreflang="en" href="https://talax.online/terms" />',
+  );
+  expect(await (await request.get('/robots.txt')).text()).toContain('Sitemap:');
+  expect(await (await request.get('/sitemap.xml')).text()).toContain('/fr/confidentialite');
+
+  const problems = watch(page);
+  const response = await page.goto('/fr/nowhere');
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page introuvable');
+  await page.getByRole('link', { name: "Retour à l'accueil" }).click();
+  await expect(page).toHaveURL(/\/fr$/);
   expect(problems).toEqual([]);
 });
 

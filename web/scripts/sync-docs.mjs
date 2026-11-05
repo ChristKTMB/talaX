@@ -12,6 +12,7 @@ import { Marked } from 'marked';
 
 const web = join(dirname(fileURLToPath(import.meta.url)), '..');
 const docs = join(web, '..', 'docs');
+const { paths } = JSON.parse(readFileSync(join(web, 'src/app/core/i18n/pages.json'), 'utf8'));
 
 // --- Brand -------------------------------------------------------------------
 const brand = join(web, 'public', 'brand');
@@ -25,14 +26,15 @@ for (const file of ['favicon.svg', 'favicon.ico']) {
 }
 
 // --- Legal pages -------------------------------------------------------------
-function legalPage(source) {
+function legalPage(source, lang) {
   const marked = new Marked({
     renderer: {
-      // Links between the documents point to the pages of the site.
+      // Links between the documents point to the pages of the site, in the
+      // document's language.
       link({ href, tokens }) {
         const text = this.parser.parseInline(tokens);
         const page = /^(terms|privacy)\.(en|fr)\.md$/.exec(href)?.[1];
-        if (page) return `<a href="/${page}">${text}</a>`;
+        if (page) return `<a href="${paths[page][lang]}">${text}</a>`;
         return `<a href="${href}" rel="noopener">${text}</a>`;
       },
     },
@@ -58,7 +60,10 @@ const legal = {};
 for (const page of ['terms', 'privacy']) {
   legal[page] = {};
   for (const lang of ['en', 'fr']) {
-    legal[page][lang] = legalPage(readFileSync(join(docs, 'legal', `${page}.${lang}.md`), 'utf8'));
+    legal[page][lang] = legalPage(
+      readFileSync(join(docs, 'legal', `${page}.${lang}.md`), 'utf8'),
+      lang,
+    );
   }
 }
 const generated = join(web, 'src', 'generated');

@@ -16,7 +16,7 @@
     </ol>
     <p class="toc__other">
       {{ i18n.t('legal.see_also') }}
-      <a [routerLink]="'/' + other()">{{ i18n.t('legal.' + other()) }}</a>
+      <a [routerLink]="i18n.path(other())">{{ i18n.t('legal.' + other()) }}</a>
     </p>
   </nav>
   <article class="document">

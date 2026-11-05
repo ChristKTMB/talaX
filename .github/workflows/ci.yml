@@ -111,6 +111,14 @@ jobs:
           nonce=$(grep -oE 'ngcspnonce="[0-9a-f]{32}"' page.html | cut -d'"' -f2)
           grep -qi "content-security-policy: .*'nonce-$nonce'" headers.txt
           grep -qi 'referrer-policy: strict-origin-when-cross-origin' headers.txt
+      - name: Search engines get the pages, the sitemap and real 404s
+        run: |
+          curl -fsS http://127.0.0.1:9188/fr/conditions | grep -q '<html lang="fr">'
+          curl -fsS http://127.0.0.1:9188/robots.txt | grep -q '^Sitemap: https://talax.online/sitemap.xml'
+          curl -fsS http://127.0.0.1:9188/sitemap.xml | grep -q 'hreflang="fr"'
+          code=$(curl -s -o page.html -w '%{http_code}' http://127.0.0.1:9188/nowhere)
+          test "$code" = 404
+          grep -q 'noindex' page.html
       - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: web/.nvmrc

@@ -2,20 +2,12 @@ import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { routes } from '../../app.routes';
 import { I18n } from '../../core/i18n/i18n';
-import { LegalPage } from './legal-page';
 
 async function open(url: string, language: 'en' | 'fr' = 'fr') {
   TestBed.configureTestingModule({
-    providers: [
-      provideRouter(
-        [
-          { path: 'terms', component: LegalPage, data: { page: 'terms' } },
-          { path: 'privacy', component: LegalPage, data: { page: 'privacy' } },
-        ],
-        withComponentInputBinding(),
-      ),
-    ],
+    providers: [provideRouter(routes, withComponentInputBinding())],
   });
   TestBed.inject(I18n).language.set(language);
   const harness = await RouterTestingHarness.create();
@@ -25,7 +17,7 @@ async function open(url: string, language: 'en' | 'fr' = 'fr') {
 
 describe('LegalPage', () => {
   it('shows the privacy policy from docs/legal, with its version and contents', async () => {
-    const { page } = await open('/privacy');
+    const { page } = await open('/fr/confidentialite');
     expect(page.querySelector('h1')?.textContent).toContain('Politique de confidentialité');
     // Approved: no draft banner (it only appears while docs/legal holds one).
     expect(page.querySelector('.draft')).toBeNull();
@@ -44,19 +36,22 @@ describe('LegalPage', () => {
   });
 
   it('lists every section of the document in the contents, in order', async () => {
-    const { page } = await open('/terms');
+    const { page } = await open('/fr/conditions');
     const contents = [...page.querySelectorAll('.toc li button')].map((b) => b.textContent?.trim());
     const headings = [...page.querySelectorAll('.document__body h2')].map((h) => h.textContent);
     expect(contents.length).toBe(9);
     expect(contents).toEqual(headings);
   });
 
-  it('keeps links between the two documents inside the application', async () => {
-    const { harness, page } = await open('/terms');
-    const link = page.querySelector<HTMLAnchorElement>('.document__body a[href="/privacy"]');
+  it('keeps links between the two documents inside the application, in their language', async () => {
+    const { harness, page } = await open('/fr/conditions');
+    const link = page.querySelector<HTMLAnchorElement>(
+      '.document__body a[href="/fr/confidentialite"]',
+    );
     expect(link).not.toBeNull();
     link?.click();
     await harness.fixture.whenStable();
-    expect(TestBed.inject(Location).path()).toBe('/privacy');
+    expect(TestBed.inject(Location).path()).toBe('/fr/confidentialite');
+    expect(page.querySelector('.document__body a[href="/terms"]')).toBeNull();
   });
 });

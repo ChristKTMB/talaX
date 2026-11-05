@@ -11,6 +11,9 @@ vidéo (métadonnées de conteneur) est prévue.
 
 > **État : pré-alpha (0.3).** Utilisable, mais les règles et la sortie peuvent encore changer.
 
+**L'essayer en ligne : [talax.online/fr](https://talax.online/fr)** (pour un fichier
+sensible, utilisez l'outil en ligne de commande : le fichier ne quitte pas votre machine).
+
 ## La question posée en premier
 
 Pas *« cette image est-elle fausse ? »* — aucune technologie n'y répond de
