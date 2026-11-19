@@ -66,6 +66,10 @@ Top-level fields:
 | `results[].evidence` | the raw values behind the state |
 | `results[].confidence` | a probability where one really exists, otherwise `null` |
 | `disclaimer` | must be shown with every report |
+| `source_request` | `null` for a camera original; otherwise `title`, `intro`, `message` (ready to send to the source, line breaks included) and `caution`, all in `lang` |
+
+The schema number changes when a field is removed, renamed or changes
+meaning; a new field keeps it. Ignore fields you do not know.
 
 Display rules that come with the data:
 
@@ -75,6 +79,8 @@ Display rules that come with the data:
   could *not* be checked.
 - Never present a verdict as "certified", "authenticated" or "verified
   true". `original` means "camera original", not "authentic".
+- When `source_request` is present, show the `caution` with the message:
+  the original can reveal where the source was and which phone they use.
 - A GPS result in state `consistent` gives `evidence.latitude` and
   `evidence.longitude`: that is when the map can be offered.
 

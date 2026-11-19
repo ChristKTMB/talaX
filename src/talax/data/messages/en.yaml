@@ -240,3 +240,21 @@ error.invalid_request: The request is incomplete or contains an invalid value.
 error.not_found: This address does not exist.
 error.internal: An internal error occurred. Nothing can be concluded about the file.
 error.tiles_unavailable: The map could not be loaded. The analysis itself is not affected.
+source.title: Ask for the original
+source.intro: 'The original file holds what this copy has lost or may have changed. A message
+  ready to send to your source:'
+source.message: |-
+  Hello, and thank you for the photo. Before publishing it I need to check it, and for that I need the original file, exactly as it is on the device that took it. Could you send it again this way?
+
+  - WhatsApp: tap the paperclip, then "Document" (not "Gallery" or "Photos"), and pick the photo.
+  - Telegram: tap the paperclip, then "File", and pick the photo.
+  - Or as an e-mail attachment, at its actual size if you are asked.
+
+  Please do not crop or edit it before sending.
+
+  The original file may show where the photo was taken and which phone took it. If that puts you at risk, tell me before sending it.
+source.caution: 'Ask for it only if your source can send it safely: the original can reveal
+  their position and their phone''s serial number. Analyse it with the Tala X command line,
+  so the file never leaves your computer. On Android, the position can be removed even when
+  the file is sent as a document (seen on a Samsung phone); the other marks of the original
+  remain.'

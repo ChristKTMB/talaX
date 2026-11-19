@@ -179,5 +179,11 @@
     }
   ],
   "disclaimer": "Tala X ne certifie jamais qu'une image est authentique. Il rapporte ce qu'on peut honnêtement dire d'un fichier. Un original d'appareil ne prouve pas que son contenu est vrai : les métadonnées peuvent être falsifiées par qui sait le faire. Tala X est conçu contre le blanchiment par les plateformes et les images recyclées, pas contre les faussaires experts.",
+  "source_request": {
+    "title": "Demander l'original",
+    "intro": "Le fichier d'origine porte ce que cette copie a perdu ou a pu changer. Un message prêt à envoyer à votre source :",
+    "message": "Bonjour, et merci pour la photo. Avant de la publier, je dois la vérifier, et pour cela j'ai besoin du fichier d'origine, tel qu'il est sur l'appareil qui l'a prise. Pourriez-vous me la renvoyer de cette façon ?\n\n- WhatsApp : touchez le trombone, puis « Document » (et non « Galerie » ou « Photos »), et choisissez la photo.\n- Telegram : touchez le trombone, puis « Fichier », et choisissez la photo.\n- Ou en pièce jointe d'un e-mail, en taille réelle si on vous le demande.\n\nMerci de ne pas la recadrer ni la retoucher avant l'envoi.\n\nLe fichier d'origine peut indiquer où la photo a été prise et avec quel téléphone. Si cela vous met en danger, dites-le-moi avant de l'envoyer.",
+    "caution": "Demandez-le seulement si votre source peut l'envoyer sans risque : l'original peut révéler sa position et le numéro de série de son téléphone. Analysez-le avec la ligne de commande de Tala X, pour que le fichier ne quitte pas votre ordinateur. Sur Android, la position peut être retirée même quand le fichier est envoyé comme document (constaté sur un téléphone Samsung) ; les autres marques de l'original restent."
+  },
   "thumbnail": null
 }

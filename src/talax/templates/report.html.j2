@@ -33,6 +33,9 @@
   .verdict.reprocessed { border-left-color: var(--to_check); }
   .verdict .label { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
   .disclaimer { background: #fffbea; border-color: #f0dfa0; font-size: 14px; }
+  .source blockquote { margin: 8px 0; padding: 10px 14px; border-left: 3px solid var(--line);
+                       white-space: pre-line; }
+  .source .caution { color: var(--muted); font-size: 14px; }
   .signal { border-top: 1px solid var(--line); padding: 12px 0; }
   .signal:first-of-type { border-top: 0; padding-top: 0; }
   .signal .head { display: flex; gap: 10px; align-items: center; }
@@ -63,7 +66,7 @@
     section { border-color: #bbb; }
     h2 { break-after: avoid; }
     /* Kept whole on one page; the long list of checks may span pages. */
-    .verdict, .disclaimer, .signal, figure { break-inside: avoid; }
+    .verdict, .disclaimer, .signal, .source blockquote, figure { break-inside: avoid; }
     /* Browsers drop background colours when printing: the state is written
        in its colour and framed, so it stays readable even in black and white. */
     .badge { background: none !important; border: 1.5px solid currentColor; }
@@ -105,6 +108,15 @@
     <div class="label">{{ data.integrity.label }}</div>
     <p>{{ data.integrity.explanation }}</p>
   </section>
+
+  {% if data.source_request %}
+  <section class="source">
+    <h2>{{ data.source_request.title }}</h2>
+    <p>{{ data.source_request.intro }}</p>
+    <blockquote>{{ data.source_request.message }}</blockquote>
+    <p class="caution">{{ data.source_request.caution }}</p>
+  </section>
+  {% endif %}
 
   <section class="disclaimer">{{ data.disclaimer }}</section>
 

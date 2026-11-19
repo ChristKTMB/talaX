@@ -65,6 +65,10 @@
       </div>
     }
 
+    @if (result.source_request; as request) {
+      <app-source-request [request]="request" />
+    }
+
     <app-visual [image]="session.imageUrl()" [thumbnail]="result.thumbnail" />
 
     <section class="checks" aria-labelledby="checks">

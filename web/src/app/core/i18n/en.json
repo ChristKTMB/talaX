@@ -125,5 +125,8 @@
   "legal.draft": "Draft",
   "footer.terms": "Terms of use",
   "footer.privacy": "Privacy",
-  "app.skip": "Skip to the content"
+  "app.skip": "Skip to the content",
+  "source.copy": "Copy the message",
+  "source.copied": "Message copied.",
+  "source.copy_failed": "Copying is not possible here: select the message and copy it."
 }

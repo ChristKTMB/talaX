@@ -125,5 +125,8 @@
   "legal.draft": "Brouillon",
   "footer.terms": "Conditions d'utilisation",
   "footer.privacy": "Confidentialité",
-  "app.skip": "Aller au contenu"
+  "app.skip": "Aller au contenu",
+  "source.copy": "Copier le message",
+  "source.copied": "Message copié.",
+  "source.copy_failed": "La copie n'est pas possible ici : sélectionnez le message et copiez-le."
 }

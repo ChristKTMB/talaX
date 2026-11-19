@@ -177,8 +177,9 @@ Les tests qui ont besoin du corpus de référence sont sautés quand
   plateforme
 - **CLI** — tourne sur votre machine, votre fichier ne la quitte pas.
   Recommandée pour les fichiers sensibles.
-- **Application web** (à venir) — hébergée, pour les vérifications rapides. Les
-  fichiers seront analysés puis supprimés immédiatement, jamais conservés.
+- **Application web** — [talax.online/fr](https://talax.online/fr), pour les
+  vérifications rapides. Les fichiers sont analysés puis supprimés
+  immédiatement, jamais conservés.
 
 Nécessite [ExifTool](https://exiftool.org/).
 

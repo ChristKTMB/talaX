@@ -168,8 +168,8 @@ absent: those files are not published (see the
 - **Python library** — `pip install talax`, to integrate into your own platform
 - **CLI** — runs on your machine; your file never leaves it. Recommended for
   sensitive material.
-- **Web app** (coming) — hosted, for quick checks. Files will be analysed and
-  deleted immediately, never stored.
+- **Web app** — [talax.online](https://talax.online), for quick checks. Files
+  are analysed and deleted immediately, never stored.
 
 Requires [ExifTool](https://exiftool.org/).
 

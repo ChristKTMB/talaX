@@ -72,6 +72,23 @@ describe('Report', () => {
     });
   }
 
+  it('asks for the original, with the risk for the source, unless the file is one', async () => {
+    const copy = EXAMPLES['platformCopy']!;
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    const { page } = render(copy);
+    const section = page.querySelector('app-source-request');
+    expect(section?.textContent).toContain('«\u00a0Document\u00a0»');
+    expect(section?.textContent).toContain(copy.source_request!.caution);
+
+    section?.querySelector('button')?.click();
+    await Promise.resolve();
+    expect(writeText).toHaveBeenCalledWith(copy.source_request!.message);
+
+    TestBed.resetTestingModule();
+    expect(render(EXAMPLES['cameraOriginal']!).page.querySelector('app-source-request')).toBeNull();
+  });
+
   it('puts a banner at the top for a suspicious check only', () => {
     expect(render(EXAMPLES['solarContradiction']!).page.querySelectorAll('.alert').length).toBe(1);
     TestBed.resetTestingModule();

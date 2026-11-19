@@ -156,5 +156,6 @@
     }
   ],
   "disclaimer": "Tala X never certifies that an image is authentic. It reports what can honestly be said about a file. An original camera file is not proof that its content is true: metadata can be forged by anyone who knows how. Tala X is built against platform laundering and recycled images, not against expert forgers.",
+  "source_request": null,
   "thumbnail": null
 }

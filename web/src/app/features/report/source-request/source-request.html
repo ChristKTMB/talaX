@@ -1,0 +1,21 @@
+<section class="source" aria-labelledby="source-request">
+  <h2 id="source-request">{{ request().title }}</h2>
+  <p>{{ request().intro }}</p>
+  <blockquote class="source__message">{{ request().message }}</blockquote>
+  <div class="source__copy">
+    <button type="button" class="button" (click)="copyMessage()">
+      {{ i18n.t('source.copy') }}
+    </button>
+    <p role="status">
+      @switch (copy()) {
+        @case ('copied') {
+          {{ i18n.t('source.copied') }}
+        }
+        @case ('failed') {
+          {{ i18n.t('source.copy_failed') }}
+        }
+      }
+    </p>
+  </div>
+  <p class="source__caution">{{ request().caution }}</p>
+</section>

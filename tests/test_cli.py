@@ -166,3 +166,36 @@ def test_serve_without_the_server_extra_says_what_to_install(
     result = runner.invoke(app, ["serve"])
     assert result.exit_code == 1
     assert "pip install talax[server]" in result.output
+
+
+def test_a_copy_comes_with_a_message_for_the_source(
+    hostile_jpeg: Path, tmp_path: Path
+) -> None:
+    from dataclasses import replace
+
+    from talax.analysis import analyze
+    from talax.i18n import Language
+    from talax.model import IntegrityVerdict
+    from talax.report import source_request
+
+    data = json.loads(
+        runner.invoke(app, ["analyze", str(hostile_jpeg), "--json"]).output
+    )
+    assert data["integrity"]["verdict"] != "original"
+    request = data["source_request"]
+    assert '"Document"' in request["message"] and "serial number" in request["caution"]
+
+    text_out = runner.invoke(app, ["analyze", str(hostile_jpeg), "--lang", "fr"]).output
+    assert "Demander l'original" in text_out and "«\u00a0Document\u00a0»" in text_out
+
+    report = tmp_path / "report.html"
+    runner.invoke(app, ["analyze", str(hostile_jpeg), "--html", str(report)])
+    assert "Ask for the original" in report.read_text()
+
+    # A camera original needs nothing more from the source.
+    analysis = analyze(hostile_jpeg)
+    original = replace(
+        analysis,
+        integrity=replace(analysis.integrity, verdict=IntegrityVerdict.ORIGINAL),
+    )
+    assert source_request(original, Language.EN) is None

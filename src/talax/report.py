@@ -25,7 +25,10 @@ REPORT_CSP = "default-src 'none'; img-src data:; style-src 'unsafe-inline'"
 """The policy of the HTML report: nothing loaded from outside."""
 
 SCHEMA_VERSION = 2
-"""2: messages carry a key (`message`) and the text in the requested `lang`."""
+"""2: messages carry a key (`message`) and the text in the requested `lang`.
+
+Adding a field keeps the number; removing, renaming or changing one bumps it.
+"""
 
 _STATE_ORDER = [State.SUSPICIOUS, State.TO_CHECK, State.CONSISTENT, State.UNVERIFIABLE]
 _PREVIEW_SIZE = 640
@@ -52,7 +55,7 @@ def tool_versions() -> dict[str, str]:
 def to_dict(
     analysis: Analysis, file_name: str | None = None, lang: Language = Language.EN
 ) -> dict[str, Any]:
-    """Stable, JSON-ready view of an analysis. Bump SCHEMA_VERSION on changes."""
+    """Stable, JSON-ready view of an analysis (see SCHEMA_VERSION)."""
     integrity = analysis.integrity
     return {
         "schema": SCHEMA_VERSION,
@@ -88,6 +91,21 @@ def to_dict(
             for r in analysis.results
         ],
         "disclaimer": text("ui.disclaimer", lang),
+        "source_request": source_request(analysis, lang),
+    }
+
+
+def source_request(analysis: Analysis, lang: Language) -> dict[str, str] | None:
+    """What to ask the source for, unless the file already is a camera original.
+
+    A platform copy or an undetermined file is not a failure: the next step is
+    to get the original, sent in a way that keeps it intact.
+    """
+    if analysis.integrity.verdict is IntegrityVerdict.ORIGINAL:
+        return None
+    return {
+        key: text(f"source.{key}", lang)
+        for key in ("title", "intro", "message", "caution")
     }
 
 

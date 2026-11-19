@@ -37,6 +37,15 @@ export interface FileSummary {
   readonly real_format: string | null;
 }
 
+/** For a copy or an undetermined file: how to ask the source for the original. */
+export interface SourceRequest {
+  readonly title: string;
+  readonly intro: string;
+  /** Ready to send, with its line breaks. */
+  readonly message: string;
+  readonly caution: string;
+}
+
 export interface AnalysisResult {
   readonly schema: 2;
   readonly lang: string;
@@ -46,6 +55,7 @@ export interface AnalysisResult {
   readonly integrity: Integrity;
   readonly results: readonly CheckResult[];
   readonly disclaimer: string;
+  readonly source_request: SourceRequest | null;
   /** The preview embedded in the file, as a data: URI, or null. */
   readonly thumbnail: string | null;
 }

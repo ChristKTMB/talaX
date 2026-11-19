@@ -16,12 +16,23 @@ import { StateBadge } from '../../shared/ui/state-badge/state-badge';
 import { CheckRow } from './check-row/check-row';
 import { LocationMap } from './location-map/location-map';
 import { SkyQuestion, asksForSky } from './sky-question/sky-question';
+import { SourceRequest } from './source-request/source-request';
 import { Visual } from './visual/visual';
 
 /** The report of the last analysis: verdict first, then every check with its explanation. */
 @Component({
   selector: 'app-report',
-  imports: [CheckRow, Icon, LocationMap, Problem, RetryButton, SkyQuestion, StateBadge, Visual],
+  imports: [
+    CheckRow,
+    Icon,
+    LocationMap,
+    Problem,
+    RetryButton,
+    SkyQuestion,
+    SourceRequest,
+    StateBadge,
+    Visual,
+  ],
   templateUrl: './report.html',
   styleUrl: './report.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

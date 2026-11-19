@@ -17,7 +17,14 @@ from talax.analysis import analyze
 from talax.extraction import ExifToolError
 from talax.i18n import Language, default_language, text
 from talax.model import Analysis, Observation, Sky, State
-from talax.report import render_html, signal_name, state_label, to_dict, verdict_label
+from talax.report import (
+    render_html,
+    signal_name,
+    source_request,
+    state_label,
+    to_dict,
+    verdict_label,
+)
 
 BANNER = r"""
  _____         _           __  __
@@ -162,4 +169,13 @@ def _print_text(analysis: Analysis, file: Path, lang: Language) -> None:
 
     if any(r.message.key == "solar.no_observation" for r in analysis.results):
         out.print(text("ui.cli.sky_tip", lang), style="cyan", markup=False)
+    if request := source_request(analysis, lang):
+        out.print()
+        out.print(request["title"], style="bold", markup=False)
+        out.print(request["intro"], markup=False)
+        out.print()
+        out.print(request["message"], style="cyan", markup=False, highlight=False)
+        out.print()
+        out.print(request["caution"], style="yellow", markup=False)
+        out.print()
     out.print(_safe(text("ui.disclaimer", lang)), style="dim")

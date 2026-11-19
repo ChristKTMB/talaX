@@ -141,5 +141,11 @@
     }
   ],
   "disclaimer": "Tala X never certifies that an image is authentic. It reports what can honestly be said about a file. An original camera file is not proof that its content is true: metadata can be forged by anyone who knows how. Tala X is built against platform laundering and recycled images, not against expert forgers.",
+  "source_request": {
+    "title": "Ask for the original",
+    "intro": "The original file holds what this copy has lost or may have changed. A message ready to send to your source:",
+    "message": "Hello, and thank you for the photo. Before publishing it I need to check it, and for that I need the original file, exactly as it is on the device that took it. Could you send it again this way?\n\n- WhatsApp: tap the paperclip, then \"Document\" (not \"Gallery\" or \"Photos\"), and pick the photo.\n- Telegram: tap the paperclip, then \"File\", and pick the photo.\n- Or as an e-mail attachment, at its actual size if you are asked.\n\nPlease do not crop or edit it before sending.\n\nThe original file may show where the photo was taken and which phone took it. If that puts you at risk, tell me before sending it.",
+    "caution": "Ask for it only if your source can send it safely: the original can reveal their position and their phone's serial number. Analyse it with the Tala X command line, so the file never leaves your computer. On Android, the position can be removed even when the file is sent as a document (seen on a Samsung phone); the other marks of the original remain."
+  },
   "thumbnail": null
 }
