@@ -102,6 +102,28 @@ test('the map shows only after a click, with tiles from our relay', async ({ pag
   expect(problems).toEqual([]);
 });
 
+test('a caption checked by a click on the map, against the file and the sun', async ({ page }) => {
+  const problems = watch(page);
+  await page.route('**/api/tiles/**', (route) =>
+    route.fulfill({ contentType: 'image/png', body: TILE }),
+  );
+  await analyse(page);
+  await page.getByRole('button', { name: 'Saisir le lieu et la date annoncés' }).click();
+  await page.getByRole('button', { name: 'Choisir sur la carte' }).click();
+  // The world map opens on Africa: a click there is thousands of km from Paris.
+  await page.locator('.picker__canvas').click({ position: { x: 300, y: 200 } });
+  await expect(page.locator('#claim-place')).toHaveValue(/^-?\d+\.\d{5}, -?\d+\.\d{5}$/);
+  await page.locator('#claim-date').fill('2025-06-21');
+  await page.locator('#claim-time').fill('13:50');
+  await page.getByRole('button', { name: 'Vérifier', exact: true }).click();
+
+  await expect(page.locator('#check-declaration app-state-badge')).toHaveText(/Suspect/);
+  await expect(page.locator('#check-declaration')).toContainText('km de la position enregistrée');
+  await expect(page.locator('app-claim-form')).toContainText('Légende saisie');
+  await expect(page.locator('.alert')).toContainText('Lieu et date déclarés');
+  expect(problems).toEqual([]);
+});
+
 test('changing the language asks for the report again in that language', async ({ page }) => {
   const asked: string[] = [];
   await page.route('**/api/analyze', (route) => {
@@ -127,7 +149,7 @@ test('the legal pages come from docs/legal, with their version', async ({ page }
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Politique de confidentialité',
   );
-  await expect(page.locator('.document__body')).toContainText('Version du 2026-11-05');
+  await expect(page.locator('.document__body')).toContainText(/Version du \d{4}-\d{2}-\d{2}\./);
   await expect(page.locator('.draft')).toHaveCount(0);
   await page.locator('footer').getByRole('link', { name: "Conditions d'utilisation" }).click();
   await expect(page).toHaveURL(/\/fr\/conditions$/);

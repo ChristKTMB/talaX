@@ -218,3 +218,29 @@ def test_every_report_points_to_reverse_search(hostile_jpeg: Path) -> None:
     assert "Tala X sends them nothing" in search["caution"]
     text_out = runner.invoke(app, ["analyze", str(hostile_jpeg), "--lang", "fr"]).output
     assert "https://tineye.com/" in text_out and "déjà circulé" in text_out
+
+
+def test_declared_place_and_time_from_the_command_line(hostile_jpeg: Path) -> None:
+    args = ["analyze", str(hostile_jpeg), "--json", "--sky", "night"]
+    claim = ["--place", "-4.32,15.31", "--at", "2026-06-14 10:00"]
+    data = json.loads(runner.invoke(app, args + claim).output)
+    solar = next(r for r in data["results"] if r["signal"] == "solar")
+    assert solar["state"] == "suspicious"  # broad daylight in Kinshasa
+    assert solar["evidence"]["zone"] == "Africa/Kinshasa"
+    assert any(r["signal"] == "declaration" for r in data["results"])
+
+
+@pytest.mark.parametrize(
+    "claim",
+    [
+        ["--place", "-4.32,15.31"],
+        ["--at", "2026-06-14 10:00"],
+        ["--place", "Goma", "--at", "2026-06-14 10:00"],
+        ["--place", "95,15", "--at", "2026-06-14 10:00"],
+        ["--place", "-4.32,15.31", "--at", "yesterday"],
+    ],
+)
+def test_bad_declarations_are_usage_errors(
+    hostile_jpeg: Path, claim: list[str]
+) -> None:
+    assert runner.invoke(app, ["analyze", str(hostile_jpeg), *claim]).exit_code == 2

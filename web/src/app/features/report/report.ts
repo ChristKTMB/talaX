@@ -14,6 +14,7 @@ import { FINAL_ERRORS, Problem } from '../../shared/ui/problem/problem';
 import { RetryButton } from '../../shared/ui/retry-button/retry-button';
 import { StateBadge } from '../../shared/ui/state-badge/state-badge';
 import { CheckRow } from './check-row/check-row';
+import { ClaimForm } from './claim/claim-form';
 import { LocationMap } from './location-map/location-map';
 import { ReverseSearch } from './reverse-search/reverse-search';
 import { SkyQuestion, asksForSky } from './sky-question/sky-question';
@@ -25,6 +26,7 @@ import { Visual } from './visual/visual';
   selector: 'app-report',
   imports: [
     CheckRow,
+    ClaimForm,
     Icon,
     LocationMap,
     Problem,
@@ -52,6 +54,13 @@ export class Report {
   /** The API waits for what the user sees in the photo. */
   protected readonly asksForSky = computed(
     () => this.result()?.results.some((check) => asksForSky(check)) ?? false,
+  );
+  /** The solar check lacks a position or a time: the claim form comes first. */
+  protected readonly claimNeeded = computed(
+    () =>
+      this.result()?.results.some(
+        (check) => check.signal === 'solar' && check.message === 'solar.missing_input',
+      ) ?? false,
   );
   protected readonly finalError = computed(() =>
     FINAL_ERRORS.has(this.session.error()?.code ?? ''),

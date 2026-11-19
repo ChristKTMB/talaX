@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, from, map, switchMap, throwError } from 'rxjs';
 import { Language } from '../i18n/i18n';
-import { AnalysisResult, ApiError, Sky } from '../models/analysis';
+import { AnalysisResult, Answers, ApiError } from '../models/analysis';
 
 /** Same limit as the API (MAX_UPLOAD_MB): larger files are refused before sending. */
 export const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
@@ -12,19 +12,19 @@ export class AnalysisApi {
   private readonly http = inject(HttpClient);
 
   /** Sends the file for one analysis. The server keeps nothing afterwards. */
-  analyze(file: File, lang: Language, sky?: Sky | null): Observable<AnalysisResult> {
+  analyze(file: File, lang: Language, answers: Answers = {}): Observable<AnalysisResult> {
     // Errors follow Accept-Language, as the API refuses before reading `lang`.
     return this.http
-      .post<AnalysisResult>('/api/analyze', form(file, lang, sky), {
+      .post<AnalysisResult>('/api/analyze', form(file, lang, answers), {
         headers: { 'Accept-Language': lang },
       })
       .pipe(catchError((error: HttpErrorResponse) => throwError(() => toApiError(error))));
   }
 
   /** The self-contained HTML report, made by the server from the same file sent again. */
-  report(file: File, lang: Language, sky?: Sky | null): Observable<SavedReport> {
+  report(file: File, lang: Language, answers: Answers = {}): Observable<SavedReport> {
     return this.http
-      .post('/api/analyze', form(file, lang, sky), {
+      .post('/api/analyze', form(file, lang, answers), {
         params: { format: 'html' },
         headers: { 'Accept-Language': lang },
         responseType: 'blob',
@@ -47,11 +47,16 @@ export interface SavedReport {
   readonly name: string;
 }
 
-function form(file: File, lang: Language, sky?: Sky | null): FormData {
+function form(file: File, lang: Language, { sky, claim }: Answers): FormData {
   const body = new FormData();
   body.append('file', file, file.name);
   body.append('lang', lang);
   if (sky) body.append('sky', sky);
+  if (claim) {
+    body.append('latitude', String(claim.latitude));
+    body.append('longitude', String(claim.longitude));
+    body.append('taken_at', claim.takenAt);
+  }
   return body;
 }
 

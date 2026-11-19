@@ -2,7 +2,7 @@ import { DOCUMENT, DestroyRef, Injectable, computed, effect, inject, signal } fr
 import { firstValueFrom } from 'rxjs';
 import { AnalysisApi, MAX_UPLOAD_BYTES } from '../api/analysis-api';
 import { I18n } from '../i18n/i18n';
-import { AnalysisResult, ApiError, Sky } from '../models/analysis';
+import { AnalysisResult, Answers, ApiError, Claim, Sky } from '../models/analysis';
 
 /** After a 429, nginx refuses for about a minute: retrying sooner only fails again. */
 export const RATE_LIMIT_PAUSE_SECONDS = 60;
@@ -28,6 +28,8 @@ export class AnalysisSession {
   readonly result = signal<AnalysisResult | null>(null);
   /** What the user saw in the photo, sent with every later request for this file. */
   readonly sky = signal<Sky | null>(null);
+  /** The place and time the caption claims, sent with every later request too. */
+  readonly claim = signal<Claim | null>(null);
   readonly downloading = signal(false);
   readonly error = signal<ApiError | null>(null);
   /** Seconds before a new attempt is allowed, after a 429. */
@@ -73,6 +75,16 @@ export class AnalysisSession {
     }
   }
 
+  /**
+   * Checks the place and time a caption claims, or with null goes back to the
+   * file's own. The sky already given stays: it describes the photo, whatever
+   * the claim.
+   */
+  declare(claim: Claim | null): Promise<void> {
+    this.claim.set(claim);
+    return this.analyze();
+  }
+
   /** Analyses the file; with `sky`, again, with what the user saw in the photo. */
   async analyze(sky?: Sky): Promise<void> {
     const file = this.file();
@@ -82,7 +94,9 @@ export class AnalysisSession {
     this.error.set(null);
     this.phase.set('analyzing');
     try {
-      const result = await firstValueFrom(this.api.analyze(file, this.i18n.language(), this.sky()));
+      const result = await firstValueFrom(
+        this.api.analyze(file, this.i18n.language(), this.answers()),
+      );
       this.result.set(result);
       this.phase.set('done');
     } catch (error) {
@@ -99,7 +113,9 @@ export class AnalysisSession {
     this.error.set(null);
     this.downloading.set(true);
     try {
-      const report = await firstValueFrom(this.api.report(file, this.i18n.language(), this.sky()));
+      const report = await firstValueFrom(
+        this.api.report(file, this.i18n.language(), this.answers()),
+      );
       this.save(report.blob, report.name);
     } catch (error) {
       this.fail(error as ApiError);
@@ -116,6 +132,10 @@ export class AnalysisSession {
   /** Back to the empty form; the image is released from memory. */
   reset(): void {
     this.clearFile();
+  }
+
+  private answers(): Answers {
+    return { sky: this.sky(), claim: this.claim() };
   }
 
   private save(blob: Blob, name: string): void {
@@ -150,6 +170,7 @@ export class AnalysisSession {
     this.phase.set('idle');
     this.result.set(null);
     this.sky.set(null);
+    this.claim.set(null);
     this.lastAction = 'analyze';
     this.relanguaged = null;
     if (this.retryIn() === 0) this.error.set(null);

@@ -31,6 +31,8 @@ function render(result: AnalysisResult, error: ApiError | null = null) {
     imageUrl: signal('blob:photo'),
     error: signal(error),
     retryIn: signal(0),
+    claim: signal(null),
+    declare: vi.fn(),
     busy: signal(false),
     downloading: signal(false),
     canAnalyze: signal(true),
@@ -192,7 +194,7 @@ describe('Report', () => {
 
   it('downloads the HTML report, and says the file is sent again for it', () => {
     const { page, session } = render(EXAMPLES['platformCopy']!);
-    const button = page.querySelector<HTMLButtonElement>('.button--solid');
+    const button = page.querySelector<HTMLButtonElement>('.actions .button--solid');
     expect(button?.textContent).toContain('Télécharger le rapport (HTML)');
     button?.click();
     expect(session.download).toHaveBeenCalled();

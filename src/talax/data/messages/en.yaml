@@ -11,6 +11,7 @@ signal.gps: GPS position
 signal.capture_time: Date and time
 signal.time_zone: Time zone
 signal.solar: Solar consistency
+signal.declaration: Declared place and time
 signal.software: Editing software
 signal.c2pa: C2PA Content Credentials
 signal.internal_error: The “{signal}” check could not run because of an internal error. Nothing
@@ -19,6 +20,7 @@ duration.seconds: '{n} s'
 duration.minutes: '{n} min'
 duration.hours: '{n:g} h'
 duration.days: '{n} days'
+duration.years: 'about {n} years'
 offset_source.exif: the EXIF offset
 offset_source.vendor: the manufacturer's clock
 offset_source.declaration: the declaration
@@ -99,8 +101,9 @@ time_zone.mismatch: The device recorded UTC{recorded} (from {source}), but the G
   is in {zone}, which was UTC{expected} on that date. A phone set to a fixed time zone while
   travelling does this; so does an edited time or position.
 solar.missing_input: "The position and the time of the photo are both needed to compute where
-  the sun was, and at least one is missing. If the photo was forwarded to you, ask your source
-  for the original, sent as a document or an email attachment: it may still hold them."
+  the sun was, and at least one is missing. Enter the place and time the caption claims to
+  check them against the sun, or ask your source for the original, sent as a document or an
+  email attachment: it may still hold them."
 solar.origin.file: recorded in the file
 solar.origin.declaration: declared
 solar.above: above
@@ -265,3 +268,20 @@ reverse.intro: 'A real photo with a false caption is more common than a doctored
   try again with a crop of the most distinctive part.'
 reverse.caution: 'Tala X sends them nothing: you upload the photo yourself, and these services
   receive it and may keep it. Do not do it with a photo that must stay confidential.'
+declaration.summary: '{place} {time}'
+declaration.nothing: 'The file records neither a position nor a capture time to compare with
+  the declared place and time. The solar check uses the declaration.'
+declaration.place.none: The file records no position to compare with the declared place.
+declaration.place.close: The declared place is {km:.0f} km from the position recorded in the file.
+declaration.place.near: 'The declared place is {km:.0f} km from the position recorded in the
+  file, more than the usual accuracy of a phone. The recorded position may be an old one, or
+  the caption imprecise.'
+declaration.place.far: 'The declared place is {km:.0f} km from the position recorded in the
+  file. A recorded position this far off is hard to explain other than by a photo taken
+  somewhere else than the caption says.'
+declaration.time.none: The file records no capture time to compare with the declared time.
+declaration.time.close: The time recorded in the file is {gap} away from the declared time.
+declaration.time.before: 'The file records {when}, {gap} before the declared time. A wrongly
+  set clock can explain it; so can an older photo reused with a new caption.'
+declaration.time.after: 'The file records {when}, {gap} after the declared time. A wrongly
+  set clock can explain it; so can a caption that dates the photo wrongly.'

@@ -38,6 +38,14 @@ Multipart form:
 | `file` | yes | the image (50 MB at most) |
 | `lang` | no | `en` or `fr`; default: the `Accept-Language` header (`fr*` → French, otherwise English) |
 | `sky` | no | `day`, `twilight` or `night`: what the user sees in the photo, for the solar check |
+| `latitude`, `longitude` | no | decimal degrees of the place the caption claims |
+| `taken_at` | no | the time the caption claims, ISO 8601 (`2026-06-14T10:00`): local time at that place, unless it carries an offset |
+
+`latitude`, `longitude` and `taken_at` go together (manual mode): all three or
+none, otherwise a 422 whose `fields` names the missing ones. The declared
+place and time replace the file's for the solar check, and the `declaration`
+check compares them with the file (only present when a declaration is sent).
+Like `sky`, send them again with every later request on the same file.
 
 Query: `format=json` (default) or `format=html`.
 

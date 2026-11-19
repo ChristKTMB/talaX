@@ -93,8 +93,27 @@ describe('AnalysisSession', () => {
     await session.analyze();
     await session.analyze('night');
     await session.download();
-    expect(analyze.mock.calls.map((call) => call[2])).toEqual([null, 'night']);
-    expect(report.mock.calls[0]?.[2]).toBe('night');
+    expect(analyze.mock.calls.map((call) => call[2])).toEqual([
+      { sky: null, claim: null },
+      { sky: 'night', claim: null },
+    ]);
+    expect(report.mock.calls[0]?.[2]).toEqual({ sky: 'night', claim: null });
+  });
+
+  it('sends a claimed place and time with the sky already given, until withdrawn', async () => {
+    const { session, analyze } = setUp(() => of(platformCopy as AnalysisResult));
+    const claim = { latitude: -4.32, longitude: 15.31, takenAt: '2026-06-14T10:00' };
+    session.select(photo());
+    await session.analyze('day');
+    await session.declare(claim);
+    await session.declare(null);
+    expect(analyze.mock.calls.map((call) => call[2])).toEqual([
+      { sky: 'day', claim: null },
+      { sky: 'day', claim },
+      { sky: 'day', claim: null },
+    ]);
+    session.reset();
+    expect(session.claim()).toBeNull();
   });
 
   it('saves the report under the name the API gave', async () => {
@@ -141,6 +160,6 @@ describe('AnalysisSession', () => {
     // The example answers in French whatever is asked: no loop of requests.
     TestBed.tick();
     expect(analyze).toHaveBeenCalledTimes(2);
-    expect(analyze.mock.calls[1]?.slice(1)).toEqual(['en', 'day']);
+    expect(analyze.mock.calls[1]?.slice(1)).toEqual(['en', { sky: 'day', claim: null }]);
   });
 });

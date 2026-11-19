@@ -1,0 +1,196 @@
+{
+  "schema": 2,
+  "lang": "fr",
+  "tools": {
+    "talax": "0.3.0",
+    "exiftool": "13.60"
+  },
+  "created_at": "2026-01-01T12:00:00+00:00",
+  "file": {
+    "name": null,
+    "sha256": "2ed0737de6dfb8b5f045b013db35bcb0b3dc35bbc83ad899bd2883e9551f33ff",
+    "size": 2321,
+    "declared_format": "image/jpeg",
+    "real_format": "image/jpeg"
+  },
+  "integrity": {
+    "verdict": "reprocessed",
+    "label": "Copie retraitée",
+    "pipeline": "whatsapp-gallery",
+    "message": "integrity.fingerprint_alone",
+    "explanation": "Le fichier correspond à l'empreinte de WhatsApp, photo envoyée depuis la galerie (qualité standard) : les métadonnées de l'appareil ont disparu et l'image a été réencodée comme le fait WhatsApp. Empreinte mesurée sur 13 fichiers provenant de 2 appareil(s), le 2026-10-31. Aucune autre application ou plateforme n'a encore été mesurée face à elle : une autre produisant le même résultat ne peut pas être exclue.",
+    "evidence": {
+      "exif_present": false,
+      "make": null,
+      "model": null,
+      "datetime_original": null,
+      "vendor_groups": [],
+      "software": [],
+      "pixel_size": [
+        640,
+        480
+      ],
+      "recorded_size": null,
+      "segments": [
+        "SOI",
+        "APP0:JFIF",
+        "DQT",
+        "SOF2",
+        "DHT",
+        "SOS"
+      ],
+      "progressive": true,
+      "basis": "fingerprint",
+      "fingerprints": [
+        "whatsapp-gallery"
+      ]
+    }
+  },
+  "results": [
+    {
+      "signal": "real_format",
+      "name": "Format réel du fichier",
+      "state": "consistent",
+      "label": "Cohérent",
+      "message": "real_format.consistent",
+      "explanation": "L'extension et le contenu concordent : c'est un fichier JPEG.",
+      "evidence": {
+        "declared": "image/jpeg",
+        "real": "image/jpeg",
+        "exiftool": "image/jpeg"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "gps",
+      "name": "Position GPS",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "gps.absent",
+      "explanation": "Aucune position n'est enregistrée. La localisation était désactivée sur l'appareil, ou les métadonnées ont été supprimées ensuite.",
+      "evidence": {
+        "gps_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "capture_time",
+      "name": "Date et heure",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "capture_time.absent",
+      "explanation": "Aucune heure de prise de vue n'est enregistrée, ou elle est illisible : les métadonnées ont été supprimées ou jamais écrites.",
+      "evidence": {
+        "date_time_original": null
+      },
+      "confidence": null
+    },
+    {
+      "signal": "time_zone",
+      "name": "Fuseau horaire",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "time_zone.no_position",
+      "explanation": "Aucune position GPS n'est enregistrée : le fuseau horaire du lieu ne peut pas être comparé à celui de l'appareil.",
+      "evidence": {},
+      "confidence": null
+    },
+    {
+      "signal": "declaration",
+      "name": "Lieu et date déclarés",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "declaration.nothing",
+      "explanation": "Le fichier n'indique ni position ni heure de prise de vue à comparer avec le lieu et la date déclarés. La cohérence solaire utilise la déclaration.",
+      "evidence": {
+        "declared_latitude": 48.8566,
+        "declared_longitude": 2.3522,
+        "declared_time": "2025-06-21T13:50:00"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "solar",
+      "name": "Cohérence solaire",
+      "state": "consistent",
+      "label": "Cohérent",
+      "message": "solar.consistent",
+      "explanation": "Au lieu et à l'heure déclarés (2025-06-21 13:50, fuseau horaire d'après le fuseau horaire légal du lieu, Europe/Paris), le soleil était à 65° au-dessus de l'horizon, vers le sud (179°) : plein jour. Les ombres extérieures devraient pointer vers le nord, avec une longueur d'environ 0,5 fois la hauteur de l'objet. La photo montre le jour, ce qui concorde.",
+      "evidence": {
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "moment": "2025-06-21T13:50:00+02:00",
+        "source": "declaration",
+        "offset_source": "zone",
+        "zone": "Europe/Paris",
+        "sun_elevation": 64.58,
+        "sun_azimuth": 178.68,
+        "shadow_direction": "N",
+        "shadow_ratio": 0.48,
+        "observed_sky": "day"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "software",
+      "name": "Logiciel de retouche",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "software.none",
+      "explanation": "Aucun logiciel n'est enregistré dans le fichier. Beaucoup de logiciels et de plateformes n'écrivent rien : cela ne suggère ni n'exclut une retouche.",
+      "evidence": {
+        "software": [],
+        "photoshop_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "c2pa",
+      "name": "Certificats C2PA",
+      "state": "unverifiable",
+      "label": "Non vérifiable",
+      "message": "c2pa.absent",
+      "explanation": "Le fichier ne contient aucun certificat C2PA. La plupart des appareils photo et des téléphones n'en produisent pas, et les plateformes les suppriment : leur absence ne dit rien de l'image.",
+      "evidence": {
+        "present": false,
+        "state": null,
+        "codes": [],
+        "signer": null,
+        "signed_at": null,
+        "generator": null,
+        "ai_declared": false,
+        "error": null,
+        "trust_list_issued": null,
+        "trust_list_stale": false
+      },
+      "confidence": null
+    }
+  ],
+  "disclaimer": "Tala X ne certifie jamais qu'une image est authentique. Il rapporte ce qu'on peut honnêtement dire d'un fichier. Un original d'appareil ne prouve pas que son contenu est vrai : les métadonnées peuvent être falsifiées par qui sait le faire. Tala X est conçu contre le blanchiment par les plateformes et les images recyclées, pas contre les faussaires experts.",
+  "source_request": {
+    "title": "Demander l'original",
+    "intro": "Le fichier d'origine porte ce que cette copie a perdu ou a pu changer. Un message prêt à envoyer à votre source :",
+    "message": "Bonjour, et merci pour la photo. Avant de la publier, je dois la vérifier, et pour cela j'ai besoin du fichier d'origine, tel qu'il est sur l'appareil qui l'a prise. Pourriez-vous me la renvoyer de cette façon ?\n\n- WhatsApp : touchez le trombone, puis « Document » (et non « Galerie » ou « Photos »), et choisissez la photo.\n- Telegram : touchez le trombone, puis « Fichier », et choisissez la photo.\n- Ou en pièce jointe d'un e-mail, en taille réelle si on vous le demande.\n\nMerci de ne pas la recadrer ni la retoucher avant l'envoi.\n\nLe fichier d'origine peut indiquer où la photo a été prise et avec quel téléphone. Si cela vous met en danger, dites-le-moi avant de l'envoyer.",
+    "caution": "Demandez-le seulement si votre source peut l'envoyer sans risque : l'original peut révéler sa position et le numéro de série de son téléphone. Analysez-le avec la ligne de commande de Tala X, pour que le fichier ne quitte pas votre ordinateur. Sur Android, la position peut être retirée même quand le fichier est envoyé comme document (constaté sur un téléphone Samsung) ; les autres marques de l'original restent."
+  },
+  "reverse_search": {
+    "title": "Cette photo a-t-elle déjà circulé ?",
+    "intro": "Une vraie photo avec une fausse légende est plus courante qu'une photo truquée, et aucune analyse du fichier ne peut la repérer. Déposez vous-même la photo sur un de ces services, cherchez la copie la plus ancienne et comparez sa date et son lieu avec la légende. Si rien ne sort, réessayez avec un recadrage sur la partie la plus reconnaissable.",
+    "caution": "Tala X ne leur envoie rien : c'est vous qui déposez la photo, et ces services la reçoivent et peuvent la garder. Ne le faites pas avec une photo qui doit rester confidentielle.",
+    "services": [
+      {
+        "name": "Google Lens",
+        "url": "https://lens.google.com/"
+      },
+      {
+        "name": "TinEye",
+        "url": "https://tineye.com/"
+      },
+      {
+        "name": "Yandex",
+        "url": "https://yandex.com/images/"
+      }
+    ]
+  },
+  "thumbnail": null
+}

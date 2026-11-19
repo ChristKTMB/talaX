@@ -69,6 +69,8 @@
       <app-source-request [request]="request" />
     }
 
+    <app-claim-form [needed]="claimNeeded()" />
+
     <app-visual [image]="session.imageUrl()" [thumbnail]="result.thumbnail" />
 
     <section class="checks" aria-labelledby="checks">

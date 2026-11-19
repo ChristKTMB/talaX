@@ -15,7 +15,9 @@ def duration(delta: timedelta) -> Message:
         return Message("duration.minutes", {"n": seconds // 60})
     if seconds < 2 * 86400:
         return Message("duration.hours", {"n": seconds // 3600})
-    return Message("duration.days", {"n": seconds // 86400})
+    if seconds < 2 * 365 * 86400:
+        return Message("duration.days", {"n": seconds // 86400})
+    return Message("duration.years", {"n": round(seconds / (365.25 * 86400))})
 
 
 def hours(delta: timedelta) -> Message:

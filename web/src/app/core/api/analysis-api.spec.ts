@@ -35,11 +35,12 @@ describe('AnalysisApi', () => {
     });
   });
 
-  it('sends the file, the language and the sky, with errors asked in the same language', async () => {
+  it('sends the file, the language, the sky and the claim, with errors asked in the same language', async () => {
     const api = TestBed.inject(AnalysisApi);
     const http = TestBed.inject(HttpTestingController);
     const file = new File(['x'], 'photo.jpg', { type: 'image/jpeg' });
-    const answer = firstValueFrom(api.analyze(file, 'fr', 'night'));
+    const claim = { latitude: -4.32, longitude: 15.31, takenAt: '2026-06-14T10:00' };
+    const answer = firstValueFrom(api.analyze(file, 'fr', { sky: 'night', claim }));
 
     const request = http.expectOne('/api/analyze');
     expect(request.request.method).toBe('POST');
@@ -48,6 +49,9 @@ describe('AnalysisApi', () => {
     expect((form.get('file') as File).name).toBe('photo.jpg');
     expect(form.get('lang')).toBe('fr');
     expect(form.get('sky')).toBe('night');
+    expect(form.get('latitude')).toBe('-4.32');
+    expect(form.get('longitude')).toBe('15.31');
+    expect(form.get('taken_at')).toBe('2026-06-14T10:00');
     request.flush(platformCopy);
 
     expect((await answer).integrity.verdict).toBe('reprocessed');

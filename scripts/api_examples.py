@@ -120,6 +120,8 @@ def _png(d: Path) -> Path:
     return path
 
 
+_CLAIM = {"latitude": "48.8566", "longitude": "2.3522", "taken_at": "2025-06-21T13:50"}
+
 # name -> (file builder, name sent as the upload, form fields)
 CASES: dict[str, tuple[Callable[[Path], Path], str, dict[str, str]]] = {
     "camera-original": (_camera_original, "photo.jpg", {"sky": "day"}),
@@ -130,6 +132,13 @@ CASES: dict[str, tuple[Callable[[Path], Path], str, dict[str, str]]] = {
     "platform-copy": (_platform_copy, "photo.jpg", {}),
     "png-without-metadata": (_png, "image.png", {}),
     "wrong-extension": (_platform_copy, "photo.png", {}),
+    # Manual mode: the caption claims Paris at 13:50 on 21 June 2025.
+    "declared-copy": (_platform_copy, "photo.jpg", {**_CLAIM, "sky": "day"}),
+    "declared-elsewhere": (
+        _camera_original,
+        "photo.jpg",
+        {**_CLAIM, "latitude": "45.7640", "longitude": "4.8357", "sky": "day"},
+    ),
 }
 
 

@@ -17,6 +17,7 @@ import time
 import traceback
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from datetime import datetime
 from pathlib import Path, PurePath
 from typing import Annotated, Any, Literal
 
@@ -32,7 +33,7 @@ from talax.analysis import analyze
 from talax.api.tiles import router as tiles_router
 from talax.extraction import ExifToolError, exiftool_version
 from talax.i18n import Language, Message, translate
-from talax.model import Observation, Sky
+from talax.model import Declaration, Observation, Sky
 from talax.report import (
     REPORT_CSP,
     SCHEMA_VERSION,
@@ -91,6 +92,9 @@ def analyze_upload(
     file: Annotated[UploadFile, File()],
     lang: Annotated[Language | None, Form()] = None,
     sky: Annotated[Sky | None, Form()] = None,
+    latitude: Annotated[float | None, Form(ge=-90, le=90)] = None,
+    longitude: Annotated[float | None, Form(ge=-180, le=180)] = None,
+    taken_at: Annotated[datetime | None, Form()] = None,
     format: Annotated[Literal["json", "html"], Query()] = "json",
 ) -> Response:
     """Analyse one file. The response is the schema-2 JSON of the CLI, plus
@@ -98,8 +102,19 @@ def analyze_upload(
     `?format=html` returns the self-contained HTML report instead, as a
     download.
 
-    `lang` defaults to the browser language (`Accept-Language`)."""
+    `lang` defaults to the browser language (`Accept-Language`). `latitude`,
+    `longitude` and `taken_at` (local time at that place unless it carries an
+    offset) declare what the caption claims: all three or none."""
     language = lang or _language(request.headers.get("accept-language"))
+    claimed = {"latitude": latitude, "longitude": longitude, "taken_at": taken_at}
+    missing = sorted(name for name, value in claimed.items() if value is None)
+    if 0 < len(missing) < len(claimed):
+        return _error(422, Message("error.invalid_request"), language, fields=missing)
+    declaration = (
+        Declaration(latitude, longitude, taken_at)
+        if latitude is not None and longitude is not None and taken_at is not None
+        else None
+    )
     if not _slots.acquire(blocking=False):
         return _error(503, Message("error.busy"), language)
     try:
@@ -109,7 +124,9 @@ def analyze_upload(
                 shutil.copyfileobj(file.file, out)
             try:
                 observation = Observation(sky) if sky else None
-                analysis = analyze(path, observation=observation)
+                analysis = analyze(
+                    path, declaration=declaration, observation=observation
+                )
                 if format == "html":
                     # Built while the file still exists: it holds the previews.
                     return _html_report(

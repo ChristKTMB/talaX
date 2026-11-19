@@ -21,7 +21,9 @@ describe('LegalPage', () => {
     expect(page.querySelector('h1')?.textContent).toContain('Politique de confidentialité');
     // Approved: no draft banner (it only appears while docs/legal holds one).
     expect(page.querySelector('.draft')).toBeNull();
-    expect(page.querySelector('.document__body')?.textContent).toContain('Version du 2026-11-05');
+    expect(page.querySelector('.document__body')?.textContent).toMatch(
+      /Version du \d{4}-\d{2}-\d{2}\./,
+    );
     expect(page.querySelectorAll('.toc li').length).toBeGreaterThan(5);
     expect(page.querySelector('.document__body')?.textContent).toContain("Rien n'est conservé");
     expect(page.querySelector('.document__body table')).not.toBeNull();

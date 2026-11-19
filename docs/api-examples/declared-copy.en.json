@@ -1,0 +1,196 @@
+{
+  "schema": 2,
+  "lang": "en",
+  "tools": {
+    "talax": "0.3.0",
+    "exiftool": "13.60"
+  },
+  "created_at": "2026-01-01T12:00:00+00:00",
+  "file": {
+    "name": null,
+    "sha256": "2ed0737de6dfb8b5f045b013db35bcb0b3dc35bbc83ad899bd2883e9551f33ff",
+    "size": 2321,
+    "declared_format": "image/jpeg",
+    "real_format": "image/jpeg"
+  },
+  "integrity": {
+    "verdict": "reprocessed",
+    "label": "Reprocessed copy",
+    "pipeline": "whatsapp-gallery",
+    "message": "integrity.fingerprint_alone",
+    "explanation": "The file matches the fingerprint of WhatsApp, photo sent from the gallery (standard quality): the camera metadata is gone and the image was re-encoded the way WhatsApp does it. Fingerprint measured on 13 files from 2 device(s), 2026-10-31. No other app or platform with a fingerprint has been measured against it yet, so one producing the same output cannot be ruled out.",
+    "evidence": {
+      "exif_present": false,
+      "make": null,
+      "model": null,
+      "datetime_original": null,
+      "vendor_groups": [],
+      "software": [],
+      "pixel_size": [
+        640,
+        480
+      ],
+      "recorded_size": null,
+      "segments": [
+        "SOI",
+        "APP0:JFIF",
+        "DQT",
+        "SOF2",
+        "DHT",
+        "SOS"
+      ],
+      "progressive": true,
+      "basis": "fingerprint",
+      "fingerprints": [
+        "whatsapp-gallery"
+      ]
+    }
+  },
+  "results": [
+    {
+      "signal": "real_format",
+      "name": "Real file format",
+      "state": "consistent",
+      "label": "Consistent",
+      "message": "real_format.consistent",
+      "explanation": "The extension and the content agree: this is a JPEG file.",
+      "evidence": {
+        "declared": "image/jpeg",
+        "real": "image/jpeg",
+        "exiftool": "image/jpeg"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "gps",
+      "name": "GPS position",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "gps.absent",
+      "explanation": "No position is recorded. Location was off on the device, or the metadata was removed afterwards.",
+      "evidence": {
+        "gps_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "capture_time",
+      "name": "Date and time",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "capture_time.absent",
+      "explanation": "No capture time is recorded, or it is unreadable: the metadata was removed or never written.",
+      "evidence": {
+        "date_time_original": null
+      },
+      "confidence": null
+    },
+    {
+      "signal": "time_zone",
+      "name": "Time zone",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "time_zone.no_position",
+      "explanation": "No GPS position is recorded, so the time zone of the place cannot be compared with the one the device used.",
+      "evidence": {},
+      "confidence": null
+    },
+    {
+      "signal": "declaration",
+      "name": "Declared place and time",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "declaration.nothing",
+      "explanation": "The file records neither a position nor a capture time to compare with the declared place and time. The solar check uses the declaration.",
+      "evidence": {
+        "declared_latitude": 48.8566,
+        "declared_longitude": 2.3522,
+        "declared_time": "2025-06-21T13:50:00"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "solar",
+      "name": "Solar consistency",
+      "state": "consistent",
+      "label": "Consistent",
+      "message": "solar.consistent",
+      "explanation": "At the place and time declared (2025-06-21 13:50, time zone from the legal time zone of the place, Europe/Paris), the sun was 65° above the horizon, toward the south (179°): full daylight. Outdoor shadows should point north, about 0.5 times as long as the object is tall. The photo shows day, which matches.",
+      "evidence": {
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "moment": "2025-06-21T13:50:00+02:00",
+        "source": "declaration",
+        "offset_source": "zone",
+        "zone": "Europe/Paris",
+        "sun_elevation": 64.58,
+        "sun_azimuth": 178.68,
+        "shadow_direction": "N",
+        "shadow_ratio": 0.48,
+        "observed_sky": "day"
+      },
+      "confidence": null
+    },
+    {
+      "signal": "software",
+      "name": "Editing software",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "software.none",
+      "explanation": "No software is recorded in the file. Many editors and platforms write nothing, so this neither suggests nor rules out editing.",
+      "evidence": {
+        "software": [],
+        "photoshop_block": false
+      },
+      "confidence": null
+    },
+    {
+      "signal": "c2pa",
+      "name": "C2PA Content Credentials",
+      "state": "unverifiable",
+      "label": "Unverifiable",
+      "message": "c2pa.absent",
+      "explanation": "The file carries no Content Credentials (C2PA). Most cameras and phones do not produce them and platforms remove them, so their absence says nothing about the image.",
+      "evidence": {
+        "present": false,
+        "state": null,
+        "codes": [],
+        "signer": null,
+        "signed_at": null,
+        "generator": null,
+        "ai_declared": false,
+        "error": null,
+        "trust_list_issued": null,
+        "trust_list_stale": false
+      },
+      "confidence": null
+    }
+  ],
+  "disclaimer": "Tala X never certifies that an image is authentic. It reports what can honestly be said about a file. An original camera file is not proof that its content is true: metadata can be forged by anyone who knows how. Tala X is built against platform laundering and recycled images, not against expert forgers.",
+  "source_request": {
+    "title": "Ask for the original",
+    "intro": "The original file holds what this copy has lost or may have changed. A message ready to send to your source:",
+    "message": "Hello, and thank you for the photo. Before publishing it I need to check it, and for that I need the original file, exactly as it is on the device that took it. Could you send it again this way?\n\n- WhatsApp: tap the paperclip, then \"Document\" (not \"Gallery\" or \"Photos\"), and pick the photo.\n- Telegram: tap the paperclip, then \"File\", and pick the photo.\n- Or as an e-mail attachment, at its actual size if you are asked.\n\nPlease do not crop or edit it before sending.\n\nThe original file may show where the photo was taken and which phone took it. If that puts you at risk, tell me before sending it.",
+    "caution": "Ask for it only if your source can send it safely: the original can reveal their position and their phone's serial number. Analyse it with the Tala X command line, so the file never leaves your computer. On Android, the position can be removed even when the file is sent as a document (seen on a Samsung phone); the other marks of the original remain."
+  },
+  "reverse_search": {
+    "title": "Has this photo been seen before?",
+    "intro": "A real photo with a false caption is more common than a doctored one, and no analysis of the file can catch it. Upload the photo yourself to one of these services, look for the oldest copy and compare its date and place with the caption. If nothing comes up, try again with a crop of the most distinctive part.",
+    "caution": "Tala X sends them nothing: you upload the photo yourself, and these services receive it and may keep it. Do not do it with a photo that must stay confidential.",
+    "services": [
+      {
+        "name": "Google Lens",
+        "url": "https://lens.google.com/"
+      },
+      {
+        "name": "TinEye",
+        "url": "https://tineye.com/"
+      },
+      {
+        "name": "Yandex",
+        "url": "https://yandex.com/images/"
+      }
+    ]
+  },
+  "thumbnail": null
+}

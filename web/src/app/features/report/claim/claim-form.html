@@ -1,0 +1,92 @@
+<section class="claim" id="claim" tabindex="-1" aria-labelledby="claim-title">
+  <h2 id="claim-title">{{ i18n.t('claim.title') }}</h2>
+
+  @if (current(); as current) {
+    <p class="claim__current">
+      {{
+        i18n.t('claim.current', { place: current.place, date: current.date, time: current.time })
+      }}
+    </p>
+  }
+
+  @if (open()) {
+    <p>{{ i18n.t(needed() ? 'claim.lead_missing' : 'claim.lead') }}</p>
+    <form class="claim__form" novalidate (submit)="$event.preventDefault(); submit()">
+      <div class="field field--wide">
+        <label for="claim-place">{{ i18n.t('claim.place') }}</label>
+        <input
+          id="claim-place"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="-4.32170, 15.31250"
+          aria-describedby="claim-place-hint"
+          [attr.aria-invalid]="placeError() || (tried() && !place())"
+          [value]="placeText()"
+          (input)="placeText.set(value($event))"
+        />
+        <p id="claim-place-hint" class="field__hint" [class.field__hint--error]="placeError()">
+          {{ i18n.t(placeError() ? 'claim.place_invalid' : 'claim.place_hint') }}
+        </p>
+      </div>
+
+      <app-place-picker [place]="place()" (picked)="pick($event)" />
+
+      <div class="claim__when">
+        <div class="field">
+          <label for="claim-date">{{ i18n.t('claim.date') }}</label>
+          <input
+            id="claim-date"
+            type="date"
+            [attr.aria-invalid]="tried() && !date()"
+            [value]="date()"
+            (input)="date.set(value($event))"
+          />
+        </div>
+        <div class="field">
+          <label for="claim-time">{{ i18n.t('claim.time') }}</label>
+          <input
+            id="claim-time"
+            type="time"
+            [attr.aria-invalid]="tried() && !time()"
+            [value]="time()"
+            (input)="time.set(value($event))"
+          />
+        </div>
+      </div>
+
+      @if (tried() && !claim()) {
+        <p class="field__hint field__hint--error" role="alert">{{ i18n.t('claim.incomplete') }}</p>
+      }
+
+      <div class="claim__buttons">
+        <button type="submit" class="button button--solid" [disabled]="!session.canAnalyze()">
+          {{ i18n.t('claim.submit') }}
+        </button>
+        @if (editing()) {
+          <button type="button" class="button button--outline" (click)="editing.set(false)">
+            {{ i18n.t('claim.cancel') }}
+          </button>
+        }
+      </div>
+      <p class="claim__note">{{ i18n.t('claim.note') }}</p>
+    </form>
+  } @else {
+    <div class="claim__buttons">
+      @if (current()) {
+        <button type="button" class="button button--outline" (click)="start()">
+          {{ i18n.t('claim.change') }}
+        </button>
+        <button type="button" class="link" [disabled]="!session.canAnalyze()" (click)="withdraw()">
+          {{ i18n.t('claim.remove') }}
+        </button>
+      } @else {
+        <p>{{ i18n.t('claim.offer') }}</p>
+        <button type="button" class="button button--outline" (click)="start()">
+          {{ i18n.t('claim.open') }}
+        </button>
+      }
+    </div>
+  }
+</section>

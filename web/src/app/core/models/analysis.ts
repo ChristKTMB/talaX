@@ -7,6 +7,20 @@ export const STATES: readonly State[] = ['consistent', 'to_check', 'suspicious',
 export type Verdict = 'original' | 'reprocessed' | 'undetermined';
 export type Sky = 'day' | 'twilight' | 'night';
 
+/** The place and time a caption claims (manual mode), sent as typed in. */
+export interface Claim {
+  readonly latitude: number;
+  readonly longitude: number;
+  /** Local time at that place, `YYYY-MM-DDTHH:MM`. */
+  readonly takenAt: string;
+}
+
+/** What the user added to the file: sent again with every request on it. */
+export interface Answers {
+  readonly sky?: Sky | null;
+  readonly claim?: Claim | null;
+}
+
 export type Evidence = Readonly<Record<string, unknown>>;
 
 export interface Integrity {

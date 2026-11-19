@@ -145,7 +145,54 @@ def test_sky_reaches_the_solar_signal(client: TestClient, paris_noon: bytes) -> 
     assert night["state"] == "suspicious"
 
 
-@pytest.mark.parametrize("form", [{"sky": "noon"}, {"lang": "de"}])
+def test_a_declaration_reaches_the_signals(client: TestClient, jpeg: bytes) -> None:
+    # A stripped file: the declared place and time feed the solar check.
+    data = post(
+        client,
+        "a.jpg",
+        jpeg,
+        latitude="48.8566",
+        longitude="2.3522",
+        taken_at="2025-06-21T13:50",
+        sky="night",
+    ).json()
+    solar = signal(data, "solar")
+    assert solar["state"] == "suspicious"
+    assert solar["evidence"]["source"] == "declaration"
+    assert signal(data, "declaration")["state"] == "unverifiable"
+
+
+def test_a_declaration_far_from_the_gps_is_suspicious(
+    client: TestClient, paris_noon: bytes
+) -> None:
+    data = post(
+        client,
+        "a.jpg",
+        paris_noon,
+        latitude="45.7640",  # Lyon, about 390 km away
+        longitude="4.8357",
+        taken_at="2025-06-21T13:50",
+    ).json()
+    assert signal(data, "declaration")["state"] == "suspicious"
+
+
+def test_a_partial_declaration_names_what_is_missing(
+    client: TestClient, jpeg: bytes
+) -> None:
+    answer = post(client, "a.jpg", jpeg, latitude="48.85", longitude="2.35")
+    assert answer.status_code == 422
+    assert answer.json()["error"]["fields"] == ["taken_at"]
+
+
+@pytest.mark.parametrize(
+    "form",
+    [
+        {"sky": "noon"},
+        {"lang": "de"},
+        {"latitude": "91", "longitude": "0", "taken_at": "2025-06-21T13:50"},
+        {"latitude": "0", "longitude": "0", "taken_at": "yesterday"},
+    ],
+)
 def test_bad_options_are_rejected(
     client: TestClient, jpeg: bytes, form: dict[str, str]
 ) -> None:

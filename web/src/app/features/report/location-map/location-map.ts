@@ -17,10 +17,10 @@ import { Icon } from '../../../shared/ui/icon/icon';
 /** Tiles come through our server (api/tiles.py): OpenStreetMap never sees the user. */
 export const TILE_URL = '/api/tiles/{z}/{x}/{y}.png';
 const ZOOM = 15;
-const ATTRIBUTION =
+export const ATTRIBUTION =
   '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 // The pin of the mockup: the logo's marked cell inside a drop.
-const PIN = `<svg width="36" height="48" viewBox="0 0 36 48" aria-hidden="true">
+export const PIN = `<svg width="36" height="48" viewBox="0 0 36 48" aria-hidden="true">
   <path d="M18 46C18 46 33 28 33 17A15 15 0 0 0 3 17C3 28 18 46 18 46Z" fill="#1b1a17" />
   <rect x="13" y="12" width="10" height="10" fill="#faf8f2" />
 </svg>`;

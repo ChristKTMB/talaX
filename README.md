@@ -57,11 +57,15 @@ and recycled images, not against expert forgers.
   [C2PA Trust List](https://github.com/c2pa-org/conformance-public/tree/main/trust-list)
 - The embedded thumbnail, shown next to the image in the HTML report as a
   visual exploration, explicitly not conclusive
+- **Manual mode**: enter the place and time a caption claims. The sun is
+  computed there and then, and the claim is compared with the file's own
+  position and date.
+- For a copy: a ready-to-send message asking the source for the original
+- For every file: a hand-off to reverse image search (Google Lens, TinEye,
+  Yandex), which catches old photos recycled with a false caption — the most
+  common form of visual misinformation
 
-Coming next: a manual mode for stripped files (enter the claimed place and
-time), a weather cross-check, and a hand-off to reverse image search (Google
-Lens, TinEye, Yandex), which catches old photos recycled with a false
-caption — the most common form of visual misinformation.
+Coming next: a weather cross-check.
 
 ## What it deliberately does not do
 
@@ -105,6 +109,7 @@ Check with `exiftool -ver`. Tested on Linux, macOS and Windows.
 ```bash
 talax analyze photo.jpg                     # report in the terminal
 talax analyze photo.jpg --sky day           # what the photo shows, for the solar check
+talax analyze photo.jpg --place "-4.32,15.31" --at "2026-06-14 10:00"  # place and local time a caption claims
 talax analyze photo.jpg --html report.html  # self-contained HTML report
 talax analyze photo.jpg --json              # machine-readable
 talax analyze photo.jpg --lang fr           # in French (default: your system language)

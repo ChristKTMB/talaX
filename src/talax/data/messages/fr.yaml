@@ -11,6 +11,7 @@ signal.gps: Position GPS
 signal.capture_time: Date et heure
 signal.time_zone: Fuseau horaire
 signal.solar: Cohérence solaire
+signal.declaration: Lieu et date déclarés
 signal.software: Logiciel de retouche
 signal.c2pa: Certificats C2PA
 signal.internal_error: La vérification « {signal} » n'a pas pu s'exécuter à cause d'une erreur
@@ -19,6 +20,7 @@ duration.seconds: '{n} s'
 duration.minutes: '{n} min'
 duration.hours: '{n:g} h'
 duration.days: '{n} jours'
+duration.years: 'environ {n} ans'
 offset_source.exif: le décalage EXIF
 offset_source.vendor: l'horloge du fabricant
 offset_source.declaration: la déclaration
@@ -106,9 +108,9 @@ time_zone.mismatch: L'appareil a enregistré UTC{recorded} (d'après {source}), 
   sur un fuseau fixe pendant un voyage produit cet écart ; une heure ou une position modifiée
   aussi.
 solar.missing_input: "La position et l'heure de la photo sont toutes deux nécessaires pour
-  calculer où était le soleil, et au moins l'une manque. Si la photo vous a été transmise,
-  demandez l'original à votre source, envoyé comme document ou en pièce jointe d'un e-mail :
-  il peut les avoir conservées."
+  calculer où était le soleil, et au moins l'une manque. Saisissez le lieu et la date annoncés
+  par la légende pour les confronter au soleil, ou demandez l'original à votre source, envoyé
+  comme document ou en pièce jointe d'un e-mail : il peut les avoir conservées."
 solar.origin.file: enregistrés dans le fichier
 solar.origin.declaration: déclarés
 solar.above: au-dessus
@@ -287,3 +289,21 @@ reverse.intro: 'Une vraie photo avec une fausse légende est plus courante qu''u
 reverse.caution: 'Tala X ne leur envoie rien : c''est vous qui déposez la photo, et ces
   services la reçoivent et peuvent la garder. Ne le faites pas avec une photo qui doit rester
   confidentielle.'
+declaration.summary: '{place} {time}'
+declaration.nothing: 'Le fichier n''indique ni position ni heure de prise de vue à comparer
+  avec le lieu et la date déclarés. La cohérence solaire utilise la déclaration.'
+declaration.place.none: Le fichier n'indique aucune position à comparer avec le lieu déclaré.
+declaration.place.close: Le lieu déclaré est à {km:.0f} km de la position enregistrée dans le fichier.
+declaration.place.near: 'Le lieu déclaré est à {km:.0f} km de la position enregistrée dans le
+  fichier, plus que la précision habituelle d''un téléphone. La position enregistrée peut être
+  ancienne, ou la légende imprécise.'
+declaration.place.far: 'Le lieu déclaré est à {km:.0f} km de la position enregistrée dans le
+  fichier. Un tel écart s''explique difficilement autrement que par une photo prise ailleurs
+  que ne le dit la légende.'
+declaration.time.none: Le fichier n'indique aucune heure de prise de vue à comparer avec la date déclarée.
+declaration.time.close: L'heure enregistrée dans le fichier est à {gap} de l'heure déclarée.
+declaration.time.before: 'Le fichier indique {when}, soit {gap} avant la date déclarée. Une
+  horloge mal réglée peut l''expliquer ; une photo plus ancienne réutilisée avec une nouvelle
+  légende aussi.'
+declaration.time.after: 'Le fichier indique {when}, soit {gap} après la date déclarée. Une
+  horloge mal réglée peut l''expliquer ; une légende qui date mal la photo aussi.'

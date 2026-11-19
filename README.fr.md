@@ -60,12 +60,16 @@ plateformes et les images recyclées, pas contre les faussaires experts.
   officielle
 - La miniature intégrée, affichée à côté de l'image dans le rapport HTML
   comme exploration visuelle, explicitement non concluante
+- **Mode manuel** : saisissez le lieu et la date annoncés par une légende. Le
+  soleil est calculé à ce lieu et à cette heure, et la légende est comparée à
+  la position et à la date du fichier.
+- Pour une copie : un message prêt à envoyer pour demander l'original à la
+  source
+- Pour tout fichier : un renvoi vers la recherche d'image inversée (Google
+  Lens, TinEye, Yandex), qui attrape les vieilles photos recyclées avec une
+  fausse légende — la forme la plus répandue de désinformation visuelle
 
-À venir : un mode manuel pour les fichiers dépouillés (saisie du lieu et de
-la date annoncés), un recoupement météo, et un renvoi vers la recherche
-d'image inversée (Google Lens, TinEye, Yandex), qui attrape les vieilles
-photos recyclées avec une fausse légende — la forme la plus répandue de
-désinformation visuelle.
+À venir : un recoupement météo.
 
 ## Ce qu'il refuse de faire
 
@@ -112,6 +116,7 @@ Vérifiez avec `exiftool -ver`. Testé sous Linux, macOS et Windows.
 ```bash
 talax analyze photo.jpg                       # rapport dans le terminal
 talax analyze photo.jpg --sky day             # ce que montre la photo, pour la cohérence solaire
+talax analyze photo.jpg --place "-4.32,15.31" --at "2026-06-14 10:00"  # lieu et heure locale annoncés par une légende
 talax analyze photo.jpg --html rapport.html   # rapport HTML autonome
 talax analyze photo.jpg --json                # format machine
 talax analyze photo.jpg --lang en             # en anglais (par défaut : la langue du système)

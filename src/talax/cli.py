@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Annotated
 
@@ -16,7 +17,7 @@ from rich.text import Text
 from talax.analysis import analyze
 from talax.extraction import ExifToolError
 from talax.i18n import Language, default_language, text
-from talax.model import Analysis, Observation, Sky, State
+from talax.model import Analysis, Declaration, Observation, Sky, State
 from talax.report import (
     render_html,
     reverse_search,
@@ -84,11 +85,30 @@ def analyze_command(
         Language | None,
         typer.Option(help="Language of the report (default: the system language)."),
     ] = None,
+    place: Annotated[
+        str | None,
+        typer.Option(
+            metavar="LAT,LON",
+            help="Place the caption claims, in decimal degrees (with --at).",
+        ),
+    ] = None,
+    at: Annotated[
+        str | None,
+        typer.Option(
+            metavar="'YYYY-MM-DD HH:MM'",
+            help="Time the caption claims, local time at --place (with --place).",
+        ),
+    ] = None,
 ) -> None:
     """Analyse one file. Nothing is sent over the network."""
     language = lang or default_language()
+    declaration = _declaration(place, at)
     try:
-        analysis = analyze(file, observation=Observation(sky) if sky else None)
+        analysis = analyze(
+            file,
+            declaration=declaration,
+            observation=Observation(sky) if sky else None,
+        )
     except (OSError, ExifToolError) as exc:
         err.print(_safe(f"error: {exc}"), style="red")
         raise typer.Exit(1) from exc
@@ -137,6 +157,29 @@ def serve(
     # requests without them.
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
     uvicorn.run(api, host=host, port=port, access_log=False)
+
+
+def _declaration(place: str | None, at: str | None) -> Declaration | None:
+    """The claimed place and time: both or neither."""
+    if place is None and at is None:
+        return None
+    if place is None or at is None:
+        raise typer.BadParameter("--place and --at go together")
+    match = re.fullmatch(r"\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*", place)
+    if not match:
+        raise typer.BadParameter(
+            "expected LAT,LON, e.g. -4.32,15.31", param_hint="--place"
+        )
+    try:
+        moment = datetime.fromisoformat(at.strip())
+    except ValueError as exc:
+        raise typer.BadParameter(
+            "expected 'YYYY-MM-DD HH:MM'", param_hint="--at"
+        ) from exc
+    try:
+        return Declaration(float(match[1]), float(match[2]), moment)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc), param_hint="--place") from exc
 
 
 def _safe(text: str) -> Text:
