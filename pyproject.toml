@@ -1,6 +1,6 @@
 [project]
 name = "talax"
-version = "0.3.0"
+version = "0.4.0"
 description = "Honest image verification: original camera file or platform copy?"
 readme = "README.md"
 license = "Apache-2.0"
@@ -47,7 +47,7 @@ classifiers = [
 talax = "talax.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/ChristKTMB/talaX"
+Homepage = "https://talax.online"
 Repository = "https://github.com/ChristKTMB/talaX"
 Issues = "https://github.com/ChristKTMB/talaX/issues"
 "Français" = "https://github.com/ChristKTMB/talaX/blob/main/README.fr.md"
