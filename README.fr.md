@@ -69,7 +69,12 @@ plateformes et les images recyclées, pas contre les faussaires experts.
   Lens, TinEye, Yandex), qui attrape les vieilles photos recyclées avec une
   fausse légende — la forme la plus répandue de désinformation visuelle
 
-À venir : un recoupement météo.
+- **Recoupement météo**, seulement si vous le demandez : le modèle météo
+  d'[Open-Meteo](https://open-meteo.com/) (CC BY 4.0) à ce lieu et à cette
+  heure, comparé à ce que vous voyez sur la photo. Il envoie à Open-Meteo une
+  position arrondie à environ 11 km et la date, qu'Open-Meteo peut garder
+  90 jours ; au plus « à vérifier », jamais « suspect » (mailles de modèle de
+  9 à 25 km).
 
 ## Ce qu'il refuse de faire
 
@@ -117,6 +122,7 @@ Vérifiez avec `exiftool -ver`. Testé sous Linux, macOS et Windows.
 talax analyze photo.jpg                       # rapport dans le terminal
 talax analyze photo.jpg --sky day             # ce que montre la photo, pour la cohérence solaire
 talax analyze photo.jpg --place "-4.32,15.31" --at "2026-06-14 10:00"  # lieu et heure locale annoncés par une légende
+talax analyze photo.jpg --weather --conditions rain  # météo (réseau : Open-Meteo), et ce que montre la photo
 talax analyze photo.jpg --html rapport.html   # rapport HTML autonome
 talax analyze photo.jpg --json                # format machine
 talax analyze photo.jpg --lang en             # en anglais (par défaut : la langue du système)

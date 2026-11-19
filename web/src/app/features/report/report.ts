@@ -20,6 +20,8 @@ import { ReverseSearch } from './reverse-search/reverse-search';
 import { SkyQuestion, asksForSky } from './sky-question/sky-question';
 import { SourceRequest } from './source-request/source-request';
 import { Visual } from './visual/visual';
+import { WeatherOffer } from './weather/weather-offer';
+import { WeatherQuestion, asksForConditions } from './weather/weather-question';
 
 /** The report of the last analysis: verdict first, then every check with its explanation. */
 @Component({
@@ -36,6 +38,8 @@ import { Visual } from './visual/visual';
     SourceRequest,
     StateBadge,
     Visual,
+    WeatherOffer,
+    WeatherQuestion,
   ],
   templateUrl: './report.html',
   styleUrl: './report.scss',
@@ -61,6 +65,13 @@ export class Report {
       this.result()?.results.some(
         (check) => check.signal === 'solar' && check.message === 'solar.missing_input',
       ) ?? false,
+  );
+  /** The weather model answered and waits for what the photo shows. */
+  protected readonly asksForConditions = computed(
+    () => this.result()?.results.some((check) => asksForConditions(check)) ?? false,
+  );
+  protected readonly hasWeather = computed(
+    () => this.result()?.results.some((check) => check.signal === 'weather') ?? false,
   );
   protected readonly finalError = computed(() =>
     FINAL_ERRORS.has(this.session.error()?.code ?? ''),

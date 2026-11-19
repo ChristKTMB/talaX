@@ -424,3 +424,39 @@ def test_unknown_format_is_rejected(client: TestClient, jpeg: bytes) -> None:
     response = client.post("/api/analyze?format=pdf", files={"file": ("a.jpg", jpeg)})
     assert response.status_code == 422
     assert response.json()["error"]["fields"] == ["format"]
+
+
+def test_weather_is_refused_unless_the_server_enables_it(
+    client: TestClient, jpeg: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("TALAX_WEATHER", raising=False)
+    assert client.get("/api/health").json()["weather"] is False
+    answer = post(client, "a.jpg", jpeg, weather="true")
+    assert answer.status_code == 403
+    assert answer.json()["error"]["code"] == "weather_disabled"
+
+
+def test_weather_when_enabled(
+    client: TestClient, paris_noon: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import talax.weather
+    from talax.model import WeatherHour, WeatherRecord
+
+    asked: list[tuple[float, float]] = []
+
+    def fake(latitude: float, longitude: float, moment: Any) -> WeatherRecord:
+        asked.append((latitude, longitude))
+        hour = WeatherHour(moment, 0.0, 0.0, 10.0)
+        return WeatherRecord(hours=(hour,), latitude=48.9, longitude=2.4)
+
+    monkeypatch.setenv("TALAX_WEATHER", "on")
+    monkeypatch.setattr(talax.weather, "fetch_weather", fake)
+    assert client.get("/api/health").json()["weather"] is True
+    data = post(client, "a.jpg", paris_noon, weather="true", conditions="rain").json()
+    weather = signal(data, "weather")
+    assert weather["state"] == "to_check"
+    assert asked and asked[0][0] == pytest.approx(48.8566)
+    # Not asked: no lookup, no check.
+    plain = post(client, "a.jpg", paris_noon).json()
+    assert all(r["signal"] != "weather" for r in plain["results"])
+    assert len(asked) == 1

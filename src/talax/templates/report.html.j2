@@ -35,7 +35,7 @@
   .disclaimer { background: #fffbea; border-color: #f0dfa0; font-size: 14px; }
   .source blockquote { margin: 8px 0; padding: 10px 14px; border-left: 3px solid var(--line);
                        white-space: pre-line; }
-  .source .caution, .reverse .caution { color: var(--muted); font-size: 14px; }
+  .source .caution, .reverse .caution, .credit { color: var(--muted); font-size: 14px; }
   .signal { border-top: 1px solid var(--line); padding: 12px 0; }
   .signal:first-of-type { border-top: 0; padding-top: 0; }
   .signal .head { display: flex; gap: 10px; align-items: center; }
@@ -130,6 +130,9 @@
         <strong>{{ r.name }}</strong>
       </div>
       <p>{{ r.explanation }}</p>
+      {% if r.signal == "weather" and r.evidence.source %}
+      <p class="credit">{{ t("ui.report.weather_credit") }} <a href="{{ weather_url }}" rel="noopener noreferrer" target="_blank">Open-Meteo.com</a> (CC BY 4.0) <span class="print-only">{{ weather_url }}</span></p>
+      {% endif %}
       {% if r.evidence %}
       <details><summary>{{ t("ui.report.raw_values") }}</summary>
         <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}

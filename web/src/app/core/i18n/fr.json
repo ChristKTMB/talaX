@@ -148,5 +148,20 @@
   "claim.remove": "Retirer la légende",
   "picker.show": "Choisir sur la carte",
   "picker.label": "Carte : cliquez à l'endroit où la légende dit que la photo a été prise",
-  "picker.help": "Cliquez à l'endroit annoncé par la légende ; les coordonnées se remplissent. Quelques kilomètres d'écart changent à peine le soleil."
+  "picker.help": "Cliquez à l'endroit annoncé par la légende ; les coordonnées se remplissent. Quelques kilomètres d'écart changent à peine le soleil.",
+  "weather.title": "Recouper avec la météo",
+  "weather.lead": "Tala X demande au modèle météo Open-Meteo le temps qu'il faisait au lieu et à l'heure de la photo ; puis vous dites ce que montre la photo.",
+  "weather.warning": "Le lieu, arrondi à environ 11 km, et la date seront envoyés à Open-Meteo par notre serveur. Open-Meteo peut les garder 90 jours dans ses journaux. Il ne reçoit ni votre adresse ni votre fichier. Pour un fichier sensible, ne le faites pas.",
+  "weather.ask": "Consulter la météo",
+  "weather.needs_claim": "Il faut d'abord un lieu et une heure : saisissez ceux de la légende ci-dessus.",
+  "weather.question": "Quel temps montre la photo ?",
+  "weather.question_help": "Choisissez ce que vous voyez. Votre choix relance l'analyse du même fichier, et la météo est demandée de nouveau.",
+  "weather.rain": "Pluie qui tombe",
+  "weather.snow": "Neige qui tombe",
+  "weather.overcast": "Ciel couvert",
+  "weather.clear": "Ciel dégagé ou ombres nettes",
+  "weather.your_answer": "Votre réponse : {seen}.",
+  "weather.credit": "Données météo :",
+  "weather.banner_lead": "Une question pour compléter la météo :",
+  "weather.banner_question": "quel temps montre la photo ?"
 }

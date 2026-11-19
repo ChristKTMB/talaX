@@ -94,10 +94,15 @@ describe('AnalysisSession', () => {
     await session.analyze('night');
     await session.download();
     expect(analyze.mock.calls.map((call) => call[2])).toEqual([
-      { sky: null, claim: null },
-      { sky: 'night', claim: null },
+      { sky: null, claim: null, weather: false, conditions: null },
+      { sky: 'night', claim: null, weather: false, conditions: null },
     ]);
-    expect(report.mock.calls[0]?.[2]).toEqual({ sky: 'night', claim: null });
+    expect(report.mock.calls[0]?.[2]).toEqual({
+      sky: 'night',
+      claim: null,
+      weather: false,
+      conditions: null,
+    });
   });
 
   it('sends a claimed place and time with the sky already given, until withdrawn', async () => {
@@ -108,12 +113,27 @@ describe('AnalysisSession', () => {
     await session.declare(claim);
     await session.declare(null);
     expect(analyze.mock.calls.map((call) => call[2])).toEqual([
-      { sky: 'day', claim: null },
-      { sky: 'day', claim },
-      { sky: 'day', claim: null },
+      { sky: 'day', claim: null, weather: false, conditions: null },
+      { sky: 'day', claim, weather: false, conditions: null },
+      { sky: 'day', claim: null, weather: false, conditions: null },
     ]);
     session.reset();
     expect(session.claim()).toBeNull();
+  });
+
+  it('looks up the weather only once asked, then with what the photo shows', async () => {
+    const { session, analyze } = setUp(() => of(platformCopy as AnalysisResult));
+    session.select(photo());
+    await session.analyze();
+    await session.lookUpWeather();
+    await session.lookUpWeather('rain');
+    expect(analyze.mock.calls.map((call) => call[2])).toEqual([
+      { sky: null, claim: null, weather: false, conditions: null },
+      { sky: null, claim: null, weather: true, conditions: null },
+      { sky: null, claim: null, weather: true, conditions: 'rain' },
+    ]);
+    session.reset();
+    expect(session.weather()).toBe(false);
   });
 
   it('saves the report under the name the API gave', async () => {
@@ -160,6 +180,9 @@ describe('AnalysisSession', () => {
     // The example answers in French whatever is asked: no loop of requests.
     TestBed.tick();
     expect(analyze).toHaveBeenCalledTimes(2);
-    expect(analyze.mock.calls[1]?.slice(1)).toEqual(['en', { sky: 'day', claim: null }]);
+    expect(analyze.mock.calls[1]?.slice(1)).toEqual([
+      'en',
+      { sky: 'day', claim: null, weather: false, conditions: null },
+    ]);
   });
 });

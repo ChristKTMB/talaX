@@ -244,3 +244,25 @@ def test_bad_declarations_are_usage_errors(
     hostile_jpeg: Path, claim: list[str]
 ) -> None:
     assert runner.invoke(app, ["analyze", str(hostile_jpeg), *claim]).exit_code == 2
+
+
+def test_weather_from_the_command_line(
+    hostile_jpeg: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import talax.weather
+    from talax.model import WeatherHour, WeatherRecord
+
+    def fake(latitude: float, longitude: float, moment: object) -> WeatherRecord:
+        hour = WeatherHour(moment, 3.0, 0.0, 100.0)  # type: ignore[arg-type]
+        return WeatherRecord(hours=(hour,), latitude=-4.3, longitude=15.3)
+
+    monkeypatch.setattr(talax.weather, "fetch_weather", fake)
+    claim = ["--place", "-4.32,15.31", "--at", "2026-06-14 10:00"]
+    out = runner.invoke(
+        app,
+        ["analyze", str(hostile_jpeg), *claim, "--weather", "--conditions", "clear"],
+    ).output
+    assert "To check" in out and "Open-Meteo.com (CC BY 4.0)" in out
+
+    without = runner.invoke(app, ["analyze", str(hostile_jpeg), *claim]).output
+    assert "Open-Meteo" not in without

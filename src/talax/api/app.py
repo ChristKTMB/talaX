@@ -9,6 +9,7 @@ no file name, no metadata, no exception text, no client address.
 from __future__ import annotations
 
 import logging
+import os
 import re
 import shutil
 import tempfile
@@ -33,7 +34,7 @@ from talax.analysis import analyze
 from talax.api.tiles import router as tiles_router
 from talax.extraction import ExifToolError, exiftool_version
 from talax.i18n import Language, Message, translate
-from talax.model import Declaration, Observation, Sky
+from talax.model import Conditions, Declaration, Observation, Sky
 from talax.report import (
     REPORT_CSP,
     SCHEMA_VERSION,
@@ -81,9 +82,20 @@ app = FastAPI(
 app.include_router(tiles_router)
 
 
+def weather_enabled() -> bool:
+    """The weather lookup sends places and dates to Open-Meteo: off unless
+    `TALAX_WEATHER=on`, so that a server turns it on knowingly."""
+    return os.environ.get("TALAX_WEATHER", "off").strip().lower() == "on"
+
+
 @app.get("/api/health")
 def health() -> dict[str, Any]:
-    return {"status": "ok", "schema": SCHEMA_VERSION, "tools": tool_versions()}
+    return {
+        "status": "ok",
+        "schema": SCHEMA_VERSION,
+        "tools": tool_versions(),
+        "weather": weather_enabled(),
+    }
 
 
 @app.post("/api/analyze")
@@ -95,6 +107,8 @@ def analyze_upload(
     latitude: Annotated[float | None, Form(ge=-90, le=90)] = None,
     longitude: Annotated[float | None, Form(ge=-180, le=180)] = None,
     taken_at: Annotated[datetime | None, Form()] = None,
+    weather: Annotated[bool, Form()] = False,
+    conditions: Annotated[Conditions | None, Form()] = None,
     format: Annotated[Literal["json", "html"], Query()] = "json",
 ) -> Response:
     """Analyse one file. The response is the schema-2 JSON of the CLI, plus
@@ -104,8 +118,12 @@ def analyze_upload(
 
     `lang` defaults to the browser language (`Accept-Language`). `latitude`,
     `longitude` and `taken_at` (local time at that place unless it carries an
-    offset) declare what the caption claims: all three or none."""
+    offset) declare what the caption claims: all three or none. `weather`
+    asks Open-Meteo for the weather there and then (refused with 403 unless
+    the server enables it); `conditions` is what the photo shows."""
     language = lang or _language(request.headers.get("accept-language"))
+    if weather and not weather_enabled():
+        return _error(403, Message("error.weather_disabled"), language)
     claimed = {"latitude": latitude, "longitude": longitude, "taken_at": taken_at}
     missing = sorted(name for name, value in claimed.items() if value is None)
     if 0 < len(missing) < len(claimed):
@@ -123,9 +141,14 @@ def analyze_upload(
             with path.open("wb") as out:
                 shutil.copyfileobj(file.file, out)
             try:
-                observation = Observation(sky) if sky else None
+                observation = (
+                    Observation(sky, conditions) if sky or conditions else None
+                )
                 analysis = analyze(
-                    path, declaration=declaration, observation=observation
+                    path,
+                    declaration=declaration,
+                    observation=observation,
+                    weather=weather,
                 )
                 if format == "html":
                     # Built while the file still exists: it holds the previews.

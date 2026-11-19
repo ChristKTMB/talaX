@@ -17,7 +17,7 @@ from rich.text import Text
 from talax.analysis import analyze
 from talax.extraction import ExifToolError
 from talax.i18n import Language, default_language, text
-from talax.model import Analysis, Declaration, Observation, Sky, State
+from talax.model import Analysis, Conditions, Declaration, Observation, Sky, State
 from talax.report import (
     render_html,
     reverse_search,
@@ -74,6 +74,21 @@ def analyze_command(
         Sky | None,
         typer.Option(help="What the photo shows, for the solar check."),
     ] = None,
+    weather: Annotated[
+        bool,
+        typer.Option(
+            "--weather",
+            help=(
+                "Look up the weather at the photo's place and time on Open-Meteo. "
+                "Sends a position rounded to about 11 km and the date; "
+                "Open-Meteo may keep them 90 days."
+            ),
+        ),
+    ] = False,
+    conditions: Annotated[
+        Conditions | None,
+        typer.Option(help="The weather the photo shows, for --weather."),
+    ] = None,
     json_output: Annotated[
         bool, typer.Option("--json", help="Print the analysis as JSON.")
     ] = False,
@@ -100,14 +115,15 @@ def analyze_command(
         ),
     ] = None,
 ) -> None:
-    """Analyse one file. Nothing is sent over the network."""
+    """Analyse one file. Nothing is sent over the network, unless --weather."""
     language = lang or default_language()
     declaration = _declaration(place, at)
     try:
         analysis = analyze(
             file,
             declaration=declaration,
-            observation=Observation(sky) if sky else None,
+            observation=Observation(sky, conditions) if sky or conditions else None,
+            weather=weather,
         )
     except (OSError, ExifToolError) as exc:
         err.print(_safe(f"error: {exc}"), style="red")
@@ -213,6 +229,12 @@ def _print_text(analysis: Analysis, file: Path, lang: Language) -> None:
 
     if any(r.message.key == "solar.no_observation" for r in analysis.results):
         out.print(text("ui.cli.sky_tip", lang), style="cyan", markup=False)
+    if any(r.message.key == "weather.no_observation" for r in analysis.results):
+        out.print(text("ui.cli.conditions_tip", lang), style="cyan", markup=False)
+    if any(
+        r.signal_id == "weather" and r.evidence.get("source") for r in analysis.results
+    ):
+        out.print(text("ui.weather_credit", lang), style="dim", markup=False)
     if request := source_request(analysis, lang):
         out.print()
         out.print(request["title"], style="bold", markup=False)

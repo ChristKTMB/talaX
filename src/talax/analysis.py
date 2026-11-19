@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
@@ -10,9 +11,10 @@ from talax.extraction import read_metadata
 from talax.fileinfo import read_file_info
 from talax.integrity import assess_integrity
 from talax.jpeg import JpegError, JpegStructure, read_jpeg_structure
-from talax.model import Analysis, Context, Declaration, Observation
+from talax.model import Analysis, Context, Declaration, Observation, WeatherRecord
 from talax.provenance import embedded_trust_list, read_c2pa
 from talax.signals import DEFAULT_SIGNALS, Signal, run_signals
+from talax.solar import place_and_time
 from talax.traits import read_traits
 
 
@@ -21,7 +23,10 @@ def analyze(
     declaration: Declaration | None = None,
     observation: Observation | None = None,
     signals: Iterable[Signal] = DEFAULT_SIGNALS,
+    weather: bool = False,
 ) -> Analysis:
+    """Analyse one file. Nothing leaves the machine, unless `weather` is True:
+    then a rounded position and a date are sent to Open-Meteo (talax.weather)."""
     file = read_file_info(path)
     metadata = read_metadata(path)
     traits = read_traits(file, metadata, _jpeg_structure(path, file.real_format))
@@ -33,12 +38,23 @@ def analyze(
         c2pa=read_c2pa(path, embedded_trust_list()),
         observation=observation,
     )
+    if weather:
+        ctx = dataclasses.replace(ctx, weather=_weather(ctx))
     return Analysis(
         file=file,
         integrity=ctx.integrity,
         results=run_signals(ctx, signals),
         created_at=datetime.now(UTC),
     )
+
+
+def _weather(ctx: Context) -> WeatherRecord:
+    from talax.weather import fetch_weather
+
+    pt = place_and_time(ctx)
+    if pt is None:
+        return WeatherRecord(error="missing_input")
+    return fetch_weather(pt.latitude, pt.longitude, pt.moment)
 
 
 def _jpeg_structure(path: Path, real_format: str | None) -> JpegStructure | None:

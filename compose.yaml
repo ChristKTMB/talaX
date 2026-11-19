@@ -22,6 +22,8 @@ services:
       - /tmp:size=512m,mode=1777
     environment:
       TMPDIR: /tmp
+      # Weather lookup (Open-Meteo): off unless TALAX_WEATHER=on in .env.
+      TALAX_WEATHER: ${TALAX_WEATHER:-off}
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     restart: unless-stopped

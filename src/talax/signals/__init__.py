@@ -7,6 +7,7 @@ from talax.signals.real_format import RealFormat
 from talax.signals.software import EditingSoftware
 from talax.signals.solar_consistency import SolarConsistency
 from talax.signals.time_zone import TimeZoneConsistency
+from talax.signals.weather import WeatherCheck
 
 DEFAULT_SIGNALS: tuple[Signal, ...] = (
     RealFormat(),
@@ -15,6 +16,7 @@ DEFAULT_SIGNALS: tuple[Signal, ...] = (
     TimeZoneConsistency(),
     DeclarationCheck(),
     SolarConsistency(),
+    WeatherCheck(),
     EditingSoftware(),
     C2paCredentials(),
 )
@@ -30,5 +32,6 @@ __all__ = [
     "Signal",
     "SolarConsistency",
     "TimeZoneConsistency",
+    "WeatherCheck",
     "run_signals",
 ]

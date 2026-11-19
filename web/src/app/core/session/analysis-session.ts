@@ -2,7 +2,7 @@ import { DOCUMENT, DestroyRef, Injectable, computed, effect, inject, signal } fr
 import { firstValueFrom } from 'rxjs';
 import { AnalysisApi, MAX_UPLOAD_BYTES } from '../api/analysis-api';
 import { I18n } from '../i18n/i18n';
-import { AnalysisResult, Answers, ApiError, Claim, Sky } from '../models/analysis';
+import { AnalysisResult, Answers, ApiError, Claim, Conditions, Sky } from '../models/analysis';
 
 /** After a 429, nginx refuses for about a minute: retrying sooner only fails again. */
 export const RATE_LIMIT_PAUSE_SECONDS = 60;
@@ -30,6 +30,10 @@ export class AnalysisSession {
   readonly sky = signal<Sky | null>(null);
   /** The place and time the caption claims, sent with every later request too. */
   readonly claim = signal<Claim | null>(null);
+  /** The user agreed to send the place and date to Open-Meteo, for this file. */
+  readonly weather = signal(false);
+  /** The weather the user sees in the photo. */
+  readonly conditions = signal<Conditions | null>(null);
   readonly downloading = signal(false);
   readonly error = signal<ApiError | null>(null);
   /** Seconds before a new attempt is allowed, after a 429. */
@@ -85,6 +89,13 @@ export class AnalysisSession {
     return this.analyze();
   }
 
+  /** Looks up the weather for this file, from now on, then with what the photo shows. */
+  lookUpWeather(conditions: Conditions | null = null): Promise<void> {
+    this.weather.set(true);
+    if (conditions) this.conditions.set(conditions);
+    return this.analyze();
+  }
+
   /** Analyses the file; with `sky`, again, with what the user saw in the photo. */
   async analyze(sky?: Sky): Promise<void> {
     const file = this.file();
@@ -135,7 +146,12 @@ export class AnalysisSession {
   }
 
   private answers(): Answers {
-    return { sky: this.sky(), claim: this.claim() };
+    return {
+      sky: this.sky(),
+      claim: this.claim(),
+      weather: this.weather(),
+      conditions: this.conditions(),
+    };
   }
 
   private save(blob: Blob, name: string): void {
@@ -171,6 +187,8 @@ export class AnalysisSession {
     this.result.set(null);
     this.sky.set(null);
     this.claim.set(null);
+    this.weather.set(false);
+    this.conditions.set(null);
     this.lastAction = 'analyze';
     this.relanguaged = null;
     if (this.retryIn() === 0) this.error.set(null);

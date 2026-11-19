@@ -1,0 +1,36 @@
+@if (asking()) {
+  <section id="weather-question" class="question" aria-labelledby="weather-title" tabindex="-1">
+    <span class="corner corner--tl" aria-hidden="true"></span>
+    <span class="corner corner--tr" aria-hidden="true"></span>
+    <span class="corner corner--bl" aria-hidden="true"></span>
+    <span class="corner corner--br" aria-hidden="true"></span>
+    <h4 id="weather-title">{{ i18n.t('weather.question') }}</h4>
+    <p>{{ i18n.t('weather.question_help') }}</p>
+    <div class="choices" role="group" aria-labelledby="weather-title">
+      @for (choice of conditions; track choice) {
+        <button
+          type="button"
+          [attr.aria-pressed]="observed() === choice"
+          [disabled]="!session.canAnalyze()"
+          (click)="answer(choice)"
+        >
+          {{ i18n.t('weather.' + choice) }}
+        </button>
+      }
+    </div>
+  </section>
+} @else if (observed(); as seen) {
+  <p class="given">
+    {{ i18n.t('weather.your_answer', { seen: i18n.t('weather.' + seen) }) }}
+    <button type="button" class="link" (click)="changing.set(true)">
+      {{ i18n.t('sky.change') }}
+    </button>
+  </p>
+}
+@if (answered()) {
+  <p class="given">
+    {{ i18n.t('weather.credit') }}
+    <a [href]="creditUrl" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a>
+    (CC BY 4.0)
+  </p>
+}

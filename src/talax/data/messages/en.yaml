@@ -285,3 +285,34 @@ declaration.time.before: 'The file records {when}, {gap} before the declared tim
   set clock can explain it; so can an older photo reused with a new caption.'
 declaration.time.after: 'The file records {when}, {gap} after the declared time. A wrongly
   set clock can explain it; so can a caption that dates the photo wrongly.'
+signal.weather: Weather
+conditions.rain: rain falling
+conditions.snow: snow falling
+conditions.overcast: an overcast sky
+conditions.clear: a clear sky or sharp shadows
+weather.missing_input: 'The weather was not looked up: it needs both the place and the time of
+  the photo. Enter the place and time the caption claims.'
+weather.unavailable: 'The weather service did not answer. Nothing can be said about the weather;
+  the rest of the analysis is not affected.'
+weather.no_data: 'The weather service has no data for this place and time (a date in the
+  future?). Nothing can be said about the weather.'
+weather.summary: 'Weather model near {lat}, {lon}, from {start} to {end} UTC: {rain:.1f} mm of
+  precipitation, {snow:.1f} cm of snow, sky {cloud:.0f} % covered.'
+weather.summary_no_cloud: 'Weather model near {lat}, {lon}, from {start} to {end} UTC: {rain:.1f} mm
+  of precipitation, {snow:.1f} cm of snow; cloud cover unknown.'
+weather.no_observation: '{summary} Say what the photo shows to compare. These are model values
+  over cells of 9 to 25 km, not station readings: a local shower can escape them.'
+weather.consistent: '{summary} The photo shows {seen}: this agrees. These are model values over
+  cells of 9 to 25 km, not station readings.'
+weather.to_check: '{summary} The photo shows {seen}, but {reason}. A local shower or passing
+  clouds can explain it, since these are model values over cells of 9 to 25 km: compare with
+  other sources (local stations, other photos of the same day).'
+weather.reason.no_rain: the model records no precipitation
+weather.reason.no_snow: the model records no snowfall
+weather.reason.clear_sky: the model gives an almost clear sky
+weather.reason.raining: the model records rain
+weather.reason.covered: the model gives an almost fully covered sky
+ui.cli.conditions_tip: 'Tip: add --conditions rain|snow|overcast|clear to compare the weather with the photo.'
+ui.weather_credit: 'Weather data: Open-Meteo.com (CC BY 4.0), https://open-meteo.com/'
+ui.report.weather_credit: 'Weather data:'
+error.weather_disabled: The weather lookup is not available on this server.

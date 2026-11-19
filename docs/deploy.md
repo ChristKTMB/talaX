@@ -52,6 +52,14 @@ echo "TALAX_PORT=9288" > .env      # example: any free port
 
 Then use that port in every command below and in `proxy_pass` (step 4).
 
+The weather lookup is off by default. It sends places (rounded to about
+11 km) and dates to Open-Meteo, which may keep them 90 days; the privacy
+policy says so. To offer it:
+
+```sh
+echo "TALAX_WEATHER=on" >> .env
+```
+
 ### 3. Start the service
 
 ```sh

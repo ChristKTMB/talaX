@@ -46,9 +46,9 @@ class SolarConsistency:
         sun = sun_position(pt.latitude, pt.longitude, pt.moment)
         evidence = _evidence(pt, sun)
         description = _describe(pt, sun)
-        observation = ctx.observation
+        seen = ctx.observation.sky if ctx.observation else None
 
-        if observation is None:
+        if seen is None:
             return Result(
                 self.id,
                 State.UNVERIFIABLE,
@@ -56,7 +56,6 @@ class SolarConsistency:
                 evidence,
             )
 
-        seen = observation.sky
         evidence["observed_sky"] = str(seen)
         seen_text = Message(f"sky.{seen}")
         if _COMPATIBLE[seen](sun.elevation):

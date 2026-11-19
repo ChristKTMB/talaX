@@ -15,11 +15,13 @@ no longer match what the API answers.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tempfile
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -134,6 +136,13 @@ CASES: dict[str, tuple[Callable[[Path], Path], str, dict[str, str]]] = {
     "wrong-extension": (_platform_copy, "photo.png", {}),
     # Manual mode: the caption claims Paris at 13:50 on 21 June 2025.
     "declared-copy": (_platform_copy, "photo.jpg", {**_CLAIM, "sky": "day"}),
+    # Weather lookup, with a fixed model answer (never a call to Open-Meteo).
+    "weather-asked": (_camera_original, "photo.jpg", {"sky": "day", "weather": "true"}),
+    "weather-to-check": (
+        _camera_original,
+        "photo.jpg",
+        {"sky": "day", "weather": "true", "conditions": "rain"},
+    ),
     "declared-elsewhere": (
         _camera_original,
         "photo.jpg",
@@ -173,10 +182,42 @@ def _errors(client: TestClient, lang: str) -> dict[str, Any]:
     }
 
 
+@contextmanager
+def _fixed_weather() -> Iterator[None]:
+    """A dry, mostly clear model answer, and the lookup enabled on the server."""
+    import talax.weather
+    from talax.model import WeatherHour, WeatherRecord
+
+    def fake(latitude: float, longitude: float, moment: datetime) -> WeatherRecord:
+        start = moment.astimezone(UTC).replace(minute=0, second=0, microsecond=0)
+        hours = tuple(
+            WeatherHour(start + timedelta(hours=i), 0.0, 0.0, 15.0) for i in range(4)
+        )
+        return WeatherRecord(
+            hours=hours, latitude=round(latitude, 1), longitude=round(longitude, 1)
+        )
+
+    real, enabled = talax.weather.fetch_weather, os.environ.get("TALAX_WEATHER")
+    talax.weather.fetch_weather = fake
+    os.environ["TALAX_WEATHER"] = "on"
+    try:
+        yield
+    finally:
+        talax.weather.fetch_weather = real
+        if enabled is None:
+            os.environ.pop("TALAX_WEATHER")
+        else:
+            os.environ["TALAX_WEATHER"] = enabled
+
+
 def generate() -> dict[str, Any]:
     """Every example, keyed by file name (without the .json)."""
     examples: dict[str, Any] = {}
-    with TestClient(api.app) as client, tempfile.TemporaryDirectory() as tmp:
+    with (
+        TestClient(api.app) as client,
+        tempfile.TemporaryDirectory() as tmp,
+        _fixed_weather(),
+    ):
         for name, (build, upload_name, form) in CASES.items():
             case_dir = Path(tmp) / name
             case_dir.mkdir()

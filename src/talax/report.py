@@ -96,6 +96,9 @@ def to_dict(
     }
 
 
+WEATHER_ATTRIBUTION_URL = "https://open-meteo.com/"
+"""Open-Meteo's licence (CC BY 4.0) asks for this link next to its data."""
+
 REVERSE_SEARCH = (
     ("Google Lens", "https://lens.google.com/"),
     ("TinEye", "https://tineye.com/"),
@@ -157,6 +160,7 @@ def render_html(
         position=_position(analysis),
         previews=_previews(source) if source else None,
         analysed_at=readable_date(analysis.created_at, lang),
+        weather_url=WEATHER_ATTRIBUTION_URL,
         generated_at=readable_date(datetime.now(UTC), lang),
     )
 

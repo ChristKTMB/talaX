@@ -307,3 +307,35 @@ declaration.time.before: 'Le fichier indique {when}, soit {gap} avant la date d�
   légende aussi.'
 declaration.time.after: 'Le fichier indique {when}, soit {gap} après la date déclarée. Une
   horloge mal réglée peut l''expliquer ; une légende qui date mal la photo aussi.'
+signal.weather: Météo
+conditions.rain: de la pluie qui tombe
+conditions.snow: de la neige qui tombe
+conditions.overcast: un ciel couvert
+conditions.clear: un ciel dégagé ou des ombres nettes
+weather.missing_input: 'La météo n''a pas été consultée : il faut le lieu et l''heure de la
+  photo. Saisissez le lieu et la date annoncés par la légende.'
+weather.unavailable: 'Le service météo n''a pas répondu. Rien ne peut être dit de la météo ;
+  le reste de l''analyse n''est pas touché.'
+weather.no_data: 'Le service météo n''a pas de données pour ce lieu et cette heure (une date
+  dans le futur ?). Rien ne peut être dit de la météo.'
+weather.summary: 'Modèle météo près de {lat}, {lon}, de {start} à {end} UTC : {rain:.1f} mm de
+  précipitations, {snow:.1f} cm de neige, ciel couvert à {cloud:.0f} %.'
+weather.summary_no_cloud: 'Modèle météo près de {lat}, {lon}, de {start} à {end} UTC : {rain:.1f} mm
+  de précipitations, {snow:.1f} cm de neige ; couverture nuageuse inconnue.'
+weather.no_observation: '{summary} Dites ce que montre la photo pour comparer. Ce sont des
+  valeurs de modèle sur des mailles de 9 à 25 km, pas des relevés de stations : une averse
+  locale peut leur échapper.'
+weather.consistent: '{summary} La photo montre {seen} : cela concorde. Ce sont des valeurs de
+  modèle sur des mailles de 9 à 25 km, pas des relevés de stations.'
+weather.to_check: '{summary} La photo montre {seen}, mais {reason}. Une averse locale ou des
+  nuages de passage peuvent l''expliquer, car ce sont des valeurs de modèle sur des mailles de
+  9 à 25 km : comparez avec d''autres sources (stations locales, autres photos du même jour).'
+weather.reason.no_rain: le modèle n'enregistre aucune précipitation
+weather.reason.no_snow: le modèle n'enregistre aucune chute de neige
+weather.reason.clear_sky: le modèle donne un ciel presque dégagé
+weather.reason.raining: le modèle enregistre de la pluie
+weather.reason.covered: le modèle donne un ciel presque entièrement couvert
+ui.cli.conditions_tip: 'Astuce : ajoutez --conditions rain|snow|overcast|clear pour comparer la météo à la photo.'
+ui.weather_credit: 'Données météo : Open-Meteo.com (CC BY 4.0), https://open-meteo.com/'
+ui.report.weather_credit: 'Données météo :'
+error.weather_disabled: La consultation de la météo n'est pas disponible sur ce serveur.

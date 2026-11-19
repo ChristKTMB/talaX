@@ -21,6 +21,8 @@ threat model: Tala X does not protect against someone who forges metadata.
 | `platform-copy` | matches the WhatsApp fingerprint |
 | `wrong-extension` | the same copy, named `.png` |
 | `png-without-metadata` | a PNG with no metadata at all |
+| `weather-asked` | the camera original, weather lookup asked, the photo's weather not given yet (the model answer is fixed: no call to Open-Meteo) |
+| `weather-to-check` | same, the user said "rain" while the model has none |
 | `declared-copy` | the WhatsApp copy, with the place and time the caption claims (manual mode) and "day" |
 | `declared-elsewhere` | the camera original, with a caption that places it in Lyon, about 390 km from its GPS |
 | `error-*` | one example of each error a user can meet |

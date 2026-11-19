@@ -124,6 +124,40 @@ test('a caption checked by a click on the map, against the file and the sun', as
   expect(problems).toEqual([]);
 });
 
+test('the weather is looked up only after a warning, then compared with the photo', async ({
+  page,
+}) => {
+  const problems = watch(page);
+  const sent: { weather: string | null; conditions: string | null }[] = [];
+  await page.route('**/api/health', (route) =>
+    route.fulfill({ contentType: 'application/json', body: '{"status":"ok","weather":true}' }),
+  );
+  await page.route('**/api/analyze', (route) => {
+    const body = route.request().postData() ?? '';
+    const field = (name: string) =>
+      new RegExp(`name="${name}"\\r\\n\\r\\n([a-z]+)`).exec(body)?.[1] ?? null;
+    sent.push({ weather: field('weather'), conditions: field('conditions') });
+    const name = !field('weather')
+      ? 'camera-original.fr'
+      : field('conditions')
+        ? 'weather-to-check.fr'
+        : 'weather-asked.fr';
+    return route.fulfill({ contentType: 'application/json', body: example(name) });
+  });
+  await analyse(page);
+  await expect(page.locator('app-weather-offer')).toContainText('90 jours');
+  await page.getByRole('button', { name: 'Consulter la météo' }).click();
+  await page.locator('#weather-question').getByRole('button', { name: 'Pluie qui tombe' }).click();
+  await expect(page.locator('#check-weather app-state-badge')).toHaveText(/À vérifier/);
+  await expect(page.locator('#check-weather a')).toHaveAttribute('href', 'https://open-meteo.com/');
+  expect(sent).toEqual([
+    { weather: null, conditions: null },
+    { weather: 'true', conditions: null },
+    { weather: 'true', conditions: 'rain' },
+  ]);
+  expect(problems).toEqual([]);
+});
+
 test('changing the language asks for the report again in that language', async ({ page }) => {
   const asked: string[] = [];
   await page.route('**/api/analyze', (route) => {

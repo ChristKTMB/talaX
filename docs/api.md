@@ -39,6 +39,8 @@ Multipart form:
 | `lang` | no | `en` or `fr`; default: the `Accept-Language` header (`fr*` → French, otherwise English) |
 | `sky` | no | `day`, `twilight` or `night`: what the user sees in the photo, for the solar check |
 | `latitude`, `longitude` | no | decimal degrees of the place the caption claims |
+| `weather` | no | `true` to look up the weather on Open-Meteo (refused with 403 unless the server enables it) |
+| `conditions` | no | `rain`, `snow`, `overcast` or `clear`: the weather the photo shows, for the weather check |
 | `taken_at` | no | the time the caption claims, ISO 8601 (`2026-06-14T10:00`): local time at that place, unless it carries an offset |
 
 `latitude`, `longitude` and `taken_at` go together (manual mode): all three or
@@ -46,6 +48,15 @@ none, otherwise a 422 whose `fields` names the missing ones. The declared
 place and time replace the file's for the solar check, and the `declaration`
 check compares them with the file (only present when a declaration is sent).
 Like `sky`, send them again with every later request on the same file.
+
+`weather=true` sends the place (rounded to 0.1 degree) and the date to
+Open-Meteo, which may keep them 90 days: only on the user's explicit request,
+after saying so. The `weather` check is present only then. Its explanation
+gives the model's values; with `conditions` it is `consistent` or `to_check`,
+never `suspicious` (model cells of 9 to 25 km). When the model answered
+(`evidence.source == "open-meteo"`), show next to it the link
+`https://open-meteo.com/` (CC BY 4.0 requires it). Send `weather` and
+`conditions` again with every later request on the same file.
 
 Query: `format=json` (default) or `format=html`.
 
@@ -122,7 +133,9 @@ never sees the user. For Leaflet:
 
 ## `GET /api/health`
 
-`{"status": "ok", "schema": 2, "tools": {"talax": "…", "exiftool": "…"}}`
+`{"status": "ok", "schema": 2, "tools": {"talax": "…", "exiftool": "…"}, "weather": false}`
+
+`weather` says whether this server offers the weather lookup.
 
 ## Errors
 
@@ -135,6 +148,7 @@ language:
 
 | Status | `code` | When |
 | --- | --- | --- |
+| 403 | `weather_disabled` | `weather=true` on a server without `TALAX_WEATHER=on` |
 | 404 | `not_found` | unknown address, impossible tile |
 | 413 | `file_too_large` | more than 50 MB |
 | 422 | `invalid_request` | missing file or invalid value; `fields` lists the names, never the values |

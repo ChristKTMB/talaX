@@ -82,11 +82,51 @@ class Sky(StrEnum):
     NIGHT = "night"
 
 
+class Conditions(StrEnum):
+    """The weather the user sees in the photo. Never guessed from pixels."""
+
+    RAIN = "rain"
+    """Rain falling."""
+    SNOW = "snow"
+    """Snow falling."""
+    OVERCAST = "overcast"
+    CLEAR = "clear"
+    """Clear sky, or sharp shadows."""
+
+
 @dataclass(frozen=True, slots=True)
 class Observation:
     """What the user reports seeing in the image ("the human observes")."""
 
-    sky: Sky
+    sky: Sky | None = None
+    conditions: Conditions | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class WeatherHour:
+    """One hour of the weather model, in UTC. None where the model has no value."""
+
+    time: datetime
+    """End of the hour the sums cover (precipitation of the preceding hour)."""
+    precipitation_mm: float | None
+    snowfall_cm: float | None
+    cloud_cover_pct: float | None
+
+
+@dataclass(frozen=True, slots=True)
+class WeatherRecord:
+    """What the weather service returned around the moment of the photo.
+
+    Asked only when the user opts in: the place (rounded) and the date leave
+    the machine. `error` is set when nothing usable came back.
+    """
+
+    hours: tuple[WeatherHour, ...] = ()
+    latitude: float | None = None
+    """The position sent, rounded to 0.1 degree (the model's cells are larger)."""
+    longitude: float | None = None
+    error: str | None = None
+    """`missing_input`, `unavailable`, `no_data`."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -144,6 +184,8 @@ class Context:
     c2pa: C2paReport | None = None
     """None when C2PA was not read (e.g. manual mode without a file)."""
     observation: Observation | None = None
+    weather: WeatherRecord | None = None
+    """None when no weather lookup was asked for."""
 
 
 @dataclass(frozen=True, slots=True)

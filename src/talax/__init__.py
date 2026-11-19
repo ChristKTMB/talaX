@@ -14,6 +14,7 @@ from importlib.metadata import version as _version
 from talax.analysis import analyze
 from talax.model import (
     Analysis,
+    Conditions,
     Context,
     Declaration,
     FileInfo,
@@ -31,6 +32,7 @@ __version__ = _version("talax")
 
 __all__ = [
     "Analysis",
+    "Conditions",
     "Context",
     "Declaration",
     "FileInfo",

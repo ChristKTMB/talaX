@@ -71,6 +71,24 @@
 
     <app-claim-form [needed]="claimNeeded()" />
 
+    @if (!hasWeather()) {
+      <app-weather-offer [placeAndTime]="!claimNeeded()" />
+    }
+
+    @if (asksForConditions()) {
+      <div class="ask">
+        <p>
+          <span
+            ><strong>{{ i18n.t('weather.banner_lead') }}</strong>
+            {{ i18n.t('weather.banner_question') }}</span
+          >
+        </p>
+        <button type="button" class="link link--light" (click)="show('weather-question')">
+          {{ i18n.t('sky.answer') }}
+        </button>
+      </div>
+    }
+
     <app-visual [image]="session.imageUrl()" [thumbnail]="result.thumbnail" />
 
     <section class="checks" aria-labelledby="checks">
@@ -80,6 +98,9 @@
           <app-check-row [result]="check">
             @if (check.signal === 'solar') {
               <app-sky-question [check]="check" />
+            }
+            @if (check.signal === 'weather') {
+              <app-weather-question [check]="check" />
             }
             @if (mapPosition(check); as position) {
               <app-location-map [latitude]="position.latitude" [longitude]="position.longitude" />

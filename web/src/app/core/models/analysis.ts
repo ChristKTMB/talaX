@@ -6,6 +6,7 @@ export const STATES: readonly State[] = ['consistent', 'to_check', 'suspicious',
 
 export type Verdict = 'original' | 'reprocessed' | 'undetermined';
 export type Sky = 'day' | 'twilight' | 'night';
+export type Conditions = 'rain' | 'snow' | 'overcast' | 'clear';
 
 /** The place and time a caption claims (manual mode), sent as typed in. */
 export interface Claim {
@@ -19,6 +20,9 @@ export interface Claim {
 export interface Answers {
   readonly sky?: Sky | null;
   readonly claim?: Claim | null;
+  /** Ask the server to look up the weather (Open-Meteo), with what the photo shows. */
+  readonly weather?: boolean;
+  readonly conditions?: Conditions | null;
 }
 
 export type Evidence = Readonly<Record<string, unknown>>;

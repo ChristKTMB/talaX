@@ -65,7 +65,11 @@ and recycled images, not against expert forgers.
   Yandex), which catches old photos recycled with a false caption — the most
   common form of visual misinformation
 
-Coming next: a weather cross-check.
+- **Weather cross-check**, only if you ask for it: the weather model of
+  [Open-Meteo](https://open-meteo.com/) (CC BY 4.0) at that place and time,
+  compared with what you see in the photo. It sends a position rounded to
+  about 11 km and the date to Open-Meteo, which may keep them 90 days; at
+  most "to check", never "suspicious" (model cells of 9 to 25 km).
 
 ## What it deliberately does not do
 
@@ -110,6 +114,7 @@ Check with `exiftool -ver`. Tested on Linux, macOS and Windows.
 talax analyze photo.jpg                     # report in the terminal
 talax analyze photo.jpg --sky day           # what the photo shows, for the solar check
 talax analyze photo.jpg --place "-4.32,15.31" --at "2026-06-14 10:00"  # place and local time a caption claims
+talax analyze photo.jpg --weather --conditions rain  # weather lookup (network: Open-Meteo), and what the photo shows
 talax analyze photo.jpg --html report.html  # self-contained HTML report
 talax analyze photo.jpg --json              # machine-readable
 talax analyze photo.jpg --lang fr           # in French (default: your system language)

@@ -148,5 +148,20 @@
   "claim.remove": "Remove the claim",
   "picker.show": "Pick on the map",
   "picker.label": "Map: click where the caption says the photo was taken",
-  "picker.help": "Click where the caption says the photo was taken; the coordinates fill in. A few kilometres off barely change the sun."
+  "picker.help": "Click where the caption says the photo was taken; the coordinates fill in. A few kilometres off barely change the sun.",
+  "weather.title": "Cross-check with the weather",
+  "weather.lead": "Tala X asks the Open-Meteo weather model what the weather was at the place and time of the photo; then you say what the photo shows.",
+  "weather.warning": "The place, rounded to about 11 km, and the date will be sent to Open-Meteo by our server. Open-Meteo may keep them in its logs for 90 days. It receives neither your address nor your file. For a sensitive file, do not do it.",
+  "weather.ask": "Look up the weather",
+  "weather.needs_claim": "A place and a time are needed first: enter those of the caption above.",
+  "weather.question": "What weather does the photo show?",
+  "weather.question_help": "Choose what you see. Your choice runs the analysis of the same file again, and the weather is asked again.",
+  "weather.rain": "Rain falling",
+  "weather.snow": "Snow falling",
+  "weather.overcast": "Overcast sky",
+  "weather.clear": "Clear sky or sharp shadows",
+  "weather.your_answer": "Your answer: {seen}.",
+  "weather.credit": "Weather data:",
+  "weather.banner_lead": "A question to complete the weather check:",
+  "weather.banner_question": "what weather does the photo show?"
 }
