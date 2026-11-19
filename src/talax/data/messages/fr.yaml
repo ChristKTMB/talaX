@@ -227,12 +227,15 @@ ui.integrity_line: 'Intégrité : {verdict}'
 ui.cli.sky_tip: 'Astuce : ajoutez --sky day|twilight|night pour comparer le soleil à la photo.'
 ui.cli.size: '{size:,} octets'
 ui.report.title: Rapport Tala X
+ui.report.save_pdf: 'Pour garder ou envoyer ce rapport en PDF : imprimez-le (Ctrl+P, ou ⌘P sur Mac) et choisissez « Enregistrer au format PDF ».'
 ui.report.file: Fichier
 ui.report.name: Nom
 ui.report.size: Taille
 ui.report.format: Format
 ui.report.unknown: inconnu
 ui.report.analysed: Analysé le
+ui.report.date: '{day} {month} {year} à {time} UTC'
+ui.report.months: janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre
 ui.report.signals: Signaux
 ui.report.raw_values: Valeurs brutes
 ui.report.position: Position

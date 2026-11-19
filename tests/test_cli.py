@@ -79,6 +79,36 @@ def test_html_report_is_escaped_and_self_contained(
     assert "Visual exploration" in html and "not conclusive" in html
 
 
+def test_html_report_prints_to_pdf_without_any_script(
+    hostile_jpeg: Path, tmp_path: Path
+) -> None:
+    report = tmp_path / "report.html"
+    runner.invoke(app, ["analyze", str(hostile_jpeg), "--html", str(report)])
+    html = report.read_text()
+    # The way to a PDF is the browser's print dialog, explained on screen.
+    assert "Save as PDF" in html
+    assert "@media print" in html
+    # Raw values are printed open, since closed <details> would print empty.
+    assert html.count("Raw values") == 2 * html.count("<details>")
+    # No script, not even for a print button: the report shows hostile metadata.
+    assert "<script" not in html.lower()
+    assert "onclick" not in html.lower()
+
+
+def test_report_dates_are_written_in_words() -> None:
+    from datetime import UTC, datetime, timedelta, timezone
+
+    from talax.i18n import Language
+    from talax.report import readable_date
+
+    moment = datetime(2026, 11, 19, 13, 58, tzinfo=timezone(timedelta(hours=1)))
+    assert readable_date(moment, Language.EN) == "19 November 2026, 12:58 UTC"
+    assert readable_date(moment, Language.FR) == "19 novembre 2026 à 12:58 UTC"
+    assert readable_date(datetime(2026, 8, 1, tzinfo=UTC), Language.FR).startswith(
+        "1 août 2026"
+    )
+
+
 def test_bad_sky_value_is_a_usage_error(hostile_jpeg: Path) -> None:
     result = runner.invoke(app, ["analyze", str(hostile_jpeg), "--sky", "noon"])
     assert result.exit_code == 2

@@ -116,7 +116,22 @@ def render_html(
         verdict=str(analysis.integrity.verdict),
         position=_position(analysis),
         previews=_previews(source) if source else None,
-        generated_at=datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC"),
+        analysed_at=readable_date(analysis.created_at, lang),
+        generated_at=readable_date(datetime.now(UTC), lang),
+    )
+
+
+def readable_date(moment: datetime, lang: Language) -> str:
+    """A date a reader can take in at once: "19 November 2026, 12:58 UTC"."""
+    utc = moment.astimezone(UTC)
+    months = text("ui.report.months", lang).split(",")
+    return text(
+        "ui.report.date",
+        lang,
+        day=str(utc.day),
+        month=months[utc.month - 1],
+        year=str(utc.year),
+        time=utc.strftime("%H:%M"),
     )
 
 

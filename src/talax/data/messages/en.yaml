@@ -206,12 +206,15 @@ ui.integrity_line: 'Integrity: {verdict}'
 ui.cli.sky_tip: 'Tip: add --sky day|twilight|night to check the sun against the photo.'
 ui.cli.size: '{size:,} bytes'
 ui.report.title: Tala X report
+ui.report.save_pdf: 'To keep or send this report as a PDF: print it (Ctrl+P, or ⌘P on a Mac) and choose "Save as PDF".'
 ui.report.file: File
 ui.report.name: Name
 ui.report.size: Size
 ui.report.format: Format
 ui.report.unknown: unknown
 ui.report.analysed: Analysed
+ui.report.date: '{day} {month} {year}, {time} UTC'
+ui.report.months: January,February,March,April,May,June,July,August,September,October,November,December
 ui.report.signals: Signals
 ui.report.raw_values: Raw values
 ui.report.position: Position

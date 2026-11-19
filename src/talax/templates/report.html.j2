@@ -51,6 +51,34 @@
   .previews img { width: 100%; border: 1px solid var(--line); border-radius: 4px; }
   .previews figcaption { color: var(--muted); font-size: 13px; }
   footer { color: var(--muted); font-size: 12px; margin-top: 24px; }
+  .save-pdf { margin: 14px 0 0; color: var(--muted); font-size: 13px; }
+  .print-only { display: none; }
+
+  /* Printing, or "Save as PDF": the way to keep or send this report. No
+     script anywhere, on purpose: the report shows metadata anyone can write. */
+  @page { margin: 14mm 12mm; }
+  @media print {
+    body { background: #fff; font-size: 11pt; }
+    main { max-width: none; padding: 0; }
+    section { border-color: #bbb; }
+    h2 { break-after: avoid; }
+    /* Kept whole on one page; the long list of checks may span pages. */
+    .verdict, .disclaimer, .signal, figure { break-inside: avoid; }
+    /* Browsers drop background colours when printing: the state is written
+       in its colour and framed, so it stays readable even in black and white. */
+    .badge { background: none !important; border: 1.5px solid currentColor; }
+    .badge.consistent { color: var(--consistent); }
+    .badge.to_check { color: var(--to_check); }
+    .badge.suspicious { color: var(--suspicious); }
+    .badge.unverifiable { color: var(--unverifiable); }
+    .disclaimer { background: none; }
+    /* Closed sections would print empty: the raw values are printed open. */
+    details, .save-pdf { display: none; }
+    .print-only { display: block; }
+    .raw { color: var(--muted); font-size: 9pt; margin-top: 6px; }
+    .raw pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 2px 0 0; }
+    .previews img { max-height: 9cm; object-fit: contain; }
+  }
 </style>
 </head>
 <body>
@@ -59,6 +87,7 @@
     <h1>Tala X</h1>
     <span>{{ t("ui.tagline") }}</span>
   </header>
+  <p class="save-pdf">{{ t("ui.report.save_pdf") }}</p>
 
   <section>
     <h2>{{ t("ui.report.file") }}</h2>
@@ -67,7 +96,7 @@
       <dt>SHA-256</dt><dd><code>{{ data.file.sha256 }}</code></dd>
       <dt>{{ t("ui.report.size") }}</dt><dd>{{ t("ui.cli.size", size=data.file.size) }}</dd>
       <dt>{{ t("ui.report.format") }}</dt><dd>{{ data.file.real_format or t("ui.report.unknown") }}</dd>
-      <dt>{{ t("ui.report.analysed") }}</dt><dd>{{ data.created_at }}</dd>
+      <dt>{{ t("ui.report.analysed") }}</dt><dd>{{ analysed_at }}</dd>
     </dl>
   </section>
 
@@ -93,6 +122,10 @@
         <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}
 {% endfor %}</pre>
       </details>
+      <div class="raw print-only">{{ t("ui.report.raw_values") }}
+        <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}
+{% endfor %}</pre>
+      </div>
       {% endif %}
     </div>
     {% endfor %}
