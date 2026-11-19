@@ -1,6 +1,6 @@
 # Politique de confidentialité — Tala X
 
-Version du 2026-11-05.
+Version du 2026-11-19.
 
 Cette page explique ce que le service web Tala X (talax.online) fait des
 fichiers et des données qu'il reçoit. Elle décrit le fonctionnement réel du
@@ -19,6 +19,7 @@ Contact : <contact@talax.online>
 | Donnée | Pourquoi | Combien de temps |
 | --- | --- | --- |
 | Le fichier que vous déposez (image et métadonnées, dont parfois une position GPS, une date, un modèle d'appareil) | L'analyser, à votre demande | Le temps de l'analyse, quelques secondes, puis supprimé, y compris en cas d'erreur |
+| Ce que vous ajoutez au fichier, si vous le faites : ce que montre la photo (jour, crépuscule, nuit), le lieu et la date annoncés par une légende | Compléter l'analyse, à votre demande | Comme le fichier : le temps de l'analyse, puis oubliés |
 | Le résultat de l'analyse et le rapport HTML | Vous les renvoyer | Non conservés : envoyés à votre navigateur, puis oubliés |
 | Votre adresse IP | Limiter le nombre d'analyses par minute, pour que le service reste disponible pour tous | Gardée dans la mémoire du serveur seulement, jamais écrite sur disque ni dans un journal ; remplacée au fil des requêtes et effacée au redémarrage |
 | La langue de votre navigateur | Afficher les résultats en français ou en anglais | Non conservée |
