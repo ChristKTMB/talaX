@@ -1,6 +1,6 @@
 # Terms of use — Tala X
 
-Version of 2026-11-05.
+Version of 2026-11-19.
 
 Tala X (talax.online) is a free web service, without accounts, that analyses
 an image to say what can honestly be said about it: whether it is a camera
@@ -58,7 +58,9 @@ for damage resulting from the use of the service.
 The Tala X code is free software, under the Apache-2.0 licence
 (<https://github.com/ChristKTMB/talaX>); these terms cover the web service,
 not the software. Maps come from OpenStreetMap (© OpenStreetMap
-contributors, ODbL licence). The C2PA trust list is that of the Coalition
+contributors, ODbL licence). Weather data come from Open-Meteo.com
+(CC BY 4.0): they are model values, not station readings, and only ever
+flag a point to check. The C2PA trust list is that of the Coalition
 for Content Provenance and Authenticity (CC BY 4.0).
 
 ## 7. Changes

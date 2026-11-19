@@ -1,6 +1,6 @@
 # Conditions d'utilisation — Tala X
 
-Version du 2026-11-05.
+Version du 2026-11-19.
 
 Tala X (talax.online) est un service web gratuit, sans compte, qui analyse
 une image pour dire ce qu'on peut honnêtement en affirmer : s'il s'agit d'un
@@ -62,7 +62,10 @@ d'une analyse, ni des dommages résultant de l'utilisation du service.
 Le code de Tala X est libre, sous licence Apache-2.0
 (<https://github.com/ChristKTMB/talaX>) ; ces conditions concernent le
 service web, pas le logiciel. Les cartes proviennent d'OpenStreetMap
-(© les contributeurs d'OpenStreetMap, licence ODbL). La liste de confiance
+(© les contributeurs d'OpenStreetMap, licence ODbL). Les données météo
+proviennent d'Open-Meteo.com (CC BY 4.0) : ce sont des valeurs de modèle, pas
+des relevés de stations, et elles ne servent qu'à signaler un point à
+vérifier. La liste de confiance
 C2PA est celle de la Coalition for Content Provenance and Authenticity
 (CC BY 4.0).
 
