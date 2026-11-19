@@ -89,6 +89,18 @@ describe('Report', () => {
     expect(render(EXAMPLES['cameraOriginal']!).page.querySelector('app-source-request')).toBeNull();
   });
 
+  it('points every report to reverse search, without a referrer', () => {
+    const links = [
+      ...render(EXAMPLES['cameraOriginal']!).page.querySelectorAll('app-reverse-search a'),
+    ];
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      'https://lens.google.com/',
+      'https://tineye.com/',
+      'https://yandex.com/images/',
+    ]);
+    expect(links.every((link) => link.getAttribute('rel') === 'noopener noreferrer')).toBe(true);
+  });
+
   it('puts a banner at the top for a suspicious check only', () => {
     expect(render(EXAMPLES['solarContradiction']!).page.querySelectorAll('.alert').length).toBe(1);
     TestBed.resetTestingModule();

@@ -177,5 +177,24 @@
   ],
   "disclaimer": "Tala X ne certifie jamais qu'une image est authentique. Il rapporte ce qu'on peut honnêtement dire d'un fichier. Un original d'appareil ne prouve pas que son contenu est vrai : les métadonnées peuvent être falsifiées par qui sait le faire. Tala X est conçu contre le blanchiment par les plateformes et les images recyclées, pas contre les faussaires experts.",
   "source_request": null,
+  "reverse_search": {
+    "title": "Cette photo a-t-elle déjà circulé ?",
+    "intro": "Une vraie photo avec une fausse légende est plus courante qu'une photo truquée, et aucune analyse du fichier ne peut la repérer. Déposez vous-même la photo sur un de ces services, cherchez la copie la plus ancienne et comparez sa date et son lieu avec la légende. Si rien ne sort, réessayez avec un recadrage sur la partie la plus reconnaissable.",
+    "caution": "Tala X ne leur envoie rien : c'est vous qui déposez la photo, et ces services la reçoivent et peuvent la garder. Ne le faites pas avec une photo qui doit rester confidentielle.",
+    "services": [
+      {
+        "name": "Google Lens",
+        "url": "https://lens.google.com/"
+      },
+      {
+        "name": "TinEye",
+        "url": "https://tineye.com/"
+      },
+      {
+        "name": "Yandex",
+        "url": "https://yandex.com/images/"
+      }
+    ]
+  },
   "thumbnail": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAB4AKADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCvRRRX1Z84FFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//2Q=="
 }

@@ -87,6 +87,8 @@
       </div>
     </section>
 
+    <app-reverse-search [search]="result.reverse_search" />
+
     <section class="disclaimer" aria-labelledby="disclaimer">
       <h2 id="disclaimer">{{ i18n.t('report.disclaimer') }}</h2>
       <p>{{ result.disclaimer }}</p>

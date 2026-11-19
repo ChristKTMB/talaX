@@ -46,6 +46,14 @@ export interface SourceRequest {
   readonly caution: string;
 }
 
+/** For every file: services where the user looks for earlier copies. */
+export interface ReverseSearch {
+  readonly title: string;
+  readonly intro: string;
+  readonly caution: string;
+  readonly services: readonly { readonly name: string; readonly url: string }[];
+}
+
 export interface AnalysisResult {
   readonly schema: 2;
   readonly lang: string;
@@ -56,6 +64,7 @@ export interface AnalysisResult {
   readonly results: readonly CheckResult[];
   readonly disclaimer: string;
   readonly source_request: SourceRequest | null;
+  readonly reverse_search: ReverseSearch;
   /** The preview embedded in the file, as a data: URI, or null. */
   readonly thumbnail: string | null;
 }

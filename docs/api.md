@@ -66,6 +66,7 @@ Top-level fields:
 | `results[].evidence` | the raw values behind the state |
 | `results[].confidence` | a probability where one really exists, otherwise `null` |
 | `disclaimer` | must be shown with every report |
+| `reverse_search` | always present: `title`, `intro`, `caution`, and `services[]` (`name`, `url`), upload pages where the user looks for earlier copies |
 | `source_request` | `null` for a camera original; otherwise `title`, `intro`, `message` (ready to send to the source, line breaks included) and `caution`, all in `lang` |
 
 The schema number changes when a field is removed, renamed or changes
@@ -81,6 +82,8 @@ Display rules that come with the data:
   true". `original` means "camera original", not "authentic".
 - When `source_request` is present, show the `caution` with the message:
   the original can reveal where the source was and which phone they use.
+- Show `reverse_search.caution` with the links, and open them without a
+  referrer: the services receive the photo only if the user uploads it.
 - A GPS result in state `consistent` gives `evidence.latitude` and
   `evidence.longitude`: that is when the map can be offered.
 

@@ -9,6 +9,7 @@ from PIL import Image
 from typer.testing import CliRunner
 
 from talax.cli import app
+from talax.report import REVERSE_SEARCH
 
 pytestmark = pytest.mark.skipif(
     shutil.which("exiftool") is None, reason="ExifTool needed"
@@ -74,8 +75,11 @@ def test_html_report_is_escaped_and_self_contained(
     assert "<script>alert(1)</script>" not in html
     assert "&lt;script&gt;" in html
     assert "default-src 'none'" in html
-    # No external resource: every URL in the page is a data: URI.
-    assert not re.search(r"(src|href)=\"(?!data:)", html)
+    # No external resource: every image is a data: URI. The only links lead to
+    # the reverse search pages, opened by the reader, never loaded by the page.
+    assert not re.search(r"src=\"(?!data:)", html)
+    links = set(re.findall(r"href=\"([^\"]*)\"", html))
+    assert links == {url for _, url in REVERSE_SEARCH}
     assert "Visual exploration" in html and "not conclusive" in html
 
 
@@ -199,3 +203,18 @@ def test_a_copy_comes_with_a_message_for_the_source(
         integrity=replace(analysis.integrity, verdict=IntegrityVerdict.ORIGINAL),
     )
     assert source_request(original, Language.EN) is None
+
+
+def test_every_report_points_to_reverse_search(hostile_jpeg: Path) -> None:
+    data = json.loads(
+        runner.invoke(app, ["analyze", str(hostile_jpeg), "--json"]).output
+    )
+    search = data["reverse_search"]
+    assert [s["name"] for s in search["services"]] == [
+        "Google Lens",
+        "TinEye",
+        "Yandex",
+    ]
+    assert "Tala X sends them nothing" in search["caution"]
+    text_out = runner.invoke(app, ["analyze", str(hostile_jpeg), "--lang", "fr"]).output
+    assert "https://tineye.com/" in text_out and "déjà circulé" in text_out

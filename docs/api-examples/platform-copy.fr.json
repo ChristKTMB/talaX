@@ -147,5 +147,24 @@
     "message": "Bonjour, et merci pour la photo. Avant de la publier, je dois la vérifier, et pour cela j'ai besoin du fichier d'origine, tel qu'il est sur l'appareil qui l'a prise. Pourriez-vous me la renvoyer de cette façon ?\n\n- WhatsApp : touchez le trombone, puis « Document » (et non « Galerie » ou « Photos »), et choisissez la photo.\n- Telegram : touchez le trombone, puis « Fichier », et choisissez la photo.\n- Ou en pièce jointe d'un e-mail, en taille réelle si on vous le demande.\n\nMerci de ne pas la recadrer ni la retoucher avant l'envoi.\n\nLe fichier d'origine peut indiquer où la photo a été prise et avec quel téléphone. Si cela vous met en danger, dites-le-moi avant de l'envoyer.",
     "caution": "Demandez-le seulement si votre source peut l'envoyer sans risque : l'original peut révéler sa position et le numéro de série de son téléphone. Analysez-le avec la ligne de commande de Tala X, pour que le fichier ne quitte pas votre ordinateur. Sur Android, la position peut être retirée même quand le fichier est envoyé comme document (constaté sur un téléphone Samsung) ; les autres marques de l'original restent."
   },
+  "reverse_search": {
+    "title": "Cette photo a-t-elle déjà circulé ?",
+    "intro": "Une vraie photo avec une fausse légende est plus courante qu'une photo truquée, et aucune analyse du fichier ne peut la repérer. Déposez vous-même la photo sur un de ces services, cherchez la copie la plus ancienne et comparez sa date et son lieu avec la légende. Si rien ne sort, réessayez avec un recadrage sur la partie la plus reconnaissable.",
+    "caution": "Tala X ne leur envoie rien : c'est vous qui déposez la photo, et ces services la reçoivent et peuvent la garder. Ne le faites pas avec une photo qui doit rester confidentielle.",
+    "services": [
+      {
+        "name": "Google Lens",
+        "url": "https://lens.google.com/"
+      },
+      {
+        "name": "TinEye",
+        "url": "https://tineye.com/"
+      },
+      {
+        "name": "Yandex",
+        "url": "https://yandex.com/images/"
+      }
+    ]
+  },
   "thumbnail": null
 }

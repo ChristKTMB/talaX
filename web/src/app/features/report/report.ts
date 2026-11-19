@@ -15,6 +15,7 @@ import { RetryButton } from '../../shared/ui/retry-button/retry-button';
 import { StateBadge } from '../../shared/ui/state-badge/state-badge';
 import { CheckRow } from './check-row/check-row';
 import { LocationMap } from './location-map/location-map';
+import { ReverseSearch } from './reverse-search/reverse-search';
 import { SkyQuestion, asksForSky } from './sky-question/sky-question';
 import { SourceRequest } from './source-request/source-request';
 import { Visual } from './visual/visual';
@@ -28,6 +29,7 @@ import { Visual } from './visual/visual';
     LocationMap,
     Problem,
     RetryButton,
+    ReverseSearch,
     SkyQuestion,
     SourceRequest,
     StateBadge,

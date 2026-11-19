@@ -19,6 +19,7 @@ from talax.i18n import Language, default_language, text
 from talax.model import Analysis, Observation, Sky, State
 from talax.report import (
     render_html,
+    reverse_search,
     signal_name,
     source_request,
     state_label,
@@ -178,4 +179,13 @@ def _print_text(analysis: Analysis, file: Path, lang: Language) -> None:
         out.print()
         out.print(request["caution"], style="yellow", markup=False)
         out.print()
+    search = reverse_search(lang)
+    out.print(search["title"], style="bold", markup=False)
+    out.print(search["intro"], markup=False)
+    for service in search["services"]:
+        out.print(
+            f"  {service['name']}: {service['url']}", markup=False, highlight=False
+        )
+    out.print(search["caution"], style="yellow", markup=False)
+    out.print()
     out.print(_safe(text("ui.disclaimer", lang)), style="dim")

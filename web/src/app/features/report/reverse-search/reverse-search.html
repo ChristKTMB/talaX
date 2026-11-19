@@ -1,0 +1,12 @@
+<section class="reverse" aria-labelledby="reverse-search">
+  <h2 id="reverse-search">{{ search().title }}</h2>
+  <p>{{ search().intro }}</p>
+  <ul class="reverse__services">
+    @for (service of search().services; track service.url) {
+      <li>
+        <a [href]="service.url" target="_blank" rel="noopener noreferrer">{{ service.name }}</a>
+      </li>
+    }
+  </ul>
+  <p class="reverse__caution">{{ search().caution }}</p>
+</section>

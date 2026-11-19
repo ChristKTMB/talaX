@@ -92,6 +92,28 @@ def to_dict(
         ],
         "disclaimer": text("ui.disclaimer", lang),
         "source_request": source_request(analysis, lang),
+        "reverse_search": reverse_search(lang),
+    }
+
+
+REVERSE_SEARCH = (
+    ("Google Lens", "https://lens.google.com/"),
+    ("TinEye", "https://tineye.com/"),
+    ("Yandex", "https://yandex.com/images/"),
+)
+"""Upload pages only: Tala X never sends the photo to them."""
+
+
+def reverse_search(lang: Language) -> dict[str, Any]:
+    """Where to look for earlier copies, the user uploading the photo themselves.
+
+    Shown for every file: a camera original can be old and recycled too.
+    """
+    return {
+        "title": text("reverse.title", lang),
+        "intro": text("reverse.intro", lang),
+        "caution": text("reverse.caution", lang),
+        "services": [{"name": name, "url": url} for name, url in REVERSE_SEARCH],
     }
 
 

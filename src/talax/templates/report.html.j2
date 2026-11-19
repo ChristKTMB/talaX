@@ -35,7 +35,7 @@
   .disclaimer { background: #fffbea; border-color: #f0dfa0; font-size: 14px; }
   .source blockquote { margin: 8px 0; padding: 10px 14px; border-left: 3px solid var(--line);
                        white-space: pre-line; }
-  .source .caution { color: var(--muted); font-size: 14px; }
+  .source .caution, .reverse .caution { color: var(--muted); font-size: 14px; }
   .signal { border-top: 1px solid var(--line); padding: 12px 0; }
   .signal:first-of-type { border-top: 0; padding-top: 0; }
   .signal .head { display: flex; gap: 10px; align-items: center; }
@@ -78,6 +78,7 @@
     /* Closed sections would print empty: the raw values are printed open. */
     details, .save-pdf { display: none; }
     .print-only { display: block; }
+    span.print-only { display: inline; color: var(--muted); }
     .raw { color: var(--muted); font-size: 9pt; margin-top: 6px; }
     .raw pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 2px 0 0; }
     .previews img { max-height: 9cm; object-fit: contain; }
@@ -141,6 +142,17 @@
       {% endif %}
     </div>
     {% endfor %}
+  </section>
+
+  <section class="reverse">
+    <h2>{{ data.reverse_search.title }}</h2>
+    <p>{{ data.reverse_search.intro }}</p>
+    <ul>
+      {% for service in data.reverse_search.services %}
+      <li><a href="{{ service.url }}" rel="noopener noreferrer" target="_blank">{{ service.name }}</a> <span class="print-only">{{ service.url }}</span></li>
+      {% endfor %}
+    </ul>
+    <p class="caution">{{ data.reverse_search.caution }}</p>
   </section>
 
   {% if position %}

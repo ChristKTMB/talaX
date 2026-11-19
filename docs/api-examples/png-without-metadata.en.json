@@ -134,5 +134,24 @@
     "message": "Hello, and thank you for the photo. Before publishing it I need to check it, and for that I need the original file, exactly as it is on the device that took it. Could you send it again this way?\n\n- WhatsApp: tap the paperclip, then \"Document\" (not \"Gallery\" or \"Photos\"), and pick the photo.\n- Telegram: tap the paperclip, then \"File\", and pick the photo.\n- Or as an e-mail attachment, at its actual size if you are asked.\n\nPlease do not crop or edit it before sending.\n\nThe original file may show where the photo was taken and which phone took it. If that puts you at risk, tell me before sending it.",
     "caution": "Ask for it only if your source can send it safely: the original can reveal their position and their phone's serial number. Analyse it with the Tala X command line, so the file never leaves your computer. On Android, the position can be removed even when the file is sent as a document (seen on a Samsung phone); the other marks of the original remain."
   },
+  "reverse_search": {
+    "title": "Has this photo been seen before?",
+    "intro": "A real photo with a false caption is more common than a doctored one, and no analysis of the file can catch it. Upload the photo yourself to one of these services, look for the oldest copy and compare its date and place with the caption. If nothing comes up, try again with a crop of the most distinctive part.",
+    "caution": "Tala X sends them nothing: you upload the photo yourself, and these services receive it and may keep it. Do not do it with a photo that must stay confidential.",
+    "services": [
+      {
+        "name": "Google Lens",
+        "url": "https://lens.google.com/"
+      },
+      {
+        "name": "TinEye",
+        "url": "https://tineye.com/"
+      },
+      {
+        "name": "Yandex",
+        "url": "https://yandex.com/images/"
+      }
+    ]
+  },
   "thumbnail": null
 }

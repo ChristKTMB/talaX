@@ -279,3 +279,11 @@ source.caution: 'Demandez-le seulement si votre source peut l''envoyer sans risq
   de commande de Tala X, pour que le fichier ne quitte pas votre ordinateur. Sur Android, la
   position peut être retirée même quand le fichier est envoyé comme document (constaté sur un
   téléphone Samsung) ; les autres marques de l''original restent.'
+reverse.title: Cette photo a-t-elle déjà circulé ?
+reverse.intro: 'Une vraie photo avec une fausse légende est plus courante qu''une photo
+  truquée, et aucune analyse du fichier ne peut la repérer. Déposez vous-même la photo sur un
+  de ces services, cherchez la copie la plus ancienne et comparez sa date et son lieu avec la
+  légende. Si rien ne sort, réessayez avec un recadrage sur la partie la plus reconnaissable.'
+reverse.caution: 'Tala X ne leur envoie rien : c''est vous qui déposez la photo, et ces
+  services la reçoivent et peuvent la garder. Ne le faites pas avec une photo qui doit rester
+  confidentielle.'
