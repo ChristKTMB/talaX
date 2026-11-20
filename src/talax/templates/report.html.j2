@@ -7,184 +7,143 @@
 <meta http-equiv="Content-Security-Policy" content="{{ csp | safe }}">
 <title>{{ t("ui.report.title") }} — {{ data.file.name or data.file.sha256[:12] }}</title>
 <style>
+  /* A plain document: white page, ordinary headings, the state written in
+     words. Colour only says the state, and the word says it too. */
   :root {
-    --ink: #1d232a; --muted: #5b6672; --line: #dfe3e8; --bg: #f6f7f9;
-    --consistent: #1f7a4d; --to_check: #a35f00; --suspicious: #b3261e;
-    --unverifiable: #5b6672;
+    --ink: #111; --muted: #555; --line: #ccc;
+    --consistent: #1a6b3c; --to_check: #8a5300; --suspicious: #b3261e;
+    --unverifiable: #555;
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 860px; margin: 0 auto; padding: 32px 20px 48px; }
-  header { display: flex; justify-content: space-between; align-items: baseline;
-           border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
-  header h1 { margin: 0; font-size: 22px; letter-spacing: .5px; }
-  header span { color: var(--muted); font-style: italic; }
-  section { background: #fff; border: 1px solid var(--line); border-radius: 8px;
-            padding: 18px 20px; margin-top: 18px; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .8px;
-       color: var(--muted); margin: 0 0 10px; }
-  dl { display: grid; grid-template-columns: 140px 1fr; gap: 4px 12px; margin: 0; }
+  body { margin: 0; background: #fff; color: var(--ink);
+         font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 20px 48px; }
+  h1 { font-size: 22px; margin: 0; }
+  .meta { color: var(--muted); margin: 4px 0 0; }
+  h2 { font-size: 18px; margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+  p { margin: 8px 0; }
+  .muted { color: var(--muted); font-size: 14px; }
+  .state { font-weight: 600; }
+  .state.consistent { color: var(--consistent); }
+  .state.to_check { color: var(--to_check); }
+  .state.suspicious { color: var(--suspicious); }
+  .state.unverifiable { color: var(--unverifiable); }
+  .verdict { font-size: 18px; margin: 24px 0 4px; }
+  .check { margin: 16px 0 0; }
+  .check h3 { font-size: 15px; margin: 0; }
+  details { color: var(--muted); font-size: 13px; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 4px 0 0;
+        font: 13px ui-monospace, SFMono-Regular, Consolas, monospace; }
+  code { font: 13px ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
+  blockquote { margin: 8px 0; padding-left: 12px; border-left: 2px solid var(--line);
+               white-space: pre-line; }
+  ul { margin: 8px 0; padding-left: 20px; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 16px; margin: 8px 0; }
   dt { color: var(--muted); }
   dd { margin: 0; overflow-wrap: anywhere; }
-  code { font: 13px ui-monospace, SFMono-Regular, Consolas, monospace; }
-  .verdict { border-left: 6px solid var(--muted); }
-  .verdict.original { border-left-color: var(--consistent); }
-  .verdict.reprocessed { border-left-color: var(--to_check); }
-  .verdict .label { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
-  .disclaimer { background: #fffbea; border-color: #f0dfa0; font-size: 14px; }
-  .source blockquote { margin: 8px 0; padding: 10px 14px; border-left: 3px solid var(--line);
-                       white-space: pre-line; }
-  .source .caution, .reverse .caution, .credit { color: var(--muted); font-size: 14px; }
-  .signal { border-top: 1px solid var(--line); padding: 12px 0; }
-  .signal:first-of-type { border-top: 0; padding-top: 0; }
-  .signal .head { display: flex; gap: 10px; align-items: center; }
-  .badge { font-size: 12px; font-weight: 600; color: #fff; border-radius: 4px;
-           padding: 2px 8px; white-space: nowrap; }
-  .badge.consistent { background: var(--consistent); }
-  .badge.to_check { background: var(--to_check); }
-  .badge.suspicious { background: var(--suspicious); }
-  .badge.unverifiable { background: var(--unverifiable); }
-  .signal p { margin: 6px 0 0; }
-  details { margin-top: 6px; color: var(--muted); font-size: 13px; }
-  details pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg);
-                padding: 8px; border-radius: 4px; }
   .previews { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .previews figure { margin: 0; }
-  .previews img { width: 100%; border: 1px solid var(--line); border-radius: 4px; }
-  .previews figcaption { color: var(--muted); font-size: 13px; }
-  footer { color: var(--muted); font-size: 12px; margin-top: 24px; }
-  .save-pdf { margin: 14px 0 0; color: var(--muted); font-size: 13px; }
+  figure { margin: 0; }
+  figure img { width: 100%; border: 1px solid var(--line); }
+  figcaption { color: var(--muted); font-size: 13px; }
+  footer { color: var(--muted); font-size: 13px; margin-top: 32px; padding-top: 12px;
+           border-top: 1px solid var(--line); }
   .print-only { display: none; }
 
   /* Printing, or "Save as PDF": the way to keep or send this report. No
      script anywhere, on purpose: the report shows metadata anyone can write. */
   @page { margin: 14mm 12mm; }
   @media print {
-    body { background: #fff; font-size: 11pt; }
+    body { font-size: 11pt; }
     main { max-width: none; padding: 0; }
-    section { border-color: #bbb; }
-    h2 { break-after: avoid; }
-    /* Kept whole on one page; the long list of checks may span pages. */
-    .verdict, .disclaimer, .signal, .source blockquote, figure { break-inside: avoid; }
-    /* Browsers drop background colours when printing: the state is written
-       in its colour and framed, so it stays readable even in black and white. */
-    .badge { background: none !important; border: 1.5px solid currentColor; }
-    .badge.consistent { color: var(--consistent); }
-    .badge.to_check { color: var(--to_check); }
-    .badge.suspicious { color: var(--suspicious); }
-    .badge.unverifiable { color: var(--unverifiable); }
-    .disclaimer { background: none; }
+    h2, h3 { break-after: avoid; }
+    .check, blockquote, figure { break-inside: avoid; }
     /* Closed sections would print empty: the raw values are printed open. */
     details, .save-pdf { display: none; }
     .print-only { display: block; }
     span.print-only { display: inline; color: var(--muted); }
-    .raw { color: var(--muted); font-size: 9pt; margin-top: 6px; }
-    .raw pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 2px 0 0; }
-    .previews img { max-height: 9cm; object-fit: contain; }
+    .raw { color: var(--muted); font-size: 9pt; margin-top: 4px; }
+    figure img { max-height: 9cm; object-fit: contain; }
   }
 </style>
 </head>
 <body>
 <main>
-  <header>
-    <h1>Tala X</h1>
-    <span>{{ t("ui.tagline") }}</span>
-  </header>
-  <p class="save-pdf">{{ t("ui.report.save_pdf") }}</p>
+  <h1>{{ t("ui.report.title") }}</h1>
+  <p class="meta">{% if data.file.name %}{{ data.file.name }} · {% endif %}{{ analysed_at }}</p>
 
-  <section>
-    <h2>{{ t("ui.report.file") }}</h2>
-    <dl>
-      {% if data.file.name %}<dt>{{ t("ui.report.name") }}</dt><dd>{{ data.file.name }}</dd>{% endif %}
-      <dt>SHA-256</dt><dd><code>{{ data.file.sha256 }}</code></dd>
-      <dt>{{ t("ui.report.size") }}</dt><dd>{{ t("ui.cli.size", size=data.file.size) }}</dd>
-      <dt>{{ t("ui.report.format") }}</dt><dd>{{ data.file.real_format or t("ui.report.unknown") }}</dd>
-      <dt>{{ t("ui.report.analysed") }}</dt><dd>{{ analysed_at }}</dd>
-    </dl>
-  </section>
+  <p class="verdict">{{ t("ui.report.labelled", label=t("ui.integrity")) }} <strong>{{ data.integrity.label }}</strong></p>
+  <p>{{ data.integrity.explanation }}</p>
+  <p class="muted">{{ data.disclaimer }}</p>
 
-  <section class="verdict {{ verdict }}">
-    <h2>{{ t("ui.integrity") }}</h2>
-    <div class="label">{{ data.integrity.label }}</div>
-    <p>{{ data.integrity.explanation }}</p>
-  </section>
+  <h2>{{ t("ui.report.signals") }}</h2>
+  {% for r in results %}
+  <div class="check">
+    <h3>{{ t("ui.report.labelled", label=r.name) }} <span class="state {{ r.state }}">{{ r.label }}</span></h3>
+    <p>{{ r.explanation }}</p>
+    {% if r.signal == "weather" and r.evidence.source %}
+    <p class="muted">{{ t("ui.report.weather_credit") }} <a href="{{ weather_url }}" rel="noopener noreferrer" target="_blank">Open-Meteo.com</a> (CC BY 4.0) <span class="print-only">{{ weather_url }}</span></p>
+    {% endif %}
+    {% if r.evidence %}
+    <details><summary>{{ t("ui.report.raw_values") }}</summary>
+      <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}
+{% endfor %}</pre>
+    </details>
+    <div class="raw print-only">{{ t("ui.report.raw_values") }}
+      <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}
+{% endfor %}</pre>
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
 
   {% if data.source_request %}
-  <section class="source">
-    <h2>{{ data.source_request.title }}</h2>
-    <p>{{ data.source_request.intro }}</p>
-    <blockquote>{{ data.source_request.message }}</blockquote>
-    <p class="caution">{{ data.source_request.caution }}</p>
-  </section>
+  <h2>{{ data.source_request.title }}</h2>
+  <p>{{ data.source_request.intro }}</p>
+  <blockquote>{{ data.source_request.message }}</blockquote>
+  <p class="muted">{{ data.source_request.caution }}</p>
   {% endif %}
 
-  <section class="disclaimer">{{ data.disclaimer }}</section>
-
-  <section>
-    <h2>{{ t("ui.report.signals") }}</h2>
-    {% for r in results %}
-    <div class="signal">
-      <div class="head">
-        <span class="badge {{ r.state }}">{{ r.label }}</span>
-        <strong>{{ r.name }}</strong>
-      </div>
-      <p>{{ r.explanation }}</p>
-      {% if r.signal == "weather" and r.evidence.source %}
-      <p class="credit">{{ t("ui.report.weather_credit") }} <a href="{{ weather_url }}" rel="noopener noreferrer" target="_blank">Open-Meteo.com</a> (CC BY 4.0) <span class="print-only">{{ weather_url }}</span></p>
-      {% endif %}
-      {% if r.evidence %}
-      <details><summary>{{ t("ui.report.raw_values") }}</summary>
-        <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}
-{% endfor %}</pre>
-      </details>
-      <div class="raw print-only">{{ t("ui.report.raw_values") }}
-        <pre>{% for k, v in r.evidence.items() %}{{ k }}: {{ v }}
-{% endfor %}</pre>
-      </div>
-      {% endif %}
-    </div>
+  <h2>{{ data.reverse_search.title }}</h2>
+  <p>{{ data.reverse_search.intro }}</p>
+  <ul>
+    {% for service in data.reverse_search.services %}
+    <li><a href="{{ service.url }}" rel="noopener noreferrer" target="_blank">{{ service.name }}</a> <span class="print-only">{{ service.url }}</span></li>
     {% endfor %}
-  </section>
-
-  <section class="reverse">
-    <h2>{{ data.reverse_search.title }}</h2>
-    <p>{{ data.reverse_search.intro }}</p>
-    <ul>
-      {% for service in data.reverse_search.services %}
-      <li><a href="{{ service.url }}" rel="noopener noreferrer" target="_blank">{{ service.name }}</a> <span class="print-only">{{ service.url }}</span></li>
-      {% endfor %}
-    </ul>
-    <p class="caution">{{ data.reverse_search.caution }}</p>
-  </section>
+  </ul>
+  <p class="muted">{{ data.reverse_search.caution }}</p>
 
   {% if position %}
-  <section>
-    <h2>{{ t("ui.report.position") }}</h2>
-    <p><code>{{ "%.6f"|format(position.lat) }}, {{ "%.6f"|format(position.lon) }}</code></p>
-    <p>{{ t("ui.report.position_note") }}</p>
-  </section>
+  <h2>{{ t("ui.report.position") }}</h2>
+  <p><code>{{ "%.6f"|format(position.lat) }}, {{ "%.6f"|format(position.lon) }}</code></p>
+  <p class="muted">{{ t("ui.report.position_note") }}</p>
   {% endif %}
 
   {% if previews %}
-  <section>
-    <h2>{{ t("ui.report.exploration") }}</h2>
-    <p>{{ t("ui.report.exploration_note") }}</p>
-    <div class="previews">
-      <figure><img src="{{ previews.image }}" alt="{{ t("ui.report.image") }}"><figcaption>{{ t("ui.report.image") }}</figcaption></figure>
-      <figure>
-        {% if previews.thumbnail %}
-        <img src="{{ previews.thumbnail }}" alt="{{ t("ui.report.preview") }}"><figcaption>{{ t("ui.report.preview") }}</figcaption>
-        {% else %}
-        <figcaption>{{ t("ui.report.no_preview") }}</figcaption>
-        {% endif %}
-      </figure>
-    </div>
-  </section>
+  <h2>{{ t("ui.report.exploration") }}</h2>
+  <p class="muted">{{ t("ui.report.exploration_note") }}</p>
+  <div class="previews">
+    <figure><img src="{{ previews.image }}" alt="{{ t("ui.report.image") }}"><figcaption>{{ t("ui.report.image") }}</figcaption></figure>
+    <figure>
+      {% if previews.thumbnail %}
+      <img src="{{ previews.thumbnail }}" alt="{{ t("ui.report.preview") }}"><figcaption>{{ t("ui.report.preview") }}</figcaption>
+      {% else %}
+      <figcaption>{{ t("ui.report.no_preview") }}</figcaption>
+      {% endif %}
+    </figure>
+  </div>
   {% endif %}
 
+  <h2>{{ t("ui.report.file") }}</h2>
+  <dl>
+    {% if data.file.name %}<dt>{{ t("ui.report.name") }}</dt><dd>{{ data.file.name }}</dd>{% endif %}
+    <dt>SHA-256</dt><dd><code>{{ data.file.sha256 }}</code></dd>
+    <dt>{{ t("ui.report.size") }}</dt><dd>{{ t("ui.cli.size", size=data.file.size) }}</dd>
+    <dt>{{ t("ui.report.format") }}</dt><dd>{{ data.file.real_format or t("ui.report.unknown") }}</dd>
+    <dt>{{ t("ui.report.analysed") }}</dt><dd>{{ analysed_at }}</dd>
+  </dl>
+
   <footer>
-    {{ t("ui.report.footer", generated=generated_at, talax=data.tools.talax, exiftool=data.tools.exiftool, schema=data.schema) }}
+    <p>{{ t("ui.report.footer", generated=generated_at, talax=data.tools.talax, exiftool=data.tools.exiftool) }}</p>
+    <p class="save-pdf">{{ t("ui.report.save_pdf") }}</p>
   </footer>
 </main>
 </body>

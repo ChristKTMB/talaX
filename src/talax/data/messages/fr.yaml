@@ -218,7 +218,6 @@ integrity.original: 'Le fichier porte les marques d''un original d''appareil ({d
   marque et modèle, heure de prise de vue d''origine et données propres au fabricant ({vendor}),
   sans logiciel de retouche enregistré. Cela dit d''où vient le fichier, pas si son contenu
   est vrai : les métadonnées peuvent être falsifiées par qui sait le faire.'
-ui.tagline: Regardez au-delà du pixel
 ui.disclaimer: 'Tala X ne certifie jamais qu''une image est authentique. Il rapporte ce qu''on
   peut honnêtement dire d''un fichier. Un original d''appareil ne prouve pas que son contenu
   est vrai : les métadonnées peuvent être falsifiées par qui sait le faire. Tala X est conçu
@@ -238,7 +237,7 @@ ui.report.unknown: inconnu
 ui.report.analysed: Analysé le
 ui.report.date: '{day} {month} {year} à {time} UTC'
 ui.report.months: janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre
-ui.report.signals: Signaux
+ui.report.signals: Contrôles
 ui.report.raw_values: Valeurs brutes
 ui.report.position: Position
 ui.report.position_note: 'Aucune carte n''est intégrée : charger des fonds de carte révélerait
@@ -252,8 +251,7 @@ ui.report.exploration_note: 'L''image et le petit aperçu stocké dans le fichie
 ui.report.image: Image
 ui.report.preview: Aperçu intégré
 ui.report.no_preview: Aucun aperçu intégré dans ce fichier.
-ui.report.footer: 'Généré le {generated} par Tala X {talax} avec ExifTool {exiftool}. Schéma
-  du rapport : {schema}.'
+ui.report.footer: 'Généré le {generated} par Tala X {talax} avec ExifTool {exiftool}.'
 error.file_too_large: Le fichier dépasse {max_mb} Mo, la limite du service web. Pour un fichier
   plus lourd, utilisez l'outil en ligne de commande.
 error.busy: Le service est occupé. Réessayez dans quelques secondes.
@@ -339,3 +337,4 @@ ui.cli.conditions_tip: 'Astuce : ajoutez --conditions rain|snow|overcast|clear p
 ui.weather_credit: 'Données météo : Open-Meteo.com (CC BY 4.0), https://open-meteo.com/'
 ui.report.weather_credit: 'Données météo :'
 error.weather_disabled: La consultation de la météo n'est pas disponible sur ce serveur.
+ui.report.labelled: '{label} :'

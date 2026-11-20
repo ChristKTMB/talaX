@@ -199,7 +199,6 @@ integrity.original: 'The file has the marks of a camera original from a {device}
   model, original capture time, and manufacturer-specific data ({vendor}), with no image editor
   recorded. This says where the file comes from, not whether its content is true: metadata
   can be forged by anyone who knows how.'
-ui.tagline: See beyond the pixel
 ui.disclaimer: 'Tala X never certifies that an image is authentic. It reports what can honestly
   be said about a file. An original camera file is not proof that its content is true: metadata
   can be forged by anyone who knows how. Tala X is built against platform laundering and recycled
@@ -218,7 +217,7 @@ ui.report.unknown: unknown
 ui.report.analysed: Analysed
 ui.report.date: '{day} {month} {year}, {time} UTC'
 ui.report.months: January,February,March,April,May,June,July,August,September,October,November,December
-ui.report.signals: Signals
+ui.report.signals: Checks
 ui.report.raw_values: Raw values
 ui.report.position: Position
 ui.report.position_note: 'No map is embedded: loading map tiles would reveal this position
@@ -232,8 +231,7 @@ ui.report.exploration_note: 'The image and the small preview stored inside the f
 ui.report.image: Image
 ui.report.preview: Embedded preview
 ui.report.no_preview: No embedded preview in this file.
-ui.report.footer: Generated {generated} by Tala X {talax} with ExifTool {exiftool}. Report
-  schema {schema}.
+ui.report.footer: Generated {generated} by Tala X {talax} with ExifTool {exiftool}.
 error.file_too_large: The file is larger than {max_mb} MB, the limit of the web service. For
   larger files, use the command-line tool.
 error.busy: The service is busy. Please try again in a few seconds.
@@ -316,3 +314,4 @@ ui.cli.conditions_tip: 'Tip: add --conditions rain|snow|overcast|clear to compar
 ui.weather_credit: 'Weather data: Open-Meteo.com (CC BY 4.0), https://open-meteo.com/'
 ui.report.weather_credit: 'Weather data:'
 error.weather_disabled: The weather lookup is not available on this server.
+ui.report.labelled: '{label}:'

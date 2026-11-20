@@ -144,7 +144,7 @@ def test_french_everywhere(hostile_jpeg: Path, tmp_path: Path) -> None:
     }
 
     html = report.read_text(encoding="utf-8")
-    assert '<html lang="fr">' in html and "Signaux" in html
+    assert '<html lang="fr">' in html and "Contrôles" in html
 
 
 def test_system_language_is_the_default(hostile_jpeg: Path) -> None:
