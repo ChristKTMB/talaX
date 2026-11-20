@@ -34,12 +34,20 @@ jobs:
           python-version: ${{ matrix.python }}
 
       # ExifTool 13+ on every system (distribution packages are too old).
+      # Same pinned version as the Dockerfile, from SourceForge (which keeps
+      # every release). Never ask exiftool.org: it was down on 2026-11-19 and
+      # failed the build.
       - name: Install ExifTool (Linux)
         if: runner.os == 'Linux'
+        env:
+          EXIFTOOL_VERSION: "13.60"
+          EXIFTOOL_SHA256: c8e3c42576f46d862e4cd9c192989776e7363931e890c95056bcd6293e83ea36
         run: |
-          v=$(curl -fsS https://exiftool.org/ver.txt)
-          curl -fsSL "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-$v.tar.gz/download" \
-            | tar -xz -C "$RUNNER_TEMP"
+          v=$EXIFTOOL_VERSION
+          curl -fsSL --retry 5 --retry-all-errors --connect-timeout 30 -o exiftool.tar.gz \
+            "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-$v.tar.gz/download"
+          echo "$EXIFTOOL_SHA256  exiftool.tar.gz" | sha256sum -c -
+          tar -xzf exiftool.tar.gz -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/Image-ExifTool-$v" >> "$GITHUB_PATH"
       - name: Install ExifTool (macOS)
         if: runner.os == 'macOS'
@@ -47,9 +55,12 @@ jobs:
       - name: Install ExifTool (Windows)
         if: runner.os == 'Windows'
         shell: bash
+        env:
+          EXIFTOOL_VERSION: "13.60"
         run: |
-          v=$(curl -fsS https://exiftool.org/ver.txt)
-          curl -fsSL -o exiftool.zip "https://sourceforge.net/projects/exiftool/files/exiftool-${v}_64.zip/download"
+          v=$EXIFTOOL_VERSION
+          curl -fsSL --retry 5 --retry-all-errors --connect-timeout 30 -o exiftool.zip \
+            "https://sourceforge.net/projects/exiftool/files/exiftool-${v}_64.zip/download"
           unzip -q exiftool.zip -d "$RUNNER_TEMP"
           dir="$RUNNER_TEMP/exiftool-${v}_64"
           mv "$dir/exiftool(-k).exe" "$dir/exiftool.exe"
