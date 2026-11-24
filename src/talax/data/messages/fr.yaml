@@ -338,3 +338,11 @@ ui.weather_credit: 'Données météo : Open-Meteo.com (CC BY 4.0), https://open-
 ui.report.weather_credit: 'Données météo :'
 error.weather_disabled: La consultation de la météo n'est pas disponible sur ce serveur.
 ui.report.labelled: '{label} :'
+ui.batch.file: 'Fichier'
+ui.batch.integrity: 'Intégrité'
+ui.batch.taken: 'Prise de vue (heure de l''appareil)'
+ui.batch.position: 'Position'
+ui.batch.concerns: 'À regarder d''abord'
+ui.batch.unreadable: 'analyse impossible'
+ui.batch.summary: '{analysed} fichiers analysés sur {total}.'
+ui.batch.skipped: 'Laissés de côté, non reconnus comme image ou vidéo : {names}'

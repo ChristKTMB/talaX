@@ -12,8 +12,11 @@ for result in analysis.results:
 from importlib.metadata import version as _version
 
 from talax.analysis import analyze
+from talax.batch import analyze_batch
 from talax.model import (
     Analysis,
+    Batch,
+    BatchItem,
     Conditions,
     Context,
     Declaration,
@@ -32,6 +35,8 @@ __version__ = _version("talax")
 
 __all__ = [
     "Analysis",
+    "Batch",
+    "BatchItem",
     "Conditions",
     "Context",
     "Declaration",
@@ -46,5 +51,6 @@ __all__ = [
     "State",
     "__version__",
     "analyze",
+    "analyze_batch",
     "run_signals",
 ]

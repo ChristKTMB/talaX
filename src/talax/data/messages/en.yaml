@@ -315,3 +315,11 @@ ui.weather_credit: 'Weather data: Open-Meteo.com (CC BY 4.0), https://open-meteo
 ui.report.weather_credit: 'Weather data:'
 error.weather_disabled: The weather lookup is not available on this server.
 ui.report.labelled: '{label}:'
+ui.batch.file: 'File'
+ui.batch.integrity: 'Integrity'
+ui.batch.taken: 'Taken (device time)'
+ui.batch.position: 'Position'
+ui.batch.concerns: 'To look at first'
+ui.batch.unreadable: 'could not be analysed'
+ui.batch.summary: '{analysed} of {total} files analysed.'
+ui.batch.skipped: 'Left out, not recognised as an image or a video: {names}'

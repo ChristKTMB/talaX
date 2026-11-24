@@ -226,3 +226,28 @@ class Analysis:
     def __post_init__(self) -> None:
         if self.created_at.tzinfo is None:
             raise ValueError("created_at must be timezone-aware")
+
+
+@dataclass(frozen=True, slots=True)
+class BatchItem:
+    """One file of a batch: its analysis, or why it could not be analysed."""
+
+    name: str
+    """As given on the command line or inside the folder, never a full path."""
+    analysis: Analysis | None
+    error: str | None = None
+    """`unreadable` when the file could not be analysed at all."""
+
+
+@dataclass(frozen=True, slots=True)
+class Batch:
+    """Several analyses seen together (step 8). Immutable like an analysis."""
+
+    items: tuple[BatchItem, ...]
+    skipped: tuple[str, ...]
+    """Files not recognised as an image or a video, left out."""
+    created_at: datetime
+
+    def __post_init__(self) -> None:
+        if self.created_at.tzinfo is None:
+            raise ValueError("created_at must be timezone-aware")

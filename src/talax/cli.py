@@ -17,7 +17,15 @@ from rich.text import Text
 from talax.analysis import analyze
 from talax.extraction import ExifToolError
 from talax.i18n import Language, default_language, text
-from talax.model import Analysis, Conditions, Declaration, Observation, Sky, State
+from talax.model import (
+    Analysis,
+    Batch,
+    Conditions,
+    Declaration,
+    Observation,
+    Sky,
+    State,
+)
 from talax.report import (
     render_html,
     reverse_search,
@@ -141,6 +149,25 @@ def analyze_command(
         err.print(_safe(f"HTML report written to {html}"))
 
 
+@app.command(name="batch")
+def batch_command(
+    paths: Annotated[
+        list[Path],
+        typer.Argument(exists=True, readable=True, help="Files or folders."),
+    ],
+    lang: Annotated[
+        Language | None,
+        typer.Option(help="Language of the report (default: the system language)."),
+    ] = None,
+) -> None:
+    """Analyse several files at once. Nothing is sent over the network."""
+    from talax.batch import analyze_batch
+
+    language = lang or default_language()
+    batch = analyze_batch(paths)
+    _print_batch(batch, language)
+
+
 @app.command()
 def version() -> None:
     """Show the versions of Tala X and ExifTool."""
@@ -201,6 +228,65 @@ def _declaration(place: str | None, at: str | None) -> Declaration | None:
 def _safe(text: str) -> Text:
     """File metadata is written by anyone: no markup, no terminal control codes."""
     return Text(_CONTROL.sub("", text))
+
+
+def _print_batch(batch: Batch, lang: Language) -> None:
+    from talax.batch import concerns
+
+    if sys.stdout.isatty():
+        out.print(BANNER, highlight=False, markup=False)
+    table = Table(show_lines=False, expand=True, header_style="bold")
+    for key in ("file", "integrity", "taken", "position", "concerns"):
+        table.add_column(text(f"ui.batch.{key}", lang), overflow="fold")
+    for item in batch.items:
+        name = _safe(item.name)
+        if item.analysis is None:
+            table.add_row(name, Text(text("ui.batch.unreadable", lang), style="red"))
+            continue
+        a = item.analysis
+        flags = Text()
+        for signal_id, state in concerns(a):
+            if flags:
+                flags.append(", ")
+            flags.append(signal_name(signal_id, lang), style=_STYLES[state])
+        table.add_row(
+            name,
+            verdict_label(a.integrity.verdict, lang),
+            _safe(_taken(a) or "-"),
+            _position_text(a) or "-",
+            flags or Text("-", style="dim"),
+        )
+    out.print(table)
+    readable = sum(1 for item in batch.items if item.analysis is not None)
+    out.print(
+        text("ui.batch.summary", lang, analysed=readable, total=len(batch.items)),
+        markup=False,
+    )
+    if batch.skipped:
+        out.print(
+            _safe(text("ui.batch.skipped", lang, names=", ".join(batch.skipped))),
+            style="dim",
+        )
+    out.print(_safe(text("ui.disclaimer", lang)), style="dim")
+
+
+def _taken(analysis: Analysis) -> str | None:
+    """Capture time as recorded (local time of the device), to the minute."""
+    for r in analysis.results:
+        if r.signal_id == "capture_time" and r.state is not State.UNVERIFIABLE:
+            value = r.evidence.get("date_time_original")
+            if isinstance(value, str):
+                return value[:16].replace("T", " ")
+    return None
+
+
+def _position_text(analysis: Analysis) -> str | None:
+    for r in analysis.results:
+        if r.signal_id == "gps" and r.state is State.CONSISTENT:
+            lat, lon = r.evidence.get("latitude"), r.evidence.get("longitude")
+            if isinstance(lat, int | float) and isinstance(lon, int | float):
+                return f"{lat:.5f}, {lon:.5f}"
+    return None
 
 
 def _print_text(analysis: Analysis, file: Path, lang: Language) -> None:
