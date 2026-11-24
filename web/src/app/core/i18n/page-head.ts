@@ -78,6 +78,7 @@ export class PageHead {
     this.meta.updateTag({ property: 'og:title', content: title });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:locale', content: OG_LOCALES[language] });
+    this.meta.updateTag({ property: 'og:image', content: `${SITE_URL}/og-${language}.png` });
 
     const url = (at: Language) => (page === 'not-found' ? null : SITE_URL + PATHS[page][at]);
     this.link('canonical', null, url(language));

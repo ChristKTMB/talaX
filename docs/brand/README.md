@@ -14,9 +14,11 @@ deliver a verdict. It deliberately avoids anything that suggests a guarantee
 | `symbol-ink.svg` / `symbol-paper.svg` | Mark alone, transparent background |
 | `symbol-ink-on-paper.svg` / `symbol-paper-on-ink.svg` | Mark alone, solid background (app icon, README) |
 | `logo-monochrome.svg` / `symbol-monochrome.svg` | One colour, `currentColor`, recolourable with CSS |
+| `logo-*-fr.svg` | The same logos with the French tagline "Regardez au-delà du pixel" |
 | `favicon-32.svg`, `favicon-16.svg` | Simplified marks drawn for each size: the 5×5 grid is unreadable below 40 px |
 | `favicon.svg` | Scalable favicon, based on the 16 px mark |
-| `favicon.ico` | Legacy favicon (16 px only for now) |
+| `favicon.ico` | Legacy favicon, 16 px and 32 px |
+| `og-en.png`, `og-fr.png` | Picture shown when a link to the site is shared, 1200 x 630 |
 
 All text is converted to paths: no font is loaded, and the files reference
 no external resource.
@@ -34,10 +36,18 @@ states (consistent, to check, suspicious, unverifiable):
 Liberation Mono (SIL Open Font License 1.1). A monospace face, consistent with
 the ASCII banner of the CLI. Use it again if the text has to be redrawn.
 
-## Known gaps
+## Regenerating
 
-- `favicon.ico` holds only the 16 px size; it should also hold 32 px.
-- `favicon-32.svg` inverts the mark (filled cells, empty centre), unlike the
-  symbol and the 16 px favicon (empty cells, filled centre).
-- Tagline in English only; a French version ("Regardez au-delà du pixel") is
-  needed for the French site.
+- French logos, from the English ones and the font hosted by the site:
+  `uv run --no-project --with fonttools --with brotli python scripts/brand_french_logos.py`
+- `favicon.ico` and the share pictures, drawn from the SVG files in Chromium
+  (from `web/`): `node scripts/brand-images.mjs`
+
+Run them again after any change to the logo, and commit the results.
+
+## History
+
+- 2026-11-24: `favicon-32.svg` read inverted at its real size (the cell
+  borders, 6.5 units, filled the empty cells): borders thinned to 4.5.
+  `favicon.ico` now holds 32 px too. French tagline added. Share pictures
+  added.

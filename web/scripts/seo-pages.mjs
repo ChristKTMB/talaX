@@ -45,6 +45,12 @@ function page(name, lang) {
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${description}" />`,
     `<meta property="og:locale" content="${locales[lang]}" />`,
+    // The picture shown when a link is shared; it never shows a user's photo.
+    `<meta property="og:image" content="${site}/og-${lang}.png" />`,
+    '<meta property="og:image:width" content="1200" />',
+    '<meta property="og:image:height" content="630" />',
+    `<meta property="og:image:alt" content="${text('page.home.title')}" />`,
+    '<meta name="twitter:card" content="summary_large_image" />',
   );
   if (!/<title>[^<]*<\/title>/.test(template) || !/<html lang="en">/.test(template)) {
     throw new Error('index.html no longer has the expected <html lang> and <title>');

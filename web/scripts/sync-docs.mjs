@@ -21,7 +21,7 @@ mkdirSync(brand, { recursive: true });
 for (const file of readdirSync(join(docs, 'brand'))) {
   if (file.endsWith('.svg')) copyFileSync(join(docs, 'brand', file), join(brand, file));
 }
-for (const file of ['favicon.svg', 'favicon.ico']) {
+for (const file of ['favicon.svg', 'favicon.ico', 'og-en.png', 'og-fr.png']) {
   copyFileSync(join(docs, 'brand', file), join(web, 'public', file));
 }
 

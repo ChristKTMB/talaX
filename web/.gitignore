@@ -52,3 +52,5 @@ Thumbs.db
 # Playwright
 /test-results
 /playwright-report
+/public/og-en.png
+/public/og-fr.png

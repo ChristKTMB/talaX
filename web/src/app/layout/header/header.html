@@ -5,7 +5,11 @@
       class="header__home"
       [attr.aria-label]="i18n.t('header.home')"
     >
-      <img src="brand/logo-horizontal-ink.svg" alt="" width="198" height="66" />
+      @if (i18n.language() === 'fr') {
+        <img src="brand/logo-horizontal-ink-fr.svg" alt="" width="228" height="66" />
+      } @else {
+        <img src="brand/logo-horizontal-ink.svg" alt="" width="198" height="66" />
+      }
     </a>
     <a class="header__source" [href]="sourceUrl">{{ i18n.t('header.source') }}</a>
   </div>
