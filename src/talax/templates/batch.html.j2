@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="{{ csp | safe }}">
+<title>{{ t("ui.batch.title") }}</title>
+{% include "_style.html.j2" %}
+</head>
+<body>
+<main>
+  <h1>{{ t("ui.batch.title") }}</h1>
+  <p class="meta">{{ t("ui.batch.files", analysed=analysed, total=rows|length) }} · {{ analysed_at }}</p>
+  <p class="muted">{{ t("ui.disclaimer") }}</p>
+
+  <table>
+    <thead><tr>
+      <th>{{ t("ui.batch.file") }}</th><th>{{ t("ui.batch.integrity") }}</th>
+      <th>{{ t("ui.batch.taken") }}</th><th>{{ t("ui.batch.position") }}</th>
+      <th>{{ t("ui.batch.concerns") }}</th>
+    </tr></thead>
+    <tbody>
+    {% for row in rows %}
+    <tr>
+      <td>{{ row.name }}</td>
+      {% if row.data %}
+      <td>{{ row.data.integrity.label }}</td>
+      <td>{{ row.taken or "-" }}</td>
+      <td>{% if row.position %}<code>{{ "%.5f"|format(row.position[0]) }}, {{ "%.5f"|format(row.position[1]) }}</code>{% else %}-{% endif %}</td>
+      <td>{% for c in row.concerns %}<span class="state {{ c.state }}">{{ c.name }}</span>{% if not loop.last %}, {% endif %}{% else %}-{% endfor %}</td>
+      {% else %}
+      <td colspan="4" class="state suspicious">{{ t("ui.batch.unreadable") }}</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% if skipped %}<p class="muted">{{ t("ui.batch.skipped", names=skipped|join(", ")) }}</p>{% endif %}
+
+  <h2>{{ t("ui.batch.duplicates") }}</h2>
+  {% if groups %}
+  <ul>
+    {% for g in groups %}
+    <li>{{ t("ui.batch.group." ~ g.kind, distance=g.distance, bits=g.bits) }} {{ g.names|join(", ") }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>{{ t("ui.batch.no_duplicates") }}</p>
+  {% endif %}
+  <p class="muted">{{ t("ui.batch.duplicates_note") }}</p>
+
+  <h2>{{ t("ui.batch.timeline") }}</h2>
+  {% if moments %}
+  <table>
+    <tbody>
+    {% for m in moments %}
+    <tr><td>{{ m.local.strftime("%Y-%m-%d %H:%M") }}</td>
+        <td>{% if m.offset %}UTC{{ m.offset }}{% else %}{{ t("ui.batch.zone_unknown") }}{% endif %}</td>
+        <td>{{ m.name }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if undated %}<p>{{ t("ui.batch.undated", names=undated|join(", ")) }}</p>{% endif %}
+  {% if span_text %}<p>{{ span_text }}</p>{% endif %}
+  <p class="muted">{{ t("ui.batch.timeline_note") }}</p>
+
+  <h2>{{ t("ui.batch.places") }}</h2>
+  {% if found %}
+  <table>
+    <tbody>
+    {% for p in found %}
+    <tr><td><code>{{ "%.5f"|format(p.latitude) }}, {{ "%.5f"|format(p.longitude) }}</code></td><td>{{ p.name }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if missing %}<p>{{ t("ui.batch.no_position", names=missing|join(", ")) }}</p>{% endif %}
+  {% if widest %}<p>{{ t("ui.batch.widest", km=widest.km, first=widest.first, second=widest.second) }}</p>{% endif %}
+  <p class="muted">{{ t("ui.batch.no_map") }}</p>
+
+  <h2>{{ t("ui.batch.details") }}</h2>
+  <p class="muted">{{ t("ui.batch.single_hint") }}</p>
+  {% for row in rows if row.data %}
+  <details class="item">
+    <summary>{{ row.name }} : {{ row.data.integrity.label }}</summary>
+    {% include "_item.html.j2" %}
+  </details>
+  <div class="item print-only">
+    <h3>{{ row.name }} : {{ row.data.integrity.label }}</h3>
+    {% include "_item.html.j2" %}
+  </div>
+  {% endfor %}
+
+  <footer>
+    <p>{{ t("ui.report.footer", generated=generated_at, talax=tools.talax, exiftool=tools.exiftool) }}</p>
+    <p class="save-pdf">{{ t("ui.report.save_pdf") }}</p>
+  </footer>
+</main>
+</body>
+</html>

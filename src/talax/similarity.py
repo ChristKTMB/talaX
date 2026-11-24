@@ -11,6 +11,7 @@ image is true, and it is never a check with a state (project rules, section 3).
 from __future__ import annotations
 
 from pathlib import Path
+from statistics import pstdev
 
 from PIL import Image, ImageOps
 
@@ -21,15 +22,25 @@ from talax.model import VisualHash
 # more. Crops are mostly not found.
 SAME_IMAGE = 16
 SIMILAR = 48
+# Spread of grey levels (standard deviation, 0-255) below which a picture has
+# too little detail to fingerprint: two black frames would look identical.
+# A uniform image measures 0; the flattest real photo of the corpus 7.2.
+MIN_DETAIL = 3.0
 
 
 def visual_hash(path: Path, size: int = 16) -> VisualHash | None:
-    """None when the file cannot be read as an image (video, damaged...)."""
+    """None when the file cannot be read as an image (video, damaged...), or
+    when the picture is too uniform to tell apart from another one."""
     try:
         with Image.open(path) as im:
             im.draft("L", (size * 8, size * 8))
             grey = ImageOps.exif_transpose(im).convert("L")
     except (OSError, ValueError, Image.DecompressionBombError):
+        return None
+    if (
+        pstdev(grey.resize((size + 1, size), Image.Resampling.LANCZOS).tobytes())
+        < MIN_DETAIL
+    ):
         return None
     turns = tuple(
         _dhash(grey.rotate(angle, expand=True), size) for angle in (0, 90, 180, 270)

@@ -6,64 +6,7 @@
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="{{ csp | safe }}">
 <title>{{ t("ui.report.title") }} — {{ data.file.name or data.file.sha256[:12] }}</title>
-<style>
-  /* A plain document: white page, ordinary headings, the state written in
-     words. Colour only says the state, and the word says it too. */
-  :root {
-    --ink: #111; --muted: #555; --line: #ccc;
-    --consistent: #1a6b3c; --to_check: #8a5300; --suspicious: #b3261e;
-    --unverifiable: #555;
-  }
-  body { margin: 0; background: #fff; color: var(--ink);
-         font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 760px; margin: 0 auto; padding: 32px 20px 48px; }
-  h1 { font-size: 22px; margin: 0; }
-  .meta { color: var(--muted); margin: 4px 0 0; }
-  h2 { font-size: 18px; margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--line); }
-  p { margin: 8px 0; }
-  .muted { color: var(--muted); font-size: 14px; }
-  .state { font-weight: 600; }
-  .state.consistent { color: var(--consistent); }
-  .state.to_check { color: var(--to_check); }
-  .state.suspicious { color: var(--suspicious); }
-  .state.unverifiable { color: var(--unverifiable); }
-  .verdict { font-size: 18px; margin: 24px 0 4px; }
-  .check { margin: 16px 0 0; }
-  .check h3 { font-size: 15px; margin: 0; }
-  details { color: var(--muted); font-size: 13px; }
-  pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 4px 0 0;
-        font: 13px ui-monospace, SFMono-Regular, Consolas, monospace; }
-  code { font: 13px ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
-  blockquote { margin: 8px 0; padding-left: 12px; border-left: 2px solid var(--line);
-               white-space: pre-line; }
-  ul { margin: 8px 0; padding-left: 20px; }
-  dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 16px; margin: 8px 0; }
-  dt { color: var(--muted); }
-  dd { margin: 0; overflow-wrap: anywhere; }
-  .previews { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  figure { margin: 0; }
-  figure img { width: 100%; border: 1px solid var(--line); }
-  figcaption { color: var(--muted); font-size: 13px; }
-  footer { color: var(--muted); font-size: 13px; margin-top: 32px; padding-top: 12px;
-           border-top: 1px solid var(--line); }
-  .print-only { display: none; }
-
-  /* Printing, or "Save as PDF": the way to keep or send this report. No
-     script anywhere, on purpose: the report shows metadata anyone can write. */
-  @page { margin: 14mm 12mm; }
-  @media print {
-    body { font-size: 11pt; }
-    main { max-width: none; padding: 0; }
-    h2, h3 { break-after: avoid; }
-    .check, blockquote, figure { break-inside: avoid; }
-    /* Closed sections would print empty: the raw values are printed open. */
-    details, .save-pdf { display: none; }
-    .print-only { display: block; }
-    span.print-only { display: inline; color: var(--muted); }
-    .raw { color: var(--muted); font-size: 9pt; margin-top: 4px; }
-    figure img { max-height: 9cm; object-fit: contain; }
-  }
-</style>
+{% include "_style.html.j2" %}
 </head>
 <body>
 <main>

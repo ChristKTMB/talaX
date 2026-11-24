@@ -19,7 +19,7 @@ from PIL import Image, ImageOps
 
 from talax.extraction import exiftool_version, read_thumbnail
 from talax.i18n import Language, catalog, text
-from talax.model import Analysis, IntegrityVerdict, State
+from talax.model import Analysis, Batch, IntegrityVerdict, State
 
 REPORT_CSP = "default-src 'none'; img-src data:; style-src 'unsafe-inline'"
 """The policy of the HTML report: nothing loaded from outside."""
@@ -254,3 +254,63 @@ def _plain(value: Any) -> Any:
     if isinstance(value, str | int | float | bool) or value is None:
         return value
     return str(value)
+
+
+def render_batch_html(batch: Batch, lang: Language = Language.EN) -> str:
+    """The report of a batch: one self-contained page, no image inside (a
+    batch of photos would weigh hundreds of megabytes), nothing loaded."""
+    from talax.batch import concerns, places, position, recorded_time, span, timeline
+    from talax.phrases import duration
+
+    env = Environment(
+        loader=PackageLoader("talax", "templates"),
+        autoescape=select_autoescape(["html", "j2"], default=True),
+    )
+    rows = []
+    for item in batch.items:
+        a = item.analysis
+        data = to_dict(a, item.name, lang) if a else None
+        rows.append(
+            {
+                "name": item.name,
+                "data": data,
+                "taken": recorded_time(a) if a else None,
+                "position": position(a) if a else None,
+                "concerns": [
+                    {"name": signal_name(sid, lang), "state": str(state)}
+                    for sid, state in concerns(a)
+                ]
+                if a
+                else [],
+                "results": sorted(
+                    data["results"], key=lambda r: _STATE_ORDER.index(State(r["state"]))
+                )
+                if data
+                else [],
+            }
+        )
+    moments, undated = timeline(batch)
+    gap = span(moments)
+    span_text = None
+    if gap is not None:
+        key = "ui.batch.span" if all(m.utc for m in moments) else "ui.batch.span_approx"
+        span_text = text(key, lang, duration=duration(gap))
+    found, missing, widest = places(batch)
+    return env.get_template("batch.html.j2").render(
+        csp=REPORT_CSP,
+        lang=str(lang),
+        t=lambda key, **params: text(key, lang, **params),
+        rows=rows,
+        analysed=sum(1 for item in batch.items if item.analysis),
+        skipped=batch.skipped,
+        groups=batch.groups,
+        moments=moments,
+        undated=undated,
+        span_text=span_text,
+        found=found,
+        missing=missing,
+        widest=widest,
+        tools=tool_versions(),
+        analysed_at=readable_date(batch.created_at, lang),
+        generated_at=readable_date(datetime.now(UTC), lang),
+    )

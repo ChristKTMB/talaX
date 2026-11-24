@@ -221,6 +221,26 @@ def concerns(analysis: Analysis) -> tuple[tuple[str, State], ...]:
     )
 
 
+def recorded_time(analysis: Analysis) -> str | None:
+    """Capture time as recorded (local time of the device), to the minute."""
+    for r in analysis.results:
+        if r.signal_id == "capture_time" and r.state is not State.UNVERIFIABLE:
+            value = r.evidence.get("date_time_original")
+            if isinstance(value, str):
+                return value[:16].replace("T", " ")
+    return None
+
+
+def position(analysis: Analysis) -> tuple[float, float] | None:
+    """The GPS position, when the GPS check found it consistent."""
+    for r in analysis.results:
+        if r.signal_id == "gps" and r.state is State.CONSISTENT:
+            lat, lon = r.evidence.get("latitude"), r.evidence.get("longitude")
+            if isinstance(lat, int | float) and isinstance(lon, int | float):
+                return float(lat), float(lon)
+    return None
+
+
 def _moment(item: BatchItem) -> Moment | None:
     if item.analysis is None:
         return None
@@ -255,14 +275,8 @@ def _moment(item: BatchItem) -> Moment | None:
 
 
 def _place(item: BatchItem) -> Place | None:
-    if item.analysis is None:
-        return None
-    for r in item.analysis.results:
-        if r.signal_id == "gps" and r.state is State.CONSISTENT:
-            lat, lon = r.evidence.get("latitude"), r.evidence.get("longitude")
-            if isinstance(lat, int | float) and isinstance(lon, int | float):
-                return Place(item.name, float(lat), float(lon))
-    return None
+    found = position(item.analysis) if item.analysis else None
+    return Place(item.name, *found) if found else None
 
 
 def _analyse(name: str, path: Path) -> BatchItem:

@@ -159,13 +159,21 @@ def batch_command(
         Language | None,
         typer.Option(help="Language of the report (default: the system language)."),
     ] = None,
+    html: Annotated[
+        Path | None,
+        typer.Option(dir_okay=False, help="Also write a self-contained HTML report."),
+    ] = None,
 ) -> None:
     """Analyse several files at once. Nothing is sent over the network."""
     from talax.batch import analyze_batch
+    from talax.report import render_batch_html
 
     language = lang or default_language()
     batch = analyze_batch(paths)
     _print_batch(batch, language)
+    if html is not None:
+        html.write_text(render_batch_html(batch, language), encoding="utf-8")
+        err.print(_safe(f"HTML report written to {html}"))
 
 
 @app.command()
@@ -231,7 +239,7 @@ def _safe(text: str) -> Text:
 
 
 def _print_batch(batch: Batch, lang: Language) -> None:
-    from talax.batch import concerns
+    from talax.batch import concerns, recorded_time
 
     if sys.stdout.isatty():
         out.print(BANNER, highlight=False, markup=False)
@@ -252,8 +260,8 @@ def _print_batch(batch: Batch, lang: Language) -> None:
         table.add_row(
             name,
             verdict_label(a.integrity.verdict, lang),
-            _safe(_taken(a) or "-"),
-            _position_text(a) or "-",
+            _safe(recorded_time(a) or "-"),
+            _position_text(a),
             flags or Text("-", style="dim"),
         )
     out.print(table)
@@ -288,6 +296,13 @@ def _print_duplicates(batch: Batch, lang: Language) -> None:
         out.print(_safe(f"- {label} {', '.join(group.names)}"))
     out.print(text("ui.batch.duplicates_note", lang), style="dim", markup=False)
     out.print()
+
+
+def _position_text(analysis: Analysis) -> str:
+    from talax.batch import position
+
+    found = position(analysis)
+    return f"{found[0]:.5f}, {found[1]:.5f}" if found else "-"
 
 
 def _print_timeline(batch: Batch, lang: Language) -> None:
@@ -331,25 +346,6 @@ def _print_places(batch: Batch, lang: Language) -> None:
             )
         )
     out.print()
-
-
-def _taken(analysis: Analysis) -> str | None:
-    """Capture time as recorded (local time of the device), to the minute."""
-    for r in analysis.results:
-        if r.signal_id == "capture_time" and r.state is not State.UNVERIFIABLE:
-            value = r.evidence.get("date_time_original")
-            if isinstance(value, str):
-                return value[:16].replace("T", " ")
-    return None
-
-
-def _position_text(analysis: Analysis) -> str | None:
-    for r in analysis.results:
-        if r.signal_id == "gps" and r.state is State.CONSISTENT:
-            lat, lon = r.evidence.get("latitude"), r.evidence.get("longitude")
-            if isinstance(lat, int | float) and isinstance(lon, int | float):
-                return f"{lat:.5f}, {lon:.5f}"
-    return None
 
 
 def _print_text(analysis: Analysis, file: Path, lang: Language) -> None:

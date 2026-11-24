@@ -48,3 +48,9 @@ def test_unreadable_files_have_no_hash(tmp_path: Path) -> None:
 def test_sizes_must_match() -> None:
     with pytest.raises(ValueError):
         distance(VisualHash((0, 0, 0, 0), 8), VisualHash((0, 0, 0, 0), 16))
+
+
+def test_a_uniform_picture_has_no_fingerprint(tmp_path: Path) -> None:
+    # Two black frames (a photo taken in a pocket) must not be "the same image".
+    Image.new("RGB", (64, 48), (9, 9, 9)).save(tmp_path / "black.jpg")
+    assert visual_hash(tmp_path / "black.jpg") is None

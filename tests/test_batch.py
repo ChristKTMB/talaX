@@ -279,3 +279,36 @@ def test_timeline_and_places_in_the_terminal(tmp_path: Path) -> None:
     assert "dont l'horloge peut être mal réglée" in out
     assert "Lieux" in out and "48.85660, 2.35220" in out
     assert "Plus grande distance entre deux photos : 0 km" in out
+
+
+# --- HTML report -------------------------------------------------------------
+
+
+def test_batch_html_report_is_self_contained_and_escaped(tmp_path: Path) -> None:
+    import re
+
+    folder = tmp_path / "lot"
+    folder.mkdir()
+    scene(folder / "a.jpg")
+    scene(folder / "a-small.jpg", size=(320, 240), quality=60)
+    jpeg(
+        folder / "<img src=x onerror=alert(1)>.jpg",
+        *taken("2025:06:21 13:50:00", *PARIS),
+    )
+    report = tmp_path / "lot.html"
+    result = runner.invoke(
+        app, ["batch", str(folder), "--lang", "fr", "--html", str(report)]
+    )
+    assert result.exit_code == 0
+    html = report.read_text(encoding="utf-8")
+    assert "<img src=x" not in html and "&lt;img src=x onerror=alert(1)&gt;" in html
+    assert "default-src 'none'" in html
+    assert not re.search(r"(src|href)=\"", html)  # no image, no link, nothing loaded
+    for title in ("Même image", "Chronologie", "Lieux", "Chaque fichier"):
+        assert f"<h2>{title}</h2>" in html
+    from html import unescape
+
+    assert "ne certifie jamais" in html
+    assert "Aucune carte n'est intégrée" in unescape(html)
+    # Closed sections print empty: each file is also printed open.
+    assert html.count('class="item"') == html.count('class="item print-only"') == 3

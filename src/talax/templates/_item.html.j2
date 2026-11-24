@@ -1,0 +1,8 @@
+<p>{{ row.data.integrity.explanation }}</p>
+{% for r in row.results %}
+<div class="check">
+  <h3>{{ t("ui.report.labelled", label=r.name) }} <span class="state {{ r.state }}">{{ r.label }}</span></h3>
+  <p>{{ r.explanation }}</p>
+</div>
+{% endfor %}
+<p class="muted">SHA-256 <code>{{ row.data.file.sha256 }}</code></p>
