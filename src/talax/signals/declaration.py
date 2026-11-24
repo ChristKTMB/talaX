@@ -10,10 +10,10 @@ common (section 9 of the project rules).
 
 from __future__ import annotations
 
-import math
 from datetime import datetime, timedelta, tzinfo
 
 from talax.clock import local, recorded_offset
+from talax.geo import distance_km
 from talax.i18n import Message
 from talax.model import Context, Declaration, Result, State
 from talax.phrases import duration
@@ -25,7 +25,6 @@ _SAME_PLACE_KM = 25.0
 _FAR_KM = 100.0
 # The tolerance of the solar check for a wrong clock or time zone.
 _SAME_TIME = timedelta(hours=3)
-_EARTH_RADIUS_KM = 6371.0
 
 _ORDER = [State.CONSISTENT, State.UNVERIFIABLE, State.TO_CHECK, State.SUSPICIOUS]
 
@@ -125,14 +124,6 @@ def _file_position(ctx: Context) -> tuple[float, float] | None:
     if not (-90 <= lat <= 90 and -180 <= lon <= 180) or (lat == 0 and lon == 0):
         return None
     return float(lat), float(lon)
-
-
-def distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Great-circle distance (haversine): well under 1 % off at these scales."""
-    p1, p2 = math.radians(lat1), math.radians(lat2)
-    dp, dl = p2 - p1, math.radians(lon2 - lon1)
-    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
-    return 2 * _EARTH_RADIUS_KM * math.asin(math.sqrt(a))
 
 
 def _is_number(value: object) -> bool:

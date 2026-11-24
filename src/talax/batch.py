@@ -9,14 +9,18 @@ from __future__ import annotations
 import itertools
 from collections.abc import Iterable
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 
 from talax.analysis import analyze
+from talax.clock import offset_from_text
 from talax.extraction import ExifToolError
 from talax.fileinfo import sniff_format
+from talax.geo import distance_km
 from talax.model import Analysis, Batch, BatchItem, DuplicateGroup, State
 from talax.similarity import SAME_IMAGE, SIMILAR, distance, visual_hash
+from talax.solar import utc_offset, zone_at
 
 # ExifTool is an external process: threads wait on it in parallel. Measured
 # at about 90 ms per file, so 4 at a time keeps 100 files to a few seconds.
@@ -121,6 +125,91 @@ def _bits(items: list[BatchItem]) -> int:
     return size * size
 
 
+@dataclass(frozen=True, slots=True)
+class Moment:
+    """When a file says it was taken."""
+
+    name: str
+    local: datetime
+    """As the device recorded it, without a time zone."""
+    utc: datetime | None
+    """None when the time zone is unknown: then sorted on the local time."""
+    offset: str | None
+    """`+02:00`, from the file or from the time zone of its GPS position."""
+
+
+@dataclass(frozen=True, slots=True)
+class Place:
+    name: str
+    latitude: float
+    longitude: float
+
+
+@dataclass(frozen=True, slots=True)
+class Spread:
+    """The two places of a batch farthest apart."""
+
+    first: str
+    second: str
+    km: float
+
+
+def timeline(batch: Batch) -> tuple[list[Moment], list[str]]:
+    """Dated files in order, and the names of files with no capture time."""
+    dated, undated = [], []
+    for item in batch.items:
+        moment = _moment(item)
+        if moment is not None:
+            dated.append(moment)
+        elif item.analysis is not None:
+            undated.append(item.name)
+    real_time = all(m.utc is not None for m in dated)
+    dated.sort(key=lambda m: (_sort_key(m, real_time), m.name))
+    return dated, undated
+
+
+def span(moments: list[Moment]) -> timedelta | None:
+    """From the first photo to the last; approximate if a time zone is unknown."""
+    if len(moments) < 2:
+        return None
+    real_time = all(m.utc is not None for m in moments)
+    keys = [_sort_key(m, real_time) for m in moments]
+    return max(keys) - min(keys)
+
+
+def _sort_key(moment: Moment, real_time: bool) -> datetime:
+    """Real time when every time zone is known; otherwise the time shown by
+    the devices for all, so that a file of unknown zone is not misplaced."""
+    if real_time and moment.utc is not None:
+        return moment.utc
+    return moment.local.replace(tzinfo=UTC)
+
+
+def places(batch: Batch) -> tuple[list[Place], list[str], Spread | None]:
+    """Files with a consistent GPS position, those without, and the widest
+    distance between two of them."""
+    found, missing = [], []
+    for item in batch.items:
+        place = _place(item)
+        if place is not None:
+            found.append(place)
+        elif item.analysis is not None:
+            missing.append(item.name)
+    widest = max(
+        (
+            Spread(
+                a.name,
+                b.name,
+                distance_km(a.latitude, a.longitude, b.latitude, b.longitude),
+            )
+            for a, b in itertools.combinations(found, 2)
+        ),
+        key=lambda s: s.km,
+        default=None,
+    )
+    return found, missing, widest
+
+
 def concerns(analysis: Analysis) -> tuple[tuple[str, State], ...]:
     """The checks to look at first: suspicious ones, then those to check."""
     order = (State.SUSPICIOUS, State.TO_CHECK)
@@ -130,6 +219,50 @@ def concerns(analysis: Analysis) -> tuple[tuple[str, State], ...]:
         for r in analysis.results
         if r.state is state
     )
+
+
+def _moment(item: BatchItem) -> Moment | None:
+    if item.analysis is None:
+        return None
+    evidence = next(
+        (r.evidence for r in item.analysis.results if r.signal_id == "capture_time"),
+        {},
+    )
+    raw = evidence.get("date_time_original")
+    if not isinstance(raw, str):
+        return None
+    try:
+        local = datetime.fromisoformat(raw)
+    except ValueError:
+        return None
+    offset = evidence.get("offset")
+    zone: timezone | None
+    if isinstance(offset, str):
+        zone = offset_from_text(offset)
+    else:
+        place = _place(item)
+        found = zone_at(place.latitude, place.longitude) if place else None
+        zone = utc_offset(found, local) if found else None
+    if zone is None:
+        return Moment(item.name, local, None, None)
+    utc = local.replace(tzinfo=zone).astimezone(UTC)
+    shown = zone.utcoffset(None)
+    sign = "-" if shown < timedelta(0) else "+"
+    minutes = int(abs(shown).total_seconds() // 60)
+    return Moment(
+        item.name, local, utc, f"{sign}{minutes // 60:02d}:{minutes % 60:02d}"
+    )
+
+
+def _place(item: BatchItem) -> Place | None:
+    if item.analysis is None:
+        return None
+    for r in item.analysis.results:
+        if r.signal_id == "gps" and r.state is State.CONSISTENT:
+            lat, lon = r.evidence.get("latitude"), r.evidence.get("longitude")
+            if isinstance(lat, int | float) and isinstance(lon, int | float):
+                return Place(item.name, float(lat), float(lon))
+    return None
 
 
 def _analyse(name: str, path: Path) -> BatchItem:

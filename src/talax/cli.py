@@ -258,6 +258,8 @@ def _print_batch(batch: Batch, lang: Language) -> None:
         )
     out.print(table)
     _print_duplicates(batch, lang)
+    _print_timeline(batch, lang)
+    _print_places(batch, lang)
     readable = sum(1 for item in batch.items if item.analysis is not None)
     out.print(
         text("ui.batch.summary", lang, analysed=readable, total=len(batch.items)),
@@ -285,6 +287,49 @@ def _print_duplicates(batch: Batch, lang: Language) -> None:
         )
         out.print(_safe(f"- {label} {', '.join(group.names)}"))
     out.print(text("ui.batch.duplicates_note", lang), style="dim", markup=False)
+    out.print()
+
+
+def _print_timeline(batch: Batch, lang: Language) -> None:
+    from talax.batch import span, timeline
+    from talax.phrases import duration
+
+    moments, undated = timeline(batch)
+    out.print(text("ui.batch.timeline", lang), style="bold", markup=False)
+    for m in moments:
+        zone = f"UTC{m.offset}" if m.offset else text("ui.batch.zone_unknown", lang)
+        out.print(_safe(f"  {m.local:%Y-%m-%d %H:%M}  ({zone})  {m.name}"))
+    if undated:
+        out.print(_safe(text("ui.batch.undated", lang, names=", ".join(undated))))
+    gap = span(moments)
+    if gap is not None:
+        key = "ui.batch.span" if all(m.utc for m in moments) else "ui.batch.span_approx"
+        out.print(text(key, lang, duration=duration(gap)), markup=False)
+    out.print(text("ui.batch.timeline_note", lang), style="dim", markup=False)
+    out.print()
+
+
+def _print_places(batch: Batch, lang: Language) -> None:
+    from talax.batch import places
+
+    found, missing, widest = places(batch)
+    out.print(text("ui.batch.places", lang), style="bold", markup=False)
+    for p in found:
+        out.print(_safe(f"  {p.latitude:.5f}, {p.longitude:.5f}  {p.name}"))
+    if missing:
+        out.print(_safe(text("ui.batch.no_position", lang, names=", ".join(missing))))
+    if widest is not None:
+        out.print(
+            _safe(
+                text(
+                    "ui.batch.widest",
+                    lang,
+                    km=widest.km,
+                    first=widest.first,
+                    second=widest.second,
+                )
+            )
+        )
     out.print()
 
 

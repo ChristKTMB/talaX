@@ -199,3 +199,83 @@ def test_groups_in_the_terminal(tmp_path: Path) -> None:
     ).output
     assert "Même image (" in out and "bits sur 256 diffèrent" in out
     assert "à vérifier à l'œil" in out
+
+
+# --- timeline and places -----------------------------------------------------
+
+PARIS = [
+    "-GPSLatitude=48.8566",
+    "-GPSLatitudeRef=N",
+    "-GPSLongitude=2.3522",
+    "-GPSLongitudeRef=E",
+]
+KINSHASA = [
+    "-GPSLatitude=4.3217",
+    "-GPSLatitudeRef=S",
+    "-GPSLongitude=15.3125",
+    "-GPSLongitudeRef=E",
+]
+
+
+def taken(stamp: str, *more: str) -> list[str]:
+    return [f"-ExifIFD:DateTimeOriginal={stamp}", *more]
+
+
+def test_timeline_in_real_time_across_time_zones(tmp_path: Path) -> None:
+    from talax.batch import span, timeline
+
+    # 13:00 in Paris (UTC+2 in June) is 11:00 UTC; 12:30 in Kinshasa (UTC+1)
+    # is 11:30 UTC: Paris comes first, though its clock shows a later time.
+    jpeg(tmp_path / "kin.jpg", *taken("2025:06:21 12:30:00", *KINSHASA))
+    jpeg(
+        tmp_path / "par.jpg",
+        *taken("2025:06:21 13:00:00", "-ExifIFD:OffsetTimeOriginal=+02:00"),
+    )
+    jpeg(tmp_path / "none.jpg")
+    moments, undated = timeline(analyze_batch([tmp_path]))
+    assert [m.name.split("/")[1] for m in moments] == ["par.jpg", "kin.jpg"]
+    assert [m.offset for m in moments] == ["+02:00", "+01:00"]  # Kinshasa from its GPS
+    assert undated == [f"{tmp_path.name}/none.jpg"]
+    assert span(moments) is not None and span(moments).total_seconds() == 30 * 60  # type: ignore[union-attr]
+
+
+def test_an_unknown_time_zone_orders_by_device_time(tmp_path: Path) -> None:
+    from talax.batch import timeline
+
+    jpeg(
+        tmp_path / "a.jpg",
+        *taken("2025:06:21 13:50:00", "-ExifIFD:OffsetTimeOriginal=+02:00"),
+    )
+    jpeg(tmp_path / "b.jpg", *taken("2025:06:21 15:00:00"))
+    jpeg(
+        tmp_path / "c.jpg",
+        *taken("2025:06:21 16:05:00", "-ExifIFD:OffsetTimeOriginal=+02:00"),
+    )
+    moments, _ = timeline(analyze_batch([tmp_path]))
+    assert [m.name[-5:] for m in moments] == ["a.jpg", "b.jpg", "c.jpg"]
+    assert moments[1].utc is None
+
+
+def test_places_and_the_widest_distance(tmp_path: Path) -> None:
+    from talax.batch import places
+
+    jpeg(tmp_path / "p.jpg", *PARIS)
+    jpeg(tmp_path / "k.jpg", *KINSHASA)
+    jpeg(tmp_path / "n.jpg")
+    found, missing, widest = places(analyze_batch([tmp_path]))
+    assert {p.name[-5:] for p in found} == {"p.jpg", "k.jpg"}
+    assert missing == [f"{tmp_path.name}/n.jpg"]
+    assert widest is not None and widest.km == pytest.approx(6040, rel=0.02)
+
+
+def test_timeline_and_places_in_the_terminal(tmp_path: Path) -> None:
+    jpeg(tmp_path / "p.jpg", *taken("2025:06:21 13:50:00", *PARIS))
+    jpeg(tmp_path / "q.jpg", *taken("2025:06:21 14:20:00", *PARIS))
+    out = runner.invoke(
+        app, ["batch", str(tmp_path), "--lang", "fr"], env={"COLUMNS": "200"}
+    ).output
+    assert "Chronologie" in out and "(UTC+02:00)" in out
+    assert "De la première à la dernière photo : 30 min." in out
+    assert "dont l'horloge peut être mal réglée" in out
+    assert "Lieux" in out and "48.85660, 2.35220" in out
+    assert "Plus grande distance entre deux photos : 0 km" in out

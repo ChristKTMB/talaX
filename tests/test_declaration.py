@@ -4,9 +4,9 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from talax import Context, Declaration, Metadata, Result, State
+from talax.geo import distance_km
 from talax.i18n import Language
 from talax.signals import DEFAULT_SIGNALS, DeclarationCheck, run_signals
-from talax.signals.declaration import distance_km
 
 # Synthetic places, never taken from the corpus.
 KINSHASA = (-4.3217, 15.3125)
