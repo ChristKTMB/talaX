@@ -229,6 +229,30 @@ class Analysis:
 
 
 @dataclass(frozen=True, slots=True)
+class VisualHash:
+    """A small fingerprint of the picture (talax.similarity), and of the
+    picture turned a quarter, half and three quarters."""
+
+    turns: tuple[int, int, int, int]
+    size: int
+    """Grid side: the hash has size x size bits."""
+
+
+@dataclass(frozen=True, slots=True)
+class DuplicateGroup:
+    """Files of a batch that show the same picture, or nearly. A grouping to
+    check by eye, never a verdict."""
+
+    kind: str
+    """`identical` (same bytes), `same_image` or `similar`."""
+    names: tuple[str, ...]
+    distance: int
+    """Largest visual difference inside the group, in bits (0 if identical)."""
+    bits: int
+    """Size of the fingerprint, for "12 bits out of 256"."""
+
+
+@dataclass(frozen=True, slots=True)
 class BatchItem:
     """One file of a batch: its analysis, or why it could not be analysed."""
 
@@ -237,6 +261,8 @@ class BatchItem:
     analysis: Analysis | None
     error: str | None = None
     """`unreadable` when the file could not be analysed at all."""
+    visual: VisualHash | None = None
+    """None for a file Pillow cannot read as an image (video, HEIC...)."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -247,6 +273,7 @@ class Batch:
     skipped: tuple[str, ...]
     """Files not recognised as an image or a video, left out."""
     created_at: datetime
+    groups: tuple[DuplicateGroup, ...] = ()
 
     def __post_init__(self) -> None:
         if self.created_at.tzinfo is None:

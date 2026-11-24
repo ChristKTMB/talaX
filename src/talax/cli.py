@@ -257,6 +257,7 @@ def _print_batch(batch: Batch, lang: Language) -> None:
             flags or Text("-", style="dim"),
         )
     out.print(table)
+    _print_duplicates(batch, lang)
     readable = sum(1 for item in batch.items if item.analysis is not None)
     out.print(
         text("ui.batch.summary", lang, analysed=readable, total=len(batch.items)),
@@ -268,6 +269,23 @@ def _print_batch(batch: Batch, lang: Language) -> None:
             style="dim",
         )
     out.print(_safe(text("ui.disclaimer", lang)), style="dim")
+
+
+def _print_duplicates(batch: Batch, lang: Language) -> None:
+    out.print()
+    out.print(text("ui.batch.duplicates", lang), style="bold", markup=False)
+    if not batch.groups:
+        out.print(text("ui.batch.no_duplicates", lang), markup=False)
+    for group in batch.groups:
+        label = text(
+            f"ui.batch.group.{group.kind}",
+            lang,
+            distance=group.distance,
+            bits=group.bits,
+        )
+        out.print(_safe(f"- {label} {', '.join(group.names)}"))
+    out.print(text("ui.batch.duplicates_note", lang), style="dim", markup=False)
+    out.print()
 
 
 def _taken(analysis: Analysis) -> str | None:
