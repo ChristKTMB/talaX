@@ -15,6 +15,7 @@
       <span>{{ i18n.t('footer.licence') }}</span>
     </div>
     <nav class="footer__nav" [attr.aria-label]="i18n.t('footer.nav')">
+      <a [routerLink]="i18n.path('guide')">{{ i18n.t('footer.guide') }}</a>
       <a [routerLink]="i18n.path('terms')">{{ i18n.t('footer.terms') }}</a>
       <a [routerLink]="i18n.path('privacy')">{{ i18n.t('footer.privacy') }}</a>
       <a [href]="sourceUrl">{{ i18n.t('footer.source') }}</a>

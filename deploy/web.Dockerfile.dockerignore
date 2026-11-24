@@ -3,10 +3,12 @@
 !web/
 !docs/brand/
 !docs/legal/
+!docs/guide/
 !deploy/nginx.conf
 web/node_modules
 web/dist
 web/.angular
 web/public/brand
 web/public/favicon.*
+web/public/og-*.png
 web/src/generated

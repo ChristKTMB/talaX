@@ -20,6 +20,9 @@ export const routes: Route[] = [
   page('home', { loadComponent: () => import('./features/home/home').then((m) => m.Home) }),
   page('terms', { loadComponent: legal }),
   page('privacy', { loadComponent: legal }),
+  page('guide', { loadComponent: legal }),
+  page('guide-cli', { loadComponent: legal }),
+  page('guide-report', { loadComponent: legal }),
   {
     path: '**',
     loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFound),

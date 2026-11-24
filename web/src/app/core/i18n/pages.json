@@ -1,8 +1,29 @@
 {
   "site": "https://talax.online",
   "paths": {
-    "home": { "en": "/", "fr": "/fr" },
-    "terms": { "en": "/terms", "fr": "/fr/conditions" },
-    "privacy": { "en": "/privacy", "fr": "/fr/confidentialite" }
+    "home": {
+      "en": "/",
+      "fr": "/fr"
+    },
+    "terms": {
+      "en": "/terms",
+      "fr": "/fr/conditions"
+    },
+    "privacy": {
+      "en": "/privacy",
+      "fr": "/fr/confidentialite"
+    },
+    "guide": {
+      "en": "/guide",
+      "fr": "/fr/guide"
+    },
+    "guide-cli": {
+      "en": "/guide/cli",
+      "fr": "/fr/guide/cli"
+    },
+    "guide-report": {
+      "en": "/guide/report",
+      "fr": "/fr/guide/rapport"
+    }
   }
 }

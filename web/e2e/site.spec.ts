@@ -177,6 +177,18 @@ test('changing the language asks for the report again in that language', async (
   expect(asked).toEqual(['fr', 'en']);
 });
 
+test('the guide is reached from the header, under the security policy', async ({ page }) => {
+  const problems = watch(page);
+  await page.goto('/fr');
+  await page.locator('header').getByRole('link', { name: 'Guide' }).click();
+  await expect(page).toHaveURL(/\/fr\/guide$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Utiliser Tala X en ligne');
+  await page.locator('.toc__other').getByRole('link', { name: 'la ligne de commande' }).click();
+  await expect(page).toHaveURL(/\/fr\/guide\/cli$/);
+  await expect(page.locator('.document__body pre').first()).toBeVisible();
+  expect(problems).toEqual([]);
+});
+
 test('the legal pages come from docs/legal, with their version', async ({ page }) => {
   const problems = watch(page);
   await page.goto('/fr/confidentialite');

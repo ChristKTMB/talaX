@@ -11,6 +11,9 @@
         <img src="brand/logo-horizontal-ink.svg" alt="" width="198" height="66" />
       }
     </a>
-    <a class="header__source" [href]="sourceUrl">{{ i18n.t('header.source') }}</a>
+    <nav class="header__nav" [attr.aria-label]="i18n.t('footer.nav')">
+      <a class="header__source" [routerLink]="i18n.path('guide')">{{ i18n.t('header.guide') }}</a>
+      <a class="header__source" [href]="sourceUrl">{{ i18n.t('header.source') }}</a>
+    </nav>
   </div>
 </header>

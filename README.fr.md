@@ -14,6 +14,10 @@ vidéo (métadonnées de conteneur) est prévue.
 **L'essayer en ligne : [talax.online/fr](https://talax.online/fr)** (pour un fichier
 sensible, utilisez l'outil en ligne de commande : le fichier ne quitte pas votre machine).
 
+**Guide d'utilisation :** [utiliser le site](https://talax.online/fr/guide),
+[la ligne de commande](https://talax.online/fr/guide/cli),
+[lire un rapport](https://talax.online/fr/guide/rapport).
+
 ## La question posée en premier
 
 Pas *« cette image est-elle fausse ? »* — aucune technologie n'y répond de

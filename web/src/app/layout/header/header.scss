@@ -18,6 +18,11 @@
   margin-left: -10px;
 }
 
+.header__nav {
+  display: flex;
+  gap: 20px;
+}
+
 .header__source {
   font-family: var(--font-mono);
   font-size: 14px;

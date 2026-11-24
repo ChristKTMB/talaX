@@ -57,3 +57,24 @@ describe('LegalPage', () => {
     expect(page.querySelector('.document__body a[href="/terms"]')).toBeNull();
   });
 });
+
+describe('Guide pages', () => {
+  it('shows the guide from docs/guide, with links to the other two pages', async () => {
+    const { page } = await open('/fr/guide');
+    expect(page.querySelector('h1')?.textContent).toContain('Utiliser Tala X en ligne');
+    expect(page.querySelector('.draft')).toBeNull();
+    const others = [...page.querySelectorAll('.toc__other a')].map((a) => a.getAttribute('href'));
+    expect(others).toEqual(['/fr/guide/cli', '/fr/guide/rapport']);
+    // Links between documents point to the pages of the site.
+    const body = page.querySelector('.document__body');
+    expect(body?.querySelector('a[href="/fr/guide/cli"]')).not.toBeNull();
+    expect(body?.querySelector('a[href="/fr/confidentialite"]')).not.toBeNull();
+  });
+
+  it('shows the commands of the command-line guide as code', async () => {
+    const { page } = await open('/guide/cli', 'en');
+    expect(page.querySelector('h1')?.textContent).toContain('The command line');
+    const blocks = [...page.querySelectorAll('.document__body pre code')];
+    expect(blocks.some((b) => b.textContent?.includes('uv tool install talax'))).toBe(true);
+  });
+});

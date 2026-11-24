@@ -163,5 +163,16 @@
   "weather.your_answer": "Your answer: {seen}.",
   "weather.credit": "Weather data:",
   "weather.banner_lead": "A question to complete the weather check:",
-  "weather.banner_question": "what weather does the photo show?"
+  "weather.banner_question": "what weather does the photo show?",
+  "page.guide.title": "Using Tala X online — Guide",
+  "page.guide.description": "How to use Tala X online: upload a photo, answer the sky question, check a caption, cross-check the weather, ask for the original, keep the report.",
+  "page.guide-cli.title": "The command line — Tala X guide",
+  "page.guide-cli.description": "Install Tala X on Windows, macOS or Linux and analyse photos on your own computer: talax analyze, talax batch, every option, with examples.",
+  "page.guide-report.title": "Reading a report — Tala X guide",
+  "page.guide-report.description": "What each part of a Tala X report means: the integrity result, the four states, every check, and what to do next.",
+  "legal.guide": "using the site",
+  "legal.guide-cli": "the command line",
+  "legal.guide-report": "reading a report",
+  "header.guide": "Guide",
+  "footer.guide": "Guide"
 }

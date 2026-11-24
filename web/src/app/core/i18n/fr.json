@@ -163,5 +163,16 @@
   "weather.your_answer": "Votre réponse : {seen}.",
   "weather.credit": "Données météo :",
   "weather.banner_lead": "Une question pour compléter la météo :",
-  "weather.banner_question": "quel temps montre la photo ?"
+  "weather.banner_question": "quel temps montre la photo ?",
+  "page.guide.title": "Utiliser Tala X en ligne — Guide",
+  "page.guide.description": "Comment utiliser Tala X en ligne : déposer une photo, répondre à la question du ciel, vérifier une légende, recouper avec la météo, demander l'original, garder le rapport.",
+  "page.guide-cli.title": "La ligne de commande — Guide Tala X",
+  "page.guide-cli.description": "Installer Tala X sous Windows, macOS ou Linux et analyser des photos sur votre ordinateur : talax analyze, talax batch, toutes les options, avec des exemples.",
+  "page.guide-report.title": "Lire un rapport — Guide Tala X",
+  "page.guide-report.description": "Ce que veut dire chaque partie d'un rapport Tala X : le résultat d'intégrité, les quatre états, chaque contrôle, et quoi faire ensuite.",
+  "legal.guide": "utiliser le site",
+  "legal.guide-cli": "la ligne de commande",
+  "legal.guide-report": "lire un rapport",
+  "header.guide": "Guide",
+  "footer.guide": "Guide"
 }

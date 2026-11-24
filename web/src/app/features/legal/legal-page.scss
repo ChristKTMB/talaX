@@ -37,9 +37,14 @@
 .toc {
   flex: 1 1 220px;
   max-width: 280px;
-  position: sticky;
-  top: 24px;
   font-size: 14px;
+
+  // Beside the text on wide screens; above it, and scrolling away, on a phone
+  // (sticky there, it covered the text).
+  @media (min-width: 900px) {
+    position: sticky;
+    top: 24px;
+  }
 
   ol {
     margin: 0 0 20px;
@@ -108,10 +113,31 @@
     scroll-margin-top: 24px;
   }
 
+  h3 {
+    margin: 28px 0 10px;
+    font-size: 17px;
+  }
+
   p,
   ul,
   ol {
     margin: 0 0 14px;
+  }
+
+  // Commands to copy: kept on their lines, scrolled sideways if too long.
+  pre {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    background: #f0ece2;
+    border-radius: 4px;
+
+    code {
+      padding: 0;
+      background: none;
+      white-space: pre;
+      font-size: 13px;
+    }
   }
 
   li + li {
@@ -133,6 +159,16 @@
     border: 1px solid var(--line);
     text-align: left;
     vertical-align: top;
+    // Words are only split if one alone is wider than its column.
+    overflow-wrap: break-word;
+  }
+
+  // The first column names things (a check, a state): it keeps a readable
+  // width instead of shrinking letter by letter.
+  td:first-child,
+  th:first-child {
+    width: 28%;
+    min-width: 8em;
   }
 
   th {

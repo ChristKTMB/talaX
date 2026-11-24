@@ -7,10 +7,16 @@ import {
   input,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { LEGAL_PAGES } from '../../../generated/legal';
+import { DOCUMENTS } from '../../../generated/documents';
 import { I18n, Language } from '../../core/i18n/i18n';
 
-export type LegalPageName = 'terms' | 'privacy';
+export type DocumentName = 'terms' | 'privacy' | 'guide' | 'guide-cli' | 'guide-report';
+
+/** Pages read together: the "see also" links of a page are the others of its set. */
+const SETS: readonly (readonly DocumentName[])[] = [
+  ['terms', 'privacy'],
+  ['guide', 'guide-cli', 'guide-report'],
+];
 
 export interface LegalDocument {
   readonly title: string;
@@ -21,12 +27,13 @@ export interface LegalDocument {
   readonly html: string;
 }
 
-export type LegalPages = Readonly<Record<LegalPageName, Readonly<Record<Language, LegalDocument>>>>;
+export type Documents = Readonly<Record<DocumentName, Readonly<Record<Language, LegalDocument>>>>;
 
 /**
- * Terms of use and privacy policy, from docs/legal/ (the only source), turned
- * into HTML at build time by scripts/sync-docs.mjs. The HTML is ours, not the
- * API's: it is the only place where the front inserts markup.
+ * Terms of use, privacy policy and user guide, from docs/legal/ and docs/guide/
+ * (the only source), turned into HTML at build time by scripts/sync-docs.mjs.
+ * The HTML is ours, not the API's: it is the only place where the front
+ * inserts markup.
  */
 @Component({
   selector: 'app-legal-page',
@@ -42,11 +49,12 @@ export class LegalPage {
   private readonly document = inject(DOCUMENT);
 
   /** From the route's data. */
-  readonly page = input.required<LegalPageName>();
-  protected readonly content = computed(() => LEGAL_PAGES[this.page()][this.i18n.language()]);
-  protected readonly other = computed<LegalPageName>(() =>
-    this.page() === 'terms' ? 'privacy' : 'terms',
-  );
+  readonly page = input.required<DocumentName>();
+  protected readonly content = computed(() => DOCUMENTS[this.page()][this.i18n.language()]);
+  protected readonly others = computed(() => {
+    const set = SETS.find((names) => names.includes(this.page())) ?? [];
+    return set.filter((name) => name !== this.page());
+  });
 
   protected show(index: number): void {
     const headings = this.document.querySelectorAll<HTMLElement>('.document__body h2');

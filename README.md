@@ -14,6 +14,10 @@ metadata) is planned.
 **Try it online: [talax.online](https://talax.online)** (for a sensitive file, use
 the command-line tool: the file never leaves your machine).
 
+**User guide:** [using the site](https://talax.online/guide),
+[the command line](https://talax.online/guide/cli),
+[reading a report](https://talax.online/guide/report).
+
 ## The question Tala X asks first
 
 Not *"is this image fake?"* — no technology answers that reliably today. But:

@@ -35,8 +35,10 @@ describe('App', () => {
     await fixture.whenStable();
     expect(TestBed.inject(Location).path()).toBe('/fr/confidentialite');
     expect(french?.getAttribute('aria-pressed')).toBe('true');
-    expect(page.querySelector('.header__source')?.textContent?.trim()).toBe('Code source');
-    expect(page.querySelector('footer a')?.getAttribute('href')).toBe('/fr/conditions');
+    const header = [...page.querySelectorAll('.header__source')].map((a) => a.textContent?.trim());
+    expect(header).toEqual(['Guide', 'Code source']);
+    expect(page.querySelector('header a[href="/fr/guide"]')).not.toBeNull();
+    expect(page.querySelector('footer a[href="/fr/conditions"]')).not.toBeNull();
   });
 
   it('shows a "not found" page for any other address', async () => {

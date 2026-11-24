@@ -16,7 +16,12 @@
     </ol>
     <p class="toc__other">
       {{ i18n.t('legal.see_also') }}
-      <a [routerLink]="i18n.path(other())">{{ i18n.t('legal.' + other()) }}</a>
+      @for (name of others(); track name) {
+        <a [routerLink]="i18n.path(name)">{{ i18n.t('legal.' + name) }}</a>
+        @if (!$last) {
+          ·
+        }
+      }
     </p>
   </nav>
   <article class="document">
