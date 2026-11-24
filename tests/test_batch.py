@@ -1,5 +1,6 @@
 import shutil
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -17,6 +18,9 @@ pytestmark = pytest.mark.skipif(
     shutil.which("exiftool") is None, reason="ExifTool needed"
 )
 runner = CliRunner()
+# Windows refuses <, > and control characters in file names: a hostile name of
+# that kind cannot reach Tala X there, so those cases are tested elsewhere.
+WINDOWS = sys.platform == "win32"
 
 
 def jpeg(path: Path, *exif: str) -> Path:
@@ -107,6 +111,7 @@ def test_batch_command(folder: Path) -> None:
     assert "ne certifie jamais" in out
 
 
+@pytest.mark.skipif(WINDOWS, reason="such a file name cannot exist on Windows")
 def test_batch_names_are_shown_without_control_codes(tmp_path: Path) -> None:
     jpeg(tmp_path / "evil\x1b[2J.jpg")
     out = runner.invoke(app, ["batch", str(tmp_path)]).output
@@ -291,17 +296,17 @@ def test_batch_html_report_is_self_contained_and_escaped(tmp_path: Path) -> None
     folder.mkdir()
     scene(folder / "a.jpg")
     scene(folder / "a-small.jpg", size=(320, 240), quality=60)
-    jpeg(
-        folder / "<img src=x onerror=alert(1)>.jpg",
-        *taken("2025:06:21 13:50:00", *PARIS),
-    )
+    hostile = "x.jpg" if WINDOWS else "<img src=x onerror=alert(1)>.jpg"
+    jpeg(folder / hostile, *taken("2025:06:21 13:50:00", *PARIS))
     report = tmp_path / "lot.html"
     result = runner.invoke(
         app, ["batch", str(folder), "--lang", "fr", "--html", str(report)]
     )
     assert result.exit_code == 0
     html = report.read_text(encoding="utf-8")
-    assert "<img src=x" not in html and "&lt;img src=x onerror=alert(1)&gt;" in html
+    if not WINDOWS:
+        assert "<img src=x" not in html
+        assert "&lt;img src=x onerror=alert(1)&gt;" in html
     assert "default-src 'none'" in html
     assert not re.search(r"(src|href)=\"", html)  # no image, no link, nothing loaded
     for title in ("Même image", "Chronologie", "Lieux", "Chaque fichier"):
