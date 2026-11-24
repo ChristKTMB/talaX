@@ -70,6 +70,10 @@ and recycled images, not against expert forgers.
   compared with what you see in the photo. It sends a position rounded to
   about 11 km and the date to Open-Meteo, which may keep them 90 days; at
   most "to check", never "suspicious" (model cells of 9 to 25 km).
+- **Batch mode** (`talax batch`, command line only): a table of every file,
+  the files that show the same picture (a resemblance to check by eye; a
+  cropped copy is usually not found), a timeline, the places and the widest
+  distance between two photos; HTML report, CSV table, JSON
 
 ## What it deliberately does not do
 
@@ -115,6 +119,7 @@ talax analyze photo.jpg                     # report in the terminal
 talax analyze photo.jpg --sky day           # what the photo shows, for the solar check
 talax analyze photo.jpg --place "-4.32,15.31" --at "2026-06-14 10:00"  # place and local time a caption claims
 talax analyze photo.jpg --weather --conditions rain  # weather lookup (network: Open-Meteo), and what the photo shows
+talax batch photos/ --html lot.html --csv lot.csv  # several files: same picture, timeline, places
 talax analyze photo.jpg --html report.html  # self-contained HTML report
 talax analyze photo.jpg --json              # machine-readable
 talax analyze photo.jpg --lang fr           # in French (default: your system language)

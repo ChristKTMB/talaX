@@ -312,3 +312,62 @@ def test_batch_html_report_is_self_contained_and_escaped(tmp_path: Path) -> None
     assert "Aucune carte n'est intégrée" in unescape(html)
     # Closed sections print empty: each file is also printed open.
     assert html.count('class="item"') == html.count('class="item print-only"') == 3
+
+
+# --- JSON and CSV --------------------------------------------------------------
+
+
+def test_batch_json(tmp_path: Path) -> None:
+    import json
+
+    scene(tmp_path / "a.jpg")
+    scene(tmp_path / "b.jpg", size=(320, 240), quality=60)
+    jpeg(tmp_path / "p.jpg", *taken("2025:06:21 13:50:00", *PARIS))
+    (tmp_path / "notes.txt").write_text("x")
+    data = json.loads(runner.invoke(app, ["batch", str(tmp_path), "--json"]).output)
+    assert data["schema"] == 2 and data["kind"] == "batch"
+    assert [f["name"].split("/")[1] for f in data["files"]] == [
+        "a.jpg",
+        "b.jpg",
+        "p.jpg",
+    ]
+    assert data["files"][0]["analysis"]["integrity"]["verdict"]
+    assert data["skipped"] == [f"{tmp_path.name}/notes.txt"]
+    assert data["same_picture"][0]["kind"] == "same_image"
+    assert data["timeline"]["files"][0]["offset"] == "+02:00"
+    assert data["places"]["files"][0]["latitude"] == pytest.approx(48.8566)
+    assert "never certifies" in data["disclaimer"]
+    # Pure JSON: no banner, no table before it.
+    out = runner.invoke(app, ["batch", str(tmp_path), "--json"]).output
+    assert out.startswith("{")
+
+
+def test_batch_csv_neutralises_formulas(tmp_path: Path) -> None:
+    import csv
+
+    hostile = jpeg(
+        tmp_path / "=HYPERLINK(1).jpg", *taken("2025:06:21 13:50:00", *PARIS)
+    )
+    jpeg(tmp_path / "-2+3.jpg", "-IFD0:Software=@SUM(1)")
+    table = tmp_path / "lot.csv"
+    table.write_text("old content that must disappear")
+    result = runner.invoke(
+        app,
+        ["batch", str(hostile), str(tmp_path / "-2+3.jpg"), "--csv", str(table)],
+    )
+    assert result.exit_code == 0
+    raw = table.read_bytes()
+    assert raw.startswith(b"\xef\xbb\xbf")  # UTF-8 byte order mark, for spreadsheets
+    rows = list(csv.reader(table.read_text(encoding="utf-8-sig").splitlines()))
+    header, *lines = rows
+    assert header[:3] == ["File", "Integrity", "Platform fingerprint"]
+    assert "Solar consistency" in header and "Weather" not in header
+    names = [line[0] for line in lines]
+    assert names == ["'-2+3.jpg", "'=HYPERLINK(1).jpg"]
+    assert not any(
+        cell.startswith(("=", "+", "-", "@")) for line in rows for cell in line
+    )
+    paris = lines[1]
+    assert paris[header.index("UTC offset")] == "UTC+02:00"
+    assert float(paris[header.index("Latitude")]) == pytest.approx(48.8566)
+    assert "old content" not in table.read_text(encoding="utf-8-sig")

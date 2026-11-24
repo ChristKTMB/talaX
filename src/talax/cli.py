@@ -163,14 +163,31 @@ def batch_command(
         Path | None,
         typer.Option(dir_okay=False, help="Also write a self-contained HTML report."),
     ] = None,
+    csv_file: Annotated[
+        Path | None,
+        typer.Option(
+            "--csv",
+            dir_okay=False,
+            help="Also write a CSV table, one row per file (overwritten).",
+        ),
+    ] = None,
+    json_output: Annotated[
+        bool, typer.Option("--json", help="Print the batch as JSON.")
+    ] = False,
 ) -> None:
     """Analyse several files at once. Nothing is sent over the network."""
     from talax.batch import analyze_batch
-    from talax.report import render_batch_html
+    from talax.report import batch_to_dict, render_batch_html, write_batch_csv
 
     language = lang or default_language()
     batch = analyze_batch(paths)
-    _print_batch(batch, language)
+    if json_output:
+        print(json.dumps(batch_to_dict(batch, language), indent=2))
+    else:
+        _print_batch(batch, language)
+    if csv_file is not None:
+        write_batch_csv(batch, csv_file, language)
+        err.print(_safe(f"CSV table written to {csv_file}"))
     if html is not None:
         html.write_text(render_batch_html(batch, language), encoding="utf-8")
         err.print(_safe(f"HTML report written to {html}"))

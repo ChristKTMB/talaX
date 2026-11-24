@@ -75,6 +75,11 @@ plateformes et les images recyclées, pas contre les faussaires experts.
   position arrondie à environ 11 km et la date, qu'Open-Meteo peut garder
   90 jours ; au plus « à vérifier », jamais « suspect » (mailles de modèle de
   9 à 25 km).
+- **Mode lot** (`talax batch`, en ligne de commande seulement) : un tableau
+  de tous les fichiers, ceux qui montrent la même image (une ressemblance à
+  vérifier à l'œil ; une copie recadrée n'est en général pas retrouvée), une
+  chronologie, les lieux et la plus grande distance entre deux photos ;
+  rapport HTML, tableau CSV, JSON
 
 ## Ce qu'il refuse de faire
 
@@ -123,6 +128,7 @@ talax analyze photo.jpg                       # rapport dans le terminal
 talax analyze photo.jpg --sky day             # ce que montre la photo, pour la cohérence solaire
 talax analyze photo.jpg --place "-4.32,15.31" --at "2026-06-14 10:00"  # lieu et heure locale annoncés par une légende
 talax analyze photo.jpg --weather --conditions rain  # météo (réseau : Open-Meteo), et ce que montre la photo
+talax batch photos/ --html lot.html --csv lot.csv  # plusieurs fichiers : même image, chronologie, lieux
 talax analyze photo.jpg --html rapport.html   # rapport HTML autonome
 talax analyze photo.jpg --json                # format machine
 talax analyze photo.jpg --lang en             # en anglais (par défaut : la langue du système)

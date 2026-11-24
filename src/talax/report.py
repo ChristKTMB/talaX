@@ -314,3 +314,140 @@ def render_batch_html(batch: Batch, lang: Language = Language.EN) -> str:
         analysed_at=readable_date(batch.created_at, lang),
         generated_at=readable_date(datetime.now(UTC), lang),
     )
+
+
+def batch_to_dict(batch: Batch, lang: Language = Language.EN) -> dict[str, Any]:
+    """JSON-ready view of a batch (`kind: batch`), each file in the same form
+    as `to_dict`. Same schema rule: adding a field keeps the number."""
+    from talax.batch import places, span, timeline
+
+    moments, undated = timeline(batch)
+    found, missing, widest = places(batch)
+    gap = span(moments)
+    return {
+        "schema": SCHEMA_VERSION,
+        "kind": "batch",
+        "lang": str(lang),
+        "tools": tool_versions(),
+        "created_at": batch.created_at.isoformat(),
+        "files": [
+            {
+                "name": item.name,
+                "error": item.error,
+                "analysis": to_dict(item.analysis, item.name, lang)
+                if item.analysis
+                else None,
+            }
+            for item in batch.items
+        ],
+        "skipped": list(batch.skipped),
+        "same_picture": [
+            {
+                "kind": g.kind,
+                "files": list(g.names),
+                "distance_bits": g.distance,
+                "of_bits": g.bits,
+            }
+            for g in batch.groups
+        ],
+        "timeline": {
+            "ordered_by": "utc" if all(m.utc for m in moments) else "device_time",
+            "files": [
+                {
+                    "name": m.name,
+                    "device_time": m.local.isoformat(),
+                    "offset": m.offset,
+                    "utc": m.utc.isoformat() if m.utc else None,
+                }
+                for m in moments
+            ],
+            "undated": undated,
+            "span_seconds": gap.total_seconds() if gap is not None else None,
+        },
+        "places": {
+            "files": [
+                {"name": p.name, "latitude": p.latitude, "longitude": p.longitude}
+                for p in found
+            ],
+            "no_position": missing,
+            "widest": {
+                "first": widest.first,
+                "second": widest.second,
+                "km": round(widest.km, 1),
+            }
+            if widest
+            else None,
+        },
+        "disclaimer": text("ui.disclaimer", lang),
+    }
+
+
+# A cell starting with one of these is run as a formula by spreadsheets: a
+# file name or a metadata value could carry one ("=HYPERLINK(...)").
+_FORMULA_START = ("=", "+", "-", "@", "\t", "\r")
+
+
+def write_batch_csv(batch: Batch, path: Path, lang: Language = Language.EN) -> None:
+    """One row per file, one column per check, written over `path`.
+
+    Standard CSV (comma, decimal point), UTF-8 with a byte order mark so that
+    spreadsheets read accents. Text cells that could run as a formula are
+    prefixed with an apostrophe; numbers are written as numbers.
+    """
+    import csv
+
+    from talax.batch import position, recorded_time, timeline
+    from talax.signals import DEFAULT_SIGNALS
+
+    offsets = {m.name: m.offset for m in timeline(batch)[0]}
+    groups: dict[str, list[str]] = {}
+    for number, group in enumerate(batch.groups, start=1):
+        for name in group.names:
+            groups.setdefault(name, []).append(str(number))
+    present = {
+        r.signal_id for i in batch.items if i.analysis for r in i.analysis.results
+    }
+    signal_ids = [s.id for s in DEFAULT_SIGNALS if s.id in present]
+    header = [
+        text("ui.batch.file", lang),
+        text("ui.batch.integrity", lang),
+        text("ui.batch.fingerprint", lang),
+        text("ui.batch.taken", lang),
+        text("ui.batch.offset", lang),
+        text("ui.batch.latitude", lang),
+        text("ui.batch.longitude", lang),
+        text("ui.batch.group_column", lang),
+        *(signal_name(sid, lang) for sid in signal_ids),
+        text("ui.batch.error", lang),
+    ]
+    with path.open("w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([_cell(h) for h in header])
+        for item in batch.items:
+            a = item.analysis
+            if a is None:
+                row: list[object] = [item.name, *[""] * (len(header) - 2)]
+                row.append(text("ui.batch.unreadable", lang))
+                writer.writerow([_cell(v) for v in row])
+                continue
+            states = {r.signal_id: state_label(r.state, lang) for r in a.results}
+            where = position(a)
+            row = [
+                item.name,
+                verdict_label(a.integrity.verdict, lang),
+                a.integrity.pipeline or "",
+                recorded_time(a) or "",
+                f"UTC{offsets[item.name]}" if offsets.get(item.name) else "",
+                where[0] if where else "",
+                where[1] if where else "",
+                ", ".join(groups.get(item.name, [])),
+                *(states.get(sid, "") for sid in signal_ids),
+                "",
+            ]
+            writer.writerow([_cell(v) for v in row])
+
+
+def _cell(value: object) -> object:
+    if isinstance(value, str) and value.startswith(_FORMULA_START):
+        return "'" + value
+    return value
